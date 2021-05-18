@@ -1,15 +1,23 @@
 import { Duplex } from 'stream';
 
+import pump from 'pump';
+import { TypedEmitter } from 'tiny-typed-emitter';
+
 import NovastarDecoder from './NovastarDecoder';
 import NovastarEncoder from './NovastarEncoder';
-import { ErrorType, Package } from './Package';
-import RequestPackage from './RequestPackage';
+import { ErrorType, Packet } from './Packet';
+import Request from './Request';
 
-type ResolveResponse = (res: Package) => void;
+type ResolveResponse = (res: Packet) => void;
 
-type WaitingRequest = [req: RequestPackage, resolve: ResolveResponse];
+type WaitingRequest = [req: Request, resolve: ResolveResponse];
 
-export default class Connection<S extends Duplex> {
+interface ConnectionEvents {
+  open(): void;
+  close(): void;
+}
+
+export default class Connection<S extends Duplex> extends TypedEmitter<ConnectionEvents> {
   private encoder = new NovastarEncoder();
 
   private decoder = new NovastarDecoder();
@@ -18,7 +26,9 @@ export default class Connection<S extends Duplex> {
 
   protected ready = Promise.resolve();
 
-  constructor(readonly stream: S, public timeout = 3000) {}
+  constructor(readonly stream: S, public timeout = 3000) {
+    super();
+  }
 
   protected queue: WaitingRequest[] = [];
 
@@ -26,46 +36,46 @@ export default class Connection<S extends Duplex> {
     return this.connected;
   }
 
-  public async start(): Promise<void> {
+  public async open(): Promise<void> {
     if (this.connected) return;
     this.decoder.on('data', this.listener);
-    this.stream.pipe(this.decoder);
-    this.encoder.pipe(this.stream);
+    pump(this.encoder, this.stream, this.decoder, () => this.close());
     this.connected = true;
+    this.emit('open');
   }
 
-  public stop(): void {
+  public close(): void {
     if (!this.connected) return;
+    this.connected = false;
     this.decoder.off('data', this.listener);
     this.stream.unpipe(this.decoder);
     this.encoder.unpipe(this.stream);
-    this.connected = false;
+    this.emit('close');
   }
 
-  public async send(req: RequestPackage): Promise<Package> {
-    await this.sendImpl(req);
-    const res = await this.wait(req);
+  public async send(req: Request): Promise<Packet> {
+    const res = await this.sendImpl(req);
     if (res.ack !== ErrorType.Succeeded)
       throw new Error(ErrorType[res.ack] ?? `Unknown error: ${res.ack}`);
     return res;
   }
 
-  protected sendImpl(req: RequestPackage): Promise<void> {
+  protected sendImpl(req: Request): Promise<Packet> {
     return new Promise((resolve, reject) => {
       this.ready = this.ready.finally(async () => {
         if (!this.connected) return reject(new Error('Connection closed'));
-        req.updateCrc();
         if (!this.encoder.write(req)) {
           await new Promise(cb => this.encoder.once('drain', cb));
         }
+        const res = await this.wait(req);
         // console.log('send', req.raw);
-        return resolve();
+        return resolve(res);
       });
     });
   }
 
-  protected wait(req: RequestPackage): Promise<Package> {
-    return new Promise<Package>((resolve, reject) => {
+  protected wait(req: Request): Promise<Packet> {
+    return new Promise<Packet>((resolve, reject) => {
       let timer: NodeJS.Timer;
       const complete = (): void => {
         global.clearTimeout(timer);
@@ -84,8 +94,7 @@ export default class Connection<S extends Duplex> {
     });
   }
 
-  protected listener = (res: Package): void => {
-    // console.log('RES', Struct.raw(res));
+  protected listener = (res: Packet): void => {
     const [, resolve] = this.queue.find(([req]) => req.serialNumber === res.serialNumber) ?? [];
     if (resolve) resolve(res);
     // else console.warn(`Unknown package ${JSON.stringify(res)}`);

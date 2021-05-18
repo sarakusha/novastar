@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  parserOptions: { project: './tsconfig.json' },
+  // parserOptions: { project: './tsconfig.json' },
   env: { es6: true },
   ignorePatterns: ['node_modules', 'build', 'coverage', '.eslintrc*.js'],
   plugins: ['import', 'eslint-comments'],

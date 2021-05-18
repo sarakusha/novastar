@@ -1,0 +1,48 @@
+{
+  "name": "@novastar/serial",
+  "version": "1.0.0",
+  "description": "serial binding",
+  "license": "MIT",
+  "main": "build/main/serial.js",
+  "typings": "build/main/serial.d.ts",
+  "module": "build/module/serial.js",
+  "dependencies": {
+    "@novastar/codec": "^1",
+    "serialport": "^9.0.7",
+    "tiny-typed-emitter": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/serialport": "^8.0.1"
+  },
+  "scripts": {
+    "build": "run-p build:*",
+    "build:main": "tsc -p tsconfig.json",
+    "build:module": "tsc -p tsconfig.module.json",
+    "fix": "run-s fix:*",
+    "fix:prettier": "prettier \"src/**/*.ts\" --write",
+    "fix:lint": "eslint src --ext .ts --fix -c ../../.eslintrc-prod.js",
+    "test": "run-s build test:*",
+    "test:lint": "eslint src --ext .ts -c ../../.eslintrc-prod.js",
+    "test:prettier": "prettier \"src/**/*.ts\" --list-different",
+    "test:spelling": "cspell \"{README.md,.github/*.md,src/**/*.ts}\"",
+    "test:unit": "jest src"
+  },
+  "files": [
+    "build/main",
+    "build/module",
+    "!**/*.spec.*",
+    "!**/*.json",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coverageReporters": [
+      "lcov",
+      "html"
+    ]
+  }
+}

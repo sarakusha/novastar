@@ -1,8 +1,6 @@
+import { Connection, Session } from '@novastar/codec';
 import SerialPort, { OpenOptions, PortInfo } from 'serialport';
 import { TypedEmitter } from 'tiny-typed-emitter';
-
-import Connection from './Connection';
-import Session from './Session';
 
 // lower case!
 const knownDevices: ReadonlyArray<readonly [vendorId: string, productId: string]> = [
@@ -16,12 +14,12 @@ const isNovastarUSBDevice = (portInfo: PortInfo): boolean =>
       productId === portInfo.productId?.toLowerCase()
   ) !== -1;
 
-interface SerialsEvents {
+interface SerialBindingEvents {
   open(path: string): void;
   close(path: string): void;
 }
 
-class Serials extends TypedEmitter<SerialsEvents> {
+class SerialBinding extends TypedEmitter<SerialBindingEvents> {
   private sessions: Record<string, Session<SerialPort>> = {};
 
   findSendingCards = async (): Promise<PortInfo[]> => {
@@ -40,10 +38,10 @@ class Serials extends TypedEmitter<SerialsEvents> {
       } else {
         const port = new SerialPort(path, openOptions, () => {
           const connection = new Connection(port);
-          connection.start().then(() => {
+          connection.open().then(() => {
             session = new Session(connection);
             this.sessions[path] = session;
-            session.once('close', () => this.close(path));
+            connection.once('close', () => this.close(path));
             resolve(session);
             this.emit('open', path);
           }, reject);
@@ -59,8 +57,8 @@ class Serials extends TypedEmitter<SerialsEvents> {
       delete this.sessions[path];
       session.close();
       const { connection } = session;
-      const { stream } = connection;
-      if (stream.isOpen) stream.close();
+      const { stream: serial } = connection;
+      if (serial.isOpen) serial.close();
       this.emit('close', path);
     }
     return session !== undefined;
@@ -71,11 +69,11 @@ class Serials extends TypedEmitter<SerialsEvents> {
   }
 }
 
-const serials = new Serials();
+const serial = new SerialBinding();
 
-const release = () => serials.getSessions().forEach(session => session.close());
+const release = () => serial.getSessions().forEach(session => session.close());
 
 process.on('SIGINT', release);
 process.on('SIGTERM', release);
 
-export default serials;
+export default serial;

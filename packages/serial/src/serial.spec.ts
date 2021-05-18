@@ -1,8 +1,7 @@
+import { Calibration, DeviceType, DisplayMode, Session } from '@novastar/codec';
 import SerialPort from 'serialport';
 
-import { Calibration, DeviceType, DisplayMode } from './Package';
-import Session from './Session';
-import serials from './serials';
+import serials from './serial';
 
 import ProvidesCallback = jest.ProvidesCallback;
 
@@ -48,7 +47,7 @@ describe('serials', () => {
     () => session !== undefined,
     async done => {
       const model = await session.getModel(DeviceType.SendingCard);
-      expect(model).toBe('MSD300/MCTRL300');
+      expect(model).toBe('MSD/MCTRL 300');
       done();
     }
   );
@@ -66,7 +65,7 @@ describe('serials', () => {
     () => session !== undefined,
     async done => {
       const model = await session.getModel(DeviceType.ReceivingCard, 0, 0);
-      expect(model).toBe('MRV328');
+      expect(model).toBe('MRV 328');
       done();
     }
   );
@@ -75,7 +74,7 @@ describe('serials', () => {
     () => session !== undefined,
     async done => {
       const brightness = Math.floor(Math.random() * 256);
-      await session.setBrightness(brightness, 0xff);
+      await session.setBrightness(brightness, 0);
       const value = await session.getBrightness(0);
       expect(value).toBe(brightness);
       done();

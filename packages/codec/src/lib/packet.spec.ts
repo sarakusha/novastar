@@ -1,12 +1,11 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Struct from 'typed-struct';
 
-import { DeviceType, Package } from './Package';
-import RequestPackage from './RequestPackage';
+import { DeviceType, Packet } from './Packet';
+import Request from './Request';
 
 describe('packs', () => {
   test('RequestPack', () => {
-    const req = new RequestPackage([0x80]);
+    const req = new Request([0x80]);
     req.serialNumber = 0x15;
     req.destinationAddress = 0;
     req.deviceType = DeviceType.ReceivingCard;
@@ -60,7 +59,7 @@ describe('packs', () => {
       0x6d,
       0x56,
     ]);
-    const pack = new Package(data);
+    const pack = new Packet(data);
     expect(pack.ack === 0 && pack.serialNumber === 0x15 && pack.registerUnitAddress === 0x2000001);
   });
 });

@@ -1,6 +1,5 @@
 // noinspection JSUnusedGlobalSymbols
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Struct, { ExtractType, typed } from 'typed-struct';
 
 export enum DeviceType {
@@ -46,8 +45,7 @@ export const RESPONSE = 0x55aa;
 
 export const COMPUTER = 0xfe;
 
-// noinspection TypeScriptValidateJSTypes
-const packageStruct = new Struct('Package')
+export const Packet = new Struct('Packet')
   .UInt16LE('head', typed<typeof REQUEST | typeof RESPONSE>())
   .UInt8('ack', typed<ErrorType>())
   .UInt8(['serialNumber', 'serno'])
@@ -57,17 +55,14 @@ const packageStruct = new Struct('Package')
   .UInt8(['portAddress', 'port'])
   .UInt16LE(['boardAddress', 'rcvIndex'])
   .UInt8(['code', 'io'], typed<IO>())
-  .skip(1)
+  .seek(1)
   .UInt32LE(['registerUnitAddress', 'address'])
   .UInt16LE('length')
-  .Buffer('data', -2)
-  .CRC16LE('crc');
+  .Buffer('data')
+  .CRC16LE('crc')
+  .compile();
 
-export const lengthOffset = packageStruct.getOffsetOf('length');
-
-export const [Package, PACKAGE_SIZE] = packageStruct.compile();
-
-export type Package = ExtractType<typeof Package>;
+export type Packet = ExtractType<typeof Packet>;
 
 export const getCrc = (raw: Buffer): number =>
   raw.slice(2, -2).reduce((crc, val) => crc + val, 0x5555);

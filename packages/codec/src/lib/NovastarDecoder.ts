@@ -1,11 +1,13 @@
 /* eslint-disable no-underscore-dangle,no-bitwise */
 import { Transform, TransformCallback, TransformOptions } from 'stream';
 
-import { COMPUTER, lengthOffset, Package, PACKAGE_SIZE, RESPONSE } from './Package';
+import { COMPUTER, Packet, RESPONSE } from './Packet';
 
 const empty = Buffer.alloc(0);
 
 const preamble = Buffer.from([RESPONSE % 256, RESPONSE >>> 8]);
+
+const lengthOffset = Packet.getOffsetOf('length');
 
 export default class NovastarDecoder extends Transform {
   private buf: Buffer = empty;
@@ -38,10 +40,10 @@ export default class NovastarDecoder extends Transform {
     const frame = data.slice(start);
     if (frame.length < lengthOffset + 2) return frame;
     const length = frame.readUInt16LE(lengthOffset);
-    const total = length + PACKAGE_SIZE;
+    const total = length + Packet.baseSize;
     if (frame.length < total) return frame;
-    const pkg = new Package(frame.slice(0, total));
-    if (pkg.destinationAddress === COMPUTER) this.push(pkg);
+    const pkg = new Packet(frame.slice(0, total));
+    if (pkg.destination === COMPUTER) this.push(pkg);
     return frame.slice(total);
   }
 }

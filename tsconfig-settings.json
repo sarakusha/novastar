@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
     "incremental": true,
-    "target": "es2017",
-    "outDir": "build/main",
-    "rootDir": "src",
+    "target": "es2019",
     "moduleResolution": "node",
     "module": "commonjs",
     "declaration": true,
@@ -37,10 +35,9 @@
     // "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     // "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
 
-    "lib": ["es2017"],
+    "lib": ["es2019"],
     "types": ["node", "jest"],
   },
-  "include": ["src/**/*.ts"],
   "exclude": ["node_modules/**"],
   "compileOnSave": false
 }

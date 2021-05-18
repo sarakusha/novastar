@@ -1,23 +1,17 @@
 /* eslint-disable no-bitwise */
 import { Duplex } from 'stream';
 
-import { TypedEmitter } from 'tiny-typed-emitter';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Struct from 'typed-struct';
 
 import Connection from './Connection';
-import { Calibration, DeviceType, DisplayMode } from './Package';
-import RequestPackage from './RequestPackage';
-
-interface SessionEvents {
-  close(): void;
-}
+import { Calibration, DeviceType, DisplayMode } from './Packet';
+import Request from './Request';
 
 const toByte = (value: number): number => Math.max(Math.min(value, 255), 0);
 
 const toBytes = (...values: number[]): number[] => values.map(toByte);
 
-type BrightnessRGBV = {
+export type BrightnessRGBV = {
   overall: number;
   red: number;
   green: number;
@@ -25,15 +19,13 @@ type BrightnessRGBV = {
   vRed: number;
 };
 
-const [RedundantStatus] = new Struct('RedundantStatus')
+const RedundantStatus = new Struct('RedundantStatus')
   .Bits8({ port1: [0, 2], port2: [2, 2], port3: [4, 2], port4: [6, 2] })
   .compile();
 
 // noinspection JSUnusedGlobalSymbols
-export default class Session<S extends Duplex> extends TypedEmitter<SessionEvents> {
-  constructor(readonly connection: Connection<S>) {
-    super();
-  }
+export default class Session<S extends Duplex> {
+  constructor(readonly connection: Connection<S>) {}
 
   get isConnected(): boolean {
     return this.connection.isConnected;
@@ -41,8 +33,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   close(): boolean {
     if (!this.connection.isConnected) return false;
-    this.connection.stop();
-    this.emit('close');
+    this.connection.close();
     return true;
   }
 
@@ -52,7 +43,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async hasDVISignalIn(): Promise<boolean> {
     this.checkConnection();
-    const req = new RequestPackage(1);
+    const req = new Request(1);
     req.deviceType = DeviceType.SendingCard;
     req.address = 0x02000017;
     const {
@@ -63,7 +54,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async getBrightness(port = 0): Promise<number> {
     this.checkConnection();
-    const req = new RequestPackage(1);
+    const req = new Request(1);
     req.deviceType = DeviceType.ReceivingCard;
     req.address = 0x02000001;
     req.port = port;
@@ -75,7 +66,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async getBrightnessRGBV(port = 0): Promise<BrightnessRGBV> {
     this.checkConnection();
-    const req = new RequestPackage(5);
+    const req = new Request(5);
     req.deviceType = DeviceType.ReceivingCard;
     req.address = 0x02000001;
     req.port = port;
@@ -88,7 +79,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
   async setBrightness(value: number, port = 0): Promise<number> {
     this.checkConnection();
     const brightness = toByte(value);
-    const req = new RequestPackage([brightness], true);
+    const req = new Request([brightness], true);
     req.address = 0x02000001;
     req.deviceType = DeviceType.ReceivingCard;
     req.port = port;
@@ -102,7 +93,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
   ): Promise<number> {
     this.checkConnection();
     const data = toBytes(overall, red, green, blue, vRed);
-    const req = new RequestPackage(data, true);
+    const req = new Request(data, true);
     req.address = 0x02000001;
     req.port = port;
     await this.connection.send(req);
@@ -111,7 +102,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async resetSendingCardToFactory(): Promise<void> {
     this.checkConnection();
-    const req = new RequestPackage([1]);
+    const req = new Request([1]);
     req.deviceType = DeviceType.SendingCard;
     req.address = 0x01000002;
     await this.connection.send(req);
@@ -120,7 +111,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
   async setGammaValue(value: number, port = 0): Promise<number> {
     this.checkConnection();
     const gamma = (value * 10) & 0xff;
-    const req = new RequestPackage([gamma], true);
+    const req = new Request([gamma], true);
     req.port = port;
     req.address = 0x02000000;
     await this.connection.send(req);
@@ -129,7 +120,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async getGammaValue(port = 0): Promise<number> {
     this.checkConnection();
-    const req = new RequestPackage(1);
+    const req = new Request(1);
     req.deviceType = DeviceType.ReceivingCard;
     req.address = 0x02000000;
     req.port = port;
@@ -141,7 +132,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async getSendingCardVersion(): Promise<string> {
     this.checkConnection();
-    const req = new RequestPackage(4);
+    const req = new Request(4);
     req.deviceType = DeviceType.SendingCard;
     req.address = 0x04100004;
     const { data } = await this.connection.send(req);
@@ -150,7 +141,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async getModel(deviceType: DeviceType, port = 0, rcvIndex = 0): Promise<string> {
     this.checkConnection();
-    const req = new RequestPackage(2);
+    const req = new Request(2);
     req.deviceType = deviceType;
     req.address = deviceType === DeviceType.ReceivingCard ? 0 : 2;
     req.port = port;
@@ -162,17 +153,17 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
       deviceType === expectedType ? model : unknown;
     switch (value) {
       case 0x0101:
-        return deviceModel(DeviceType.SendingCard, 'MCTRL500');
+        return deviceModel(DeviceType.SendingCard, 'MCTRL 500');
       case 0x0001:
-        return deviceModel(DeviceType.SendingCard, 'MSD300/MCTRL300');
+        return deviceModel(DeviceType.SendingCard, 'MSD/MCTRL 300');
       case 0x1101:
-        return deviceModel(DeviceType.SendingCard, 'MSD600/MCTRL600/MCTRL610');
+        return deviceModel(DeviceType.SendingCard, 'MSD/MCTRL 600/610');
       case 0x8101:
-        return deviceModel(DeviceType.FunctionCard, 'MFN300');
+        return deviceModel(DeviceType.FunctionCard, 'MFN 300');
       case 0x4101:
         return deviceModel(DeviceType.ReceivingCard, 'ReceivingCard');
       case 0x4510:
-        return deviceModel(DeviceType.ReceivingCard, 'MRV328');
+        return deviceModel(DeviceType.ReceivingCard, 'MRV 328');
       default:
         return unknown;
     }
@@ -180,7 +171,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async getAutobrightnessMode(): Promise<boolean> {
     this.checkConnection();
-    const req = new RequestPackage(1);
+    const req = new Request(1);
     req.deviceType = DeviceType.SendingCard;
     req.address = 0x0a000000;
     const {
@@ -191,7 +182,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async setAutobrightnessMode(value = true): Promise<void> {
     this.checkConnection();
-    const req = new RequestPackage([value ? 0x7d : 0xff]);
+    const req = new Request([value ? 0x7d : 0xff]);
     req.deviceType = DeviceType.SendingCard;
     req.address = 0x0a000000;
     await this.connection.send(req);
@@ -201,7 +192,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
     readonly [port1: boolean, port2: boolean, port3: boolean, port4: boolean]
   > {
     this.checkConnection();
-    const req = new RequestPackage(1);
+    const req = new Request(1);
     req.deviceType = DeviceType.SendingCard;
     req.address = 0x0200001e;
     const { data } = await this.connection.send(req);
@@ -211,7 +202,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async setDisplayMode(mode: DisplayMode, port = 0): Promise<void> {
     this.checkConnection();
-    const req = new RequestPackage([toByte(mode)], true);
+    const req = new Request([toByte(mode)], true);
     req.address = 0x02000101;
     req.port = port;
     await this.connection.send(req);
@@ -219,7 +210,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async getDisplayMode(port = 0, rcvIndex = 0): Promise<DisplayMode> {
     this.checkConnection();
-    const req = new RequestPackage(1);
+    const req = new Request(1);
     req.deviceType = DeviceType.ReceivingCard;
     req.address = 0x02000101;
     req.port = port;
@@ -232,7 +223,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async getCalibrationMode(port = 0, rcvIndex = 0): Promise<{ isOn: boolean; type: Calibration }> {
     this.checkConnection();
-    const req = new RequestPackage(1);
+    const req = new Request(1);
     req.deviceType = DeviceType.ReceivingCard;
     req.address = 0x02000051;
     req.port = port;
@@ -245,7 +236,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async setCalibrationMode(isOn: boolean, type = Calibration.Color, port = 0): Promise<void> {
     this.checkConnection();
-    const req = new RequestPackage([(isOn ? 1 : 0) | ((type << 1) & 2)], true);
+    const req = new Request([(isOn ? 1 : 0) | ((type << 1) & 2)], true);
     req.address = 0x02000051;
     req.port = port;
     await this.connection.send(req);
@@ -253,7 +244,7 @@ export default class Session<S extends Duplex> extends TypedEmitter<SessionEvent
 
   async save(port = 0xff): Promise<void> {
     this.checkConnection();
-    const req = new RequestPackage([0x11], true);
+    const req = new Request([0x11], true);
     req.address = 0x01000011;
     req.port = port;
     await this.connection.send(req);
