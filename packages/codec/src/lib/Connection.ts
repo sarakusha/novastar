@@ -95,7 +95,7 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
   }
 
   protected listener = (res: Packet): void => {
-    const [, resolve] = this.queue.find(([req]) => req.serialNumber === res.serialNumber) ?? [];
+    const [, resolve] = this.queue.find(([req]) => req.serno === res.serno) ?? [];
     if (resolve) resolve(res);
     // else console.warn(`Unknown package ${JSON.stringify(res)}`);
   };

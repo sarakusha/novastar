@@ -6,10 +6,10 @@ import Request from './Request';
 describe('packs', () => {
   test('RequestPack', () => {
     const req = new Request([0x80]);
-    req.serialNumber = 0x15;
-    req.destinationAddress = 0;
+    req.serno = 0x15;
+    req.destination = 0;
     req.deviceType = DeviceType.ReceivingCard;
-    req.registerUnitAddress = 0x02000001;
+    req.address = 0x02000001;
     req.updateCrc();
     const check = [
       0x55,
@@ -60,6 +60,6 @@ describe('packs', () => {
       0x56,
     ]);
     const pack = new Packet(data);
-    expect(pack.ack === 0 && pack.serialNumber === 0x15 && pack.registerUnitAddress === 0x2000001);
+    expect(pack.ack === 0 && pack.serno === 0x15 && pack.address === 0x2000001);
   });
 });
