@@ -1,4 +1,3 @@
-# https://circleci.com/docs/2.0/language-javascript/
 version: 2.1
 orbs:
   node: circleci/node@4.3.0
@@ -27,8 +26,15 @@ jobs:
     steps:
       - test:
           workspace: serial
+  serial-build:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
 workflows:
   test:
     jobs:
       - codec-test
+      - serial-build
 
