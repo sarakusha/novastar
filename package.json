@@ -1,6 +1,6 @@
 {
   "name": "novastar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "novastar",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
   "repository": "https://github.com/sarakusha/novastar",
@@ -49,5 +49,10 @@
     "serial": "yarn workspace @novastar/serial",
     "release": "standard-version",
     "prepare": "husky install"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@novastar/serial",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "serial binding",
   "license": "MIT",
   "main": "build/main/serial.js",
