@@ -1,6 +1,6 @@
 {
   "name": "@novastar/codec",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "novastar codec",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -67,5 +67,6 @@
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
-  }
+  },
+  "gitHead": "9fb49b80204fbd9bdbb9c8b88a087edcdbdbaacb"
 }
