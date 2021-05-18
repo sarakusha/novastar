@@ -1,13 +1,13 @@
 {
   "name": "@novastar/serial",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "serial binding",
   "license": "MIT",
   "main": "build/main/serial.js",
   "typings": "build/main/serial.d.ts",
   "module": "build/module/serial.js",
   "dependencies": {
-    "@novastar/codec": "^1.0.2",
+    "@novastar/codec": "^1.0.3",
     "serialport": "^9.0.7",
     "tiny-typed-emitter": "^2.0.3"
   },

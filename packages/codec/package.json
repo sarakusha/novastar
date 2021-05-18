@@ -1,6 +1,6 @@
 {
   "name": "@novastar/codec",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "novastar codec",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
