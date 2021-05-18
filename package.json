@@ -1,6 +1,7 @@
 {
   "name": "novastar",
   "description": "novastar",
+  "private": false,
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
   "repository": "https://github.com/sarakusha/novastar",
   "license": "MIT",
@@ -46,7 +47,7 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "test": "lerna run test --stream",
-    "publish": "lerna publish from-package",
+    "publish": "lerna publish",
     "update:version": "lerna version --no-push"
   },
   "config": {
