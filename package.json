@@ -44,7 +44,9 @@
     "test": "lerna run test --stream",
     "release:publish": "lerna publish from-package --dist-tag next",
     "release:publish:dry-run":  "lerna publish from-package --dist-tag next --registry=\"http://localhost:4873/\"",
-    "release:version": "lerna version --exact --no-changelog --no-push --no-git-tag-version"
+    "release:version": "lerna version --exact --no-changelog --no-push --no-git-tag-version",
+    "codec": "yarn workspace @novastar/codec",
+    "serial": "yarn workspace @novastar/serial"
   },
   "config": {
     "commitizen": {
