@@ -7,7 +7,11 @@
   "main": "build/main/serial.js",
   "typings": "build/main/serial.d.ts",
   "module": "build/module/serial.js",
-  "keywords": ["novastar", "DOOH", "RS-232"],
+  "keywords": [
+    "novastar",
+    "DOOH",
+    "RS-232"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/sarakusha/novastar.git",

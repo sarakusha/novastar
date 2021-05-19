@@ -42,9 +42,9 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "test": "lerna run test --stream",
-    "publish": "lerna publish from-package --dist-tag next --contents build",
-    "publish:dry-run":  "lerna publish from-package --dist-tag next --contents build --registry=\"http://localhost:4873/\"",
-    "update:version": "lerna version --no-push"
+    "release:publish": "lerna publish from-package --dist-tag next",
+    "release:publish:dry-run":  "lerna publish from-package --dist-tag next --registry=\"http://localhost:4873/\"",
+    "release:version": "lerna version --exact --no-changelog --no-push --no-git-tag-version"
   },
   "config": {
     "commitizen": {
