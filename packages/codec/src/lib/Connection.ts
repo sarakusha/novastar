@@ -63,13 +63,14 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
   protected sendImpl(req: Request): Promise<Packet> {
     return new Promise((resolve, reject) => {
       this.ready = this.ready.finally(async () => {
-        if (!this.connected) return reject(new Error('Connection closed'));
-        if (!this.encoder.write(req)) {
-          await new Promise(cb => this.encoder.once('drain', cb));
+        if (!this.connected) {
+          reject(new Error('Connection closed'));
+        } else {
+          if (!this.encoder.write(req)) {
+            await new Promise(cb => this.encoder.once('drain', cb));
+          }
+          this.wait(req).then(resolve, reject);
         }
-        const res = await this.wait(req);
-        // console.log('send', req.raw);
-        return resolve(res);
       });
     });
   }
