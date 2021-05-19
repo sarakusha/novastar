@@ -3,11 +3,17 @@
   "version": "1.0.5",
   "private": false,
   "description": "novastar codec",
+  "author": "Andrei Sarakeev <sarakusha@gmail.com>",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
   "license": "MIT",
-  "keywords": [],
+  "keywords": ["novastar", "DOOH", "RS-232"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sarakusha/novastar.git",
+    "directory": "packages/codec"
+  },
   "scripts": {
     "build": "run-p build:*",
     "build:main": "tsc -p tsconfig.json",
@@ -69,5 +75,8 @@
       "path": "cz-conventional-changelog"
     }
   },
-  "gitHead": "c5d4dd3e3d2ccce2f26e577e3cc8d7e6b627a191"
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  }
 }
