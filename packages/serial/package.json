@@ -1,7 +1,7 @@
 {
   "name": "@novastar/serial",
-  "version": "1.0.5",
-  "description": "serial binding",
+  "version": "1.0.7",
+  "description": "Serial binding for @novastar/codec",
   "license": "MIT",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
   "main": "build/main/serial.js",
@@ -10,7 +10,8 @@
   "keywords": [
     "novastar",
     "DOOH",
-    "RS-232"
+    "RS-232",
+    "USB"
   ],
   "repository": {
     "type": "git",
@@ -18,7 +19,7 @@
     "directory": "packages/serial"
   },
   "dependencies": {
-    "@novastar/codec": "^1.0.5",
+    "@novastar/codec": "1.0.7",
     "serialport": "^9.0.7",
     "tiny-typed-emitter": "^2.0.3"
   },

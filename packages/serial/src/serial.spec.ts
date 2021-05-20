@@ -1,7 +1,6 @@
-import { Calibration, DeviceType, DisplayMode, Session } from '@novastar/codec';
-import SerialPort from 'serialport';
+import { Calibration, DeviceType, DisplayMode } from '@novastar/codec';
 
-import serials from './serial';
+import serial, { SerialSession } from './serial';
 
 import ProvidesCallback = jest.ProvidesCallback;
 
@@ -32,11 +31,11 @@ function toList<T>(enumeration: T): T[keyof T][] {
 }
 
 describe('serials', () => {
-  let session: Session<SerialPort>;
+  let session: SerialSession;
   beforeAll(async done => {
-    const [port] = await serials.findSendingCards();
+    const [port] = await serial.findSendingCards();
     if (port) {
-      session = await serials.open(port.path);
+      session = await serial.open(port.path);
     } else {
       console.warn('Novastar device is not connected');
     }

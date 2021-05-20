@@ -1,17 +1,18 @@
 {
   "name": "@novastar/codec",
-  "version": "1.0.5",
-  "private": false,
-  "description": "novastar codec",
+  "version": "1.0.7",
+  "description": "Codec for control and monitoring of controllers manufactured by NovaStar",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
   "license": "MIT",
   "keywords": [
-    "novastar",
+    "NovaStar",
     "DOOH",
-    "RS-232"
+    "MCTRL300",
+    "MCTRL600",
+    "MCTRL660"
   ],
   "repository": {
     "type": "git",

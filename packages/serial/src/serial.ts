@@ -2,16 +2,15 @@ import { Connection, Session } from '@novastar/codec';
 import SerialPort, { OpenOptions, PortInfo } from 'serialport';
 import { TypedEmitter } from 'tiny-typed-emitter';
 
-// lower case!
-const knownDevices: ReadonlyArray<readonly [vendorId: string, productId: string]> = [
-  ['10c4', 'ea60'],
-];
+export type KnownDevices = ReadonlyArray<readonly [vendorId: string, productId: string]>;
 
-const isNovastarUSBDevice = (portInfo: PortInfo): boolean =>
-  knownDevices.findIndex(
+const knownDevices: KnownDevices = [['10c4', 'ea60']];
+
+const isNovastarUSBDevice = (known = knownDevices) => (portInfo: PortInfo): boolean =>
+  known.findIndex(
     ([vendorId, productId]) =>
-      vendorId === portInfo.vendorId?.toLowerCase() &&
-      productId === portInfo.productId?.toLowerCase()
+      vendorId.toLowerCase() === portInfo.vendorId?.toLowerCase() &&
+      productId.toLowerCase() === portInfo.productId?.toLowerCase()
   ) !== -1;
 
 interface SerialBindingEvents {
@@ -19,32 +18,32 @@ interface SerialBindingEvents {
   close(path: string): void;
 }
 
-class SerialBinding extends TypedEmitter<SerialBindingEvents> {
-  private sessions: Record<string, Session<SerialPort>> = {};
+export type SerialSession = Session<SerialPort>;
 
-  findSendingCards = async (): Promise<PortInfo[]> => {
+class SerialBinding extends TypedEmitter<SerialBindingEvents> {
+  private sessions: Record<string, SerialSession> = {};
+
+  findSendingCards = async (known: KnownDevices = []): Promise<PortInfo[]> => {
     const ports = await SerialPort.list();
-    return ports.filter(isNovastarUSBDevice);
+    return ports.filter(isNovastarUSBDevice(knownDevices.concat(known)));
   };
 
-  open(
-    path: string,
-    openOptions: OpenOptions = { baudRate: 115200 }
-  ): Promise<Session<SerialPort>> {
-    return new Promise<Session<SerialPort>>((resolve, reject) => {
+  open(path: string, openOptions: OpenOptions = { baudRate: 115200 }): Promise<SerialSession> {
+    return new Promise<SerialSession>((resolve, reject) => {
       let session = this.sessions[path];
       if (session) {
         resolve(session);
       } else {
-        const port = new SerialPort(path, openOptions, () => {
-          const connection = new Connection(port);
-          connection.open().then(() => {
+        const port = new SerialPort(path, openOptions, err => {
+          if (err) reject(err);
+          else {
+            const connection = new Connection(port);
             session = new Session(connection);
             this.sessions[path] = session;
             connection.once('close', () => this.close(path));
             resolve(session);
             this.emit('open', path);
-          }, reject);
+          }
         });
         port.once('close', () => this.close(path));
       }
@@ -64,7 +63,7 @@ class SerialBinding extends TypedEmitter<SerialBindingEvents> {
     return session !== undefined;
   }
 
-  getSessions(): Session<SerialPort>[] {
+  getSessions(): SerialSession[] {
     return Object.values(this.sessions);
   }
 }

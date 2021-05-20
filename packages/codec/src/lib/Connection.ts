@@ -26,8 +26,9 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
 
   protected ready = Promise.resolve();
 
-  constructor(readonly stream: S, public timeout = 3000) {
+  constructor(readonly stream: S, open = true, public timeout = 3000) {
     super();
+    if (open) this.open();
   }
 
   protected queue: WaitingRequest[] = [];
@@ -36,7 +37,7 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
     return this.connected;
   }
 
-  public async open(): Promise<void> {
+  public open(): void {
     if (this.connected) return;
     this.decoder.on('data', this.listener);
     pump(this.encoder, this.stream, this.decoder, () => this.close());

@@ -2,7 +2,13 @@
 
 import Struct, { ExtractType, typed } from 'typed-struct';
 
+/**
+ * Destination device type
+ */
 export enum DeviceType {
+  /**
+   * Devices connected to the COM/USB port
+   */
   SendingCard,
   ReceivingCard,
   FunctionCard,
