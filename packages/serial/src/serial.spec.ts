@@ -2,18 +2,20 @@ import { Calibration, DeviceType, DisplayMode } from '@novastar/codec';
 
 import serial, { SerialSession } from './serial';
 
-import ProvidesCallback = jest.ProvidesCallback;
+import DoneCallback = jest.DoneCallback;
 
-const itif = (name: string, condition: () => boolean | Promise<boolean>, fn: ProvidesCallback) => {
-  it(name, async done => {
-    if (await condition()) {
-      fn(done);
-    } else {
-      console.warn(`[skipped]: ${name}`);
-      done();
-    }
+function itif<S>(name: string, condition: Promise<S>, fn: (s: S, done: DoneCallback) => any) {
+  it(name, done => {
+    condition.then(
+      s => fn(s, done),
+      () => {
+        console.warn(`[skipped]: ${name}`);
+        done();
+      }
+    );
   });
-};
+}
+
 function asyncSerialMap<T, R>(
   items: readonly T[],
   action: (value: T, index: number) => Promise<R>
@@ -31,108 +33,79 @@ function toList<T>(enumeration: T): T[keyof T][] {
 }
 
 describe('serials', () => {
-  let session: SerialSession;
-  beforeAll(async done => {
-    const [port] = await serial.findSendingCards();
-    if (port) {
-      session = await serial.open(port.path);
-    } else {
-      console.warn('Novastar device is not connected');
-    }
+  const sessionPromise = new Promise<SerialSession>((resolve, reject) => {
+    serial.findSendingCards().then(([port]) => {
+      if (port) {
+        resolve(serial.open(port.path));
+      } else {
+        reject(new Error('Novastar device is not connected'));
+      }
+    }, reject);
+  });
+  itif('get model sending card', sessionPromise, async (session, done) => {
+    const model = await session.getModel(DeviceType.SendingCard);
+    console.log({ model });
+    expect(model).toBe('MSD/MCTRL 300');
     done();
   });
-  itif(
-    'get model sending card',
-    () => session !== undefined,
-    async done => {
-      const model = await session.getModel(DeviceType.SendingCard);
-      expect(model).toBe('MSD/MCTRL 300');
-      done();
-    }
-  );
-  itif(
-    'get version sending card',
-    () => session !== undefined,
-    async done => {
-      const version = await session.getSendingCardVersion();
-      expect(version).toBe('4.7.2.0');
-      done();
-    }
-  );
-  itif(
-    'MRV328 test',
-    () => session !== undefined,
-    async done => {
-      const model = await session.getModel(DeviceType.ReceivingCard, 0, 0);
-      expect(model).toBe('MRV 328');
-      done();
-    }
-  );
-  itif(
-    'brightness',
-    () => session !== undefined,
-    async done => {
-      const brightness = Math.floor(Math.random() * 256);
-      await session.setBrightness(brightness, 0);
-      const value = await session.getBrightness(0);
-      expect(value).toBe(brightness);
-      done();
-    }
-  );
-  itif(
-    'redundant check',
-    () => session !== undefined,
-    async done => {
-      const status = await session.checkRedundantStatus();
-      expect(status).toEqual([false, false, false, false]);
-      done();
-    }
-  );
-  itif(
-    'autobrightness mode',
-    () => session !== undefined,
-    async done => {
-      const modes = [true, false];
-      const res = await asyncSerialMap([true, false], async value => {
-        await session.setAutobrightnessMode(value);
-        return session.getAutobrightnessMode();
-      });
-      expect(res).toEqual(modes);
-      done();
-    }
-  );
-  itif(
-    'display mode',
-    () => session !== undefined,
-    async done => {
-      const modes = toList(DisplayMode).reverse();
-      const res = await asyncSerialMap(modes, async value => {
-        await session.setDisplayMode(value);
-        return session.getDisplayMode();
-      });
-      expect(res).toEqual(modes);
-      done();
-    }
-  );
-  itif(
-    'calibration mode',
-    () => session !== undefined,
-    async done => {
-      const modes: [isOn: boolean, type: Calibration][] = [
-        [true, Calibration.Brightness],
-        [true, Calibration.Color],
-        [false, Calibration.Color],
-      ];
-      const res = await asyncSerialMap(modes, async ([isOn, type]) => {
-        await session.setCalibrationMode(isOn, type);
-        const mode = await session.getCalibrationMode();
-        return [mode.isOn, mode.type];
-      });
-      expect(res).toEqual(modes);
-      done();
-    }
-  );
+  itif('get version sending card', sessionPromise, async (session, done) => {
+    const version = await session.getSendingCardVersion();
+    expect(version).toBe('4.7.2.0');
+    done();
+  });
+  itif('MRV328 test', sessionPromise, async (session, done) => {
+    const model = await session.getModel(DeviceType.ReceivingCard, 0, 0);
+    expect(model).toBe('MRV 328');
+    done();
+  });
+  itif('brightness', sessionPromise, async (session, done) => {
+    const brightness = Math.floor(Math.random() * 256);
+    await session.setBrightness(brightness, 0);
+    const value = await session.getBrightness(0);
+    expect(value).toBe(brightness);
+    done();
+  });
+  itif('redundant check', sessionPromise, async (session, done) => {
+    const status = await session.checkRedundantStatus();
+    expect(status).toEqual([false, false, false, false]);
+    done();
+  });
+  itif('autobrightness mode', sessionPromise, async (session, done) => {
+    const modes = [true, false];
+    const res = await asyncSerialMap([true, false], async value => {
+      await session.setAutobrightnessMode(value);
+      return session.getAutobrightnessMode();
+    });
+    expect(res).toEqual(modes);
+    done();
+  });
+  itif('display mode', sessionPromise, async (session, done) => {
+    const modes = toList(DisplayMode).reverse();
+    const res = await asyncSerialMap(modes, async value => {
+      await session.setDisplayMode(value);
+      return session.getDisplayMode();
+    });
+    expect(res).toEqual(modes);
+    done();
+  });
+  itif('calibration mode', sessionPromise, async (session, done) => {
+    const modes: [isOn: boolean, type: Calibration][] = [
+      [true, Calibration.Brightness],
+      [true, Calibration.Color],
+      [false, Calibration.Color],
+    ];
+    const res = await asyncSerialMap(modes, async ([isOn, type]) => {
+      await session.setCalibrationMode(isOn, type);
+      const mode = await session.getCalibrationMode();
+      return [mode.isOn, mode.type];
+    });
+    expect(res).toEqual(modes);
+    done();
+  });
   afterAll(() => {
-    session?.close();
+    sessionPromise.then(
+      session => session.close(),
+      () => {}
+    );
   });
 });
