@@ -9,7 +9,4 @@ updates:
     labels:
       - dependencies
     ignore:
-      - dependency-name: "electron"
-      - dependency-name: "webpack"
-      - dependency-name: "configstore"
       - dependency-name: "node"
