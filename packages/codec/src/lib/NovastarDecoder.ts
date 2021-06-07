@@ -35,15 +35,17 @@ export default class NovastarDecoder extends Transform {
   }
 
   private recognize(data: Buffer): Buffer {
-    const start = data.indexOf(preamble);
-    if (start === -1) return empty;
-    const frame = data.slice(start);
-    if (frame.length < lengthOffset + 2) return frame;
-    const length = frame.readUInt16LE(lengthOffset);
-    const total = length + Packet.baseSize;
-    if (frame.length < total) return frame;
-    const pkg = new Packet(frame.slice(0, total));
-    if (pkg.destination === COMPUTER) this.push(pkg);
-    return frame.slice(total);
+    for (let offset = 0; ; ) {
+      const start = data.indexOf(preamble, offset);
+      if (start === -1) return empty;
+      const frame = data.slice(start);
+      if (frame.length < lengthOffset + 2) return frame;
+      const length = frame.readUInt16LE(lengthOffset);
+      const total = length + Packet.baseSize;
+      if (frame.length < total) return frame;
+      const pkg = new Packet(frame.slice(0, total));
+      if (pkg.destination === COMPUTER) this.push(pkg);
+      offset = start + total;
+    }
   }
 }
