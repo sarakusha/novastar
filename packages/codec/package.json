@@ -1,6 +1,6 @@
 {
   "name": "@novastar/codec",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Codec for control and monitoring of controllers manufactured by NovaStar",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
   "main": "build/main/index.js",
