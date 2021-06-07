@@ -50,12 +50,8 @@
     "node": ">=12"
   },
   "dependencies": {
-    "cspell": "^5.3.0",
-    "eslint": "^7.8.0",
-    "prettier": "^2.1.1",
     "pump": "^3.0.0",
     "tiny-typed-emitter": "^2.0.3",
-    "ts-jest": "^27.0.2",
     "typed-struct": "^1.3.0"
   },
   "devDependencies": {
