@@ -6,12 +6,14 @@ export type KnownDevices = ReadonlyArray<readonly [vendorId: string, productId: 
 
 const knownDevices: KnownDevices = [['10c4', 'ea60']];
 
-const isNovastarUSBDevice = (known = knownDevices) => (portInfo: PortInfo): boolean =>
-  known.findIndex(
-    ([vendorId, productId]) =>
-      vendorId.toLowerCase() === portInfo.vendorId?.toLowerCase() &&
-      productId.toLowerCase() === portInfo.productId?.toLowerCase()
-  ) !== -1;
+const isNovastarUSBDevice =
+  (known = knownDevices) =>
+  (portInfo: PortInfo): boolean =>
+    known.findIndex(
+      ([vendorId, productId]) =>
+        vendorId.toLowerCase() === portInfo.vendorId?.toLowerCase() &&
+        productId.toLowerCase() === portInfo.productId?.toLowerCase()
+    ) !== -1;
 
 interface SerialBindingEvents {
   open(path: string): void;

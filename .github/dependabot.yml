@@ -1,0 +1,15 @@
+version: 2
+updates:
+  # Configuration for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 30
+    labels:
+      - dependencies
+    ignore:
+      - dependency-name: "electron"
+      - dependency-name: "webpack"
+      - dependency-name: "configstore"
+      - dependency-name: "node"
