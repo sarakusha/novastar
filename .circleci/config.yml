@@ -17,17 +17,23 @@ commands:
       - run: yarn << parameters.workspace >> cov:send
 jobs:
   codec-test:
-    executor: node/default
+    executor:
+      name: node/default
+      tag: '14.15'
     steps:
       - test:
           workspace: codec
   serial-test:
-    executor: node/default
+    executor:
+      name: node/default
+      tag: '14.15'
     steps:
       - test:
           workspace: serial
   serial-build:
-    executor: node/default
+    executor:
+      name: node/default
+      tag: '14.15'
     steps:
       - checkout
       - node/install-packages:
@@ -37,4 +43,3 @@ workflows:
     jobs:
       - codec-test
       - serial-build
-
