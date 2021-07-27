@@ -3612,9 +3612,9 @@ eslint-plugin-eslint-comments@^3.2.0:
     ignore "^5.0.5"
 
 eslint-plugin-functional@^3.0.2:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-functional/-/eslint-plugin-functional-3.2.1.tgz#d5ad668b57646ad24f4ef0476328408681d59061"
-  integrity sha512-uJ8W0FznWsKp4exxO79b0xSc1WNROzDiVNGgSFOwdZCBeUHQf89BqwqlshNW9aSz/kg2gVGs+Ue6AeTpNSFM/g==
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-functional/-/eslint-plugin-functional-3.3.0.tgz#8cad0182c097ffc1b6c2be760516b684f12a454b"
+  integrity sha512-ous+c6iApSeW6H6M2hTofWWUN8R7/6Mb4sOd1vSgQOp5ceRJOqK6zTTl3N/LLV8YT63oxq+eSCWAmGeo44Sq8A==
   dependencies:
     "@typescript-eslint/experimental-utils" "^4.9.1"
     array.prototype.flatmap "^1.2.4"
