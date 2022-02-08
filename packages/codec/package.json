@@ -39,10 +39,6 @@
     "cov:html": "jest src --coverage --coverageReporters=html",
     "cov:lcov": "jest src --coverage --coverageReporters=lcov",
     "cov:send": "run-s cov:lcov && curl -s https://codecov.io/bash | bash",
-    "doc": "run-s doc:html && open-cli build/docs/index.html",
-    "doc:html": "typedoc --excludeProtected --excludePrivate src/ --exclude **/*.spec.ts --out build/docs",
-    "doc:json": "typedoc src/ --exclude **/*.spec.ts --json build/docs/typedoc.json",
-    "doc:publish": "gh-pages -m \"[ci skip] Updates\" -d build/docs",
     "release": "standard-version",
     "clean": "rimraf {build/*,coverage}"
   },
