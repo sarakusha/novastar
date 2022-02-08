@@ -1,7 +1,12 @@
 /* eslint-disable no-underscore-dangle,no-bitwise */
 import { Transform, TransformCallback, TransformOptions } from 'stream';
 
+import debugFactory from 'debug';
+
 import { COMPUTER, Packet, RESPONSE } from './Packet';
+import { printBuffer } from './helper';
+
+const debug = debugFactory('codec:decoder');
 
 const empty = Buffer.alloc(0);
 
@@ -21,8 +26,9 @@ export default class NovastarDecoder extends Transform {
 
   public _transform(chunk: unknown, encoding: BufferEncoding, callback: TransformCallback) {
     if (Buffer.isBuffer(chunk)) {
+      debug(`>>> ${printBuffer(chunk)}`);
       const data = Buffer.concat([this.buf, chunk]);
-      if (data.length > 0) {
+      if (data.length >= preamble.length) {
         this.buf = this.recognize(data);
       }
     }
@@ -36,16 +42,26 @@ export default class NovastarDecoder extends Transform {
 
   private recognize(data: Buffer): Buffer {
     for (let offset = 0; ; ) {
-      const start = data.indexOf(preamble, offset);
+      const rest = data.length - offset;
+      if (rest <= 0) return empty;
+      const start = data.indexOf(
+        rest < preamble.length ? preamble.slice(0, rest) : preamble,
+        offset
+      );
       if (start === -1) return empty;
       const frame = data.slice(start);
-      if (frame.length < lengthOffset + 2) return frame;
+      if (frame.length < Packet.baseSize) return frame;
       const length = frame.readUInt16LE(lengthOffset);
       const total = length + Packet.baseSize;
       if (frame.length < total) return frame;
       const pkg = new Packet(frame.slice(0, total));
-      if (pkg.destination === COMPUTER) this.push(pkg);
-      offset = start + total;
+      if (Packet.crc(pkg) === pkg.crc) {
+        if (pkg.destination === COMPUTER) this.push(pkg);
+        offset = start + total;
+      }
+      if (offset <= start) {
+        offset = start + 1;
+      }
     }
   }
 }
