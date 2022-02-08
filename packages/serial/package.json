@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@novastar/codec": "1.0.8",
+    "conf": "^10.1.1",
     "serialport": "^9.0.7",
     "tiny-typed-emitter": "^2.0.3"
   },
@@ -44,6 +45,7 @@
     "build/module",
     "!**/*.spec.*",
     "!**/*.json",
+    "!**/*.tsbuildinfo",
     "CHANGELOG.md",
     "LICENSE",
     "README.md"
