@@ -28,7 +28,8 @@
     "sandboxed",
     "transpiled",
     "typedoc",
-    "untracked"
+    "untracked",
+    "ilspycmd"
   ],
   "flagWords": [],
   "ignorePaths": [

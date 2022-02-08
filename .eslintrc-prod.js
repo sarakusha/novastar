@@ -4,7 +4,7 @@ module.exports = {
   // parserOptions: { project: './tsconfig.json' },
   env: { es6: true },
   ignorePatterns: ['node_modules', 'build', 'coverage', '.eslintrc*.js', '*.spec.ts'],
-  plugins: ['import', 'eslint-comments'],
+  plugins: ['import', 'eslint-comments', 'unused-imports'],
   extends: [
     'airbnb-base',
     'eslint:recommended',
@@ -34,5 +34,6 @@ module.exports = {
     // note you must disable the base rule as it can report incorrect errors
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
+    'unused-imports/no-unused-imports': 'error',
   },
 };

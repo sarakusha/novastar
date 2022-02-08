@@ -1,5 +1,6 @@
+const { jsxBracketSameLine, ...cfg } = require('prettier-airbnb-config');
 module.exports = {
-  ...require('prettier-airbnb-config'),
+  ...cfg,
   bracketSpacing: true,
   printWidth: 100,
-}
+};
