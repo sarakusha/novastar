@@ -5,3 +5,4 @@ test
 src/**.js
 coverage
 *.log
+/bak/
