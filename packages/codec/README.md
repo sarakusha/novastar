@@ -1,6 +1,8 @@
 # @novastar/codec
 
-Codec for control and monitoring of controllers manufactured by NovaStar.
+Core API for communication with devices using *NovaStar* protocol.
+
+Go to [API](https://sarakusha.github.io/novastar/modules/_novastar_codec.html) documentation.
 
 ## Installation
 
@@ -18,119 +20,64 @@ $ yarn add @novastar/codec@next
 ## Usage
 
 1. First, we need to create a connection, for this we need a stream
-   (it can be a serial port or TCP socket, for serial see [@novastar/serial](https://www.npmjs.com/package/@novastar/serial))
+   (it can be a serial port or TCP socket)
    
 ```ts
 import { connect, Socket } from 'net';
-import { Request, Connection, DeviceType, Session, DisplayMode } from '@novastar/codec';
 import SerialPort from 'serialport';
+import { Request, Connection, DeviceType } from '@novastar/codec';
 
 let connection;
 
+// TCP socket
 const socket = connect(5200, () => {
   connection = new Connection(socket);
 })
 
-// or
-
+// Serial port
 const port = new SerialPort('COM11', { baudRate: 115200 }, () => {
   connection = new Connection(port);
 })
 ```
+It is recommended to use packages [@novastar/serial](https://www.npmjs.com/package/@novastar/serial) and [@novastar/net](https://www.npmjs.com/package/@novastar/net). They will contain helper methods to find connected devices
 
 2. Using this connection you can send requests to devices (Sending cards/Receiving cards/Function cards)
    and receive responses
 ```ts
-const req = new Request(1);
-req.deviceType = DeviceType.ReceivingCard;
-req.address = 0x02000001;
-req.port = 0;
-const { data: [value] } = await connection.send(req);
+// Create a request to read a single byte
+const readReq = new Request(1);
+readReq.deviceType = DeviceType.ReceivingCard;
+readReq.address = 0x02000001;
+readReq.port = 0;
+const { data: [value] } = await connection.send(readReq);
 console.log(`Brightness on the first receiving card connected to 0 port is ${value}`);
-```
-3. Or you can create a session that implements some API methods
 
+// And this way you can write data to the device
+const writeReq = new Request([255]);
+writeReq.deviceType = DeviceType.ReceivingCard;
+writeReq.address = 0x02000001;
+await connection.send(writeReq);
+```
+3. Or you can create a session that implements some API methods.
+   Since the native API contains more than 1000 methods, not all of which you will use, 
+   you can include the methods you need. See [@novastar/native](https://www.npmjs.com/package/@novastar/native) for details.
 ```ts
+import '@novastar/native/build/main/generated/api/ReadGlobalBrightness';
+import '@novastar/native/build/main/generated/api/SetGlobalBrightness';
+import { Session } from '@novastar/codec';
+
 const session = new Session(connection);
-// Note that all operations are asynchronous,
-// you should not start the next operation
-// without waiting for the previous one to complete.
-const brightness = await session.getBrightness(0);
-await session.setDisplayMode(DisplayMode.Blue);
+const screenIndex = 0;
+const portIndex = 0;
+const receivingCardIndex = 0;
+// If `broadcast` is `true`, then there is no need to wait for an answer.
+const broadcast = false;
+const newBrightness = 255;
+const currentBrightness = await session.ReadGlobalBrightness(screenIndex, portIndex, receivingCardIndex);
+await session.SetGlobalBrightness(screenIndex, portIndex, receivingCardIndex, broadcast, newBrightness);
 ```
 
 4. Close the connection
 ```ts
 connection.close() // or session.close()
 ```
-
-## API
-```ts
-/**
- * Destination device type
- */
-export enum DeviceType {
-  /**
-   * Devices connected to the COM/USB port
-   */
-  SendingCard,
-  ReceivingCard,
-  FunctionCard,
-}
-
-export enum IO {
-  Read,
-  Write,
-}
-
-export enum ErrorType {
-  Succeeded,
-  Timeout,
-  RequestError,
-  AcknowledgeError,
-  InvalidCommand,
-}
-
-export enum DisplayMode {
-  Video,
-  Red = 2,
-  Green,
-  Blue,
-  White,
-  HorizonLine,
-  VerticalLine,
-  InclineLine,
-  Grayscale,
-  Loop,
-}
-
-export enum Calibration {
-  Color,
-  Brightness,
-}
-
-export const REQUEST = 0xaa55;
-
-export const RESPONSE = 0x55aa;
-
-export const COMPUTER = 0xfe;
-
-```
-
-### Packet
-
-Properties:
-* `head` - must be `REQUEST` or `RESPONSE`
-* `ack` - result of the operation (for the request is always 0), type: `ErrorType`
-* `serno` or `serialNumber` - sequential number of the request,
-  and the corresponding response (set automatically)
-* `sourceAddress` or `source` - source address (must be `COMPUTER` for requests)
-* `destinationAddress` or `destination` - destination address (must be `COMPUTER` for responses)
-* `deviceType` - destination device type for requests and source type for responses , type: `DeviceType`
-* `portAddress` or `port` - output port address of the sending card
-* `boardAddress` or `rcvIndex` - index of the receiving card
-* `code` or `io` - operation type: read or write, type: `IO`
-* `registerUnitAddress` or `address` - register address
-* `length` - length of transmitted/requested `data`
-* `data` - transmitted/requested data
-* `crc` - check sum (set automatically)
