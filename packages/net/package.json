@@ -1,0 +1,55 @@
+{
+  "name": "@novastar/net",
+  "version": "1.0.9-alpha.0",
+  "description": "Network binding for @novastar/codec",
+  "main": "build/main/net.js",
+  "typings": "build/main/net.d.ts",
+  "module": "build/module/net.js",
+  "license": "MIT",
+  "author": "Andrei Sarakeev <sarakusha@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sarakusha/novastar.git",
+    "directory": "packages/net"
+  },
+  "scripts": {
+    "build": "run-p build:*",
+    "build:main": "tsc -p tsconfig.json",
+    "build:module": "tsc -p tsconfig.module.json",
+    "fix": "run-s fix:*",
+    "fix:prettier": "prettier \"src/**/*.ts\" --write",
+    "fix:lint": "eslint src --ext .ts --fix -c ../../.eslintrc-prod.js",
+    "test": "run-s build test:*",
+    "test:lint": "eslint src --ext .ts -c ../../.eslintrc-prod.js",
+    "test:prettier": "prettier \"src/**/*.ts\" --list-different",
+    "test:spelling": "cspell \"{README.md,.github/*.md,src/**/*.ts}\"",
+    "test:unit": "jest src"
+  },
+  "files": [
+    "build/main",
+    "build/module",
+    "!**/*.spec.*",
+    "!**/*.json",
+    "!**/*.tsbuildinfo",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coverageReporters": [
+      "lcov",
+      "html"
+    ]
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@novastar/codec": "1.0.9-alpha.0",
+    "tiny-typed-emitter": "^2.1.0"
+  }
+}
