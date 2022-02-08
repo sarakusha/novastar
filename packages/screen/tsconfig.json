@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig-settings.json",
+  "compilerOptions": {
+    "outDir": "build/main",
+    "rootDir": "src",
+    "baseUrl": "./",
+    "paths": {
+      "lzma": ["@types/lzma"],
+    },
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules/**", "bak/**", "build/**", "coverage/**", "src/**/*.test.ts", "src/test-ts.ts"],
+  "compileOnSave": false
+}

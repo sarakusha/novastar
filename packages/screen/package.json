@@ -1,0 +1,98 @@
+{
+  "name": "@novastar/screen",
+  "version": "2.0.0-alpha.0",
+  "description": "NovaStar API wrapper",
+  "main": "build/main/index.js",
+  "typings": "build/main/index.d.ts",
+  "module": "build/module/index.js",
+  "license": "MIT",
+  "author": "Andrei Sarakeev <sarakusha@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sarakusha/novastar.git",
+    "directory": "packages/screen"
+  },
+  "homepage": "https://sarakusha.github.io/novastar/",
+  "scripts": {
+    "build": "run-p build:*",
+    "build:main": "tsc -p tsconfig.json",
+    "build:module": "tsc -p tsconfig.module.json",
+    "fix": "run-s fix:*",
+    "fix:prettier": "prettier \"src/**/*.ts\" --write",
+    "fix:lint": "eslint src --ext .ts --fix -c ../../.eslintrc-prod.js",
+    "ts-check": "tsc -p tsconfig.json --noEmit --diagnostics",
+    "test": "run-s build test:*",
+    "test:lint": "eslint src --ext .ts -c ../../.eslintrc-prod.js",
+    "test:prettier": "prettier \"src/**/*.ts\" --list-different",
+    "test:spelling": "cspell \"{README.md,.github/*.md,src/**/*.ts}\"",
+    "test:unit": "jest src",
+    "total-check": "rimraf check.log && run-for-every-file --src 'src/**.ts' --not-file 'src/*.test.ts' --run 'echo {{src-file}} >> check.log && tsc --noEmit --diagnostics --esModuleInterop --target es2021 --moduleResolution node {{src-file}} >> check.log' "
+  },
+  "files": [
+    "build/main",
+    "build/module",
+    "!**/*.spec.*",
+    "!**/*.json",
+    "!**/*.tsbuildinfo",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coverageReporters": [
+      "lcov",
+      "html"
+    ],
+    "globals": {
+      "ts-jest": {
+        "isolatedModules": true
+      }
+    }
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@novastar/codec": "2.0.0-alpha.0",
+    "@novastar/native": "2.0.0-alpha.0",
+    "@novastar/net": "2.0.0-alpha.0",
+    "@novastar/serial": "2.0.0-alpha.0",
+    "adm-zip": "^0.5.9",
+    "bl": "^5.0.0",
+    "chalk": "4",
+    "cspell": "^5.3.0",
+    "debug": "^4.3.3",
+    "fast-xml-parser": "^4.0.0-beta.8",
+    "fp-ts": "^2.11.5",
+    "io-ts": "^2.2.16",
+    "lodash": "^4.17.21",
+    "lzma": "^2.3.2",
+    "tiny-typed-emitter": "^2.1.0",
+    "typed-struct": "^2.2.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.4.34",
+    "@types/bl": "^5.0.2",
+    "@types/debug": "^4.1.7",
+    "@types/lodash": "^4.14.177",
+    "@types/lzma-native": "^4.0.1",
+    "@types/uuid": "^8.3.3",
+    "run-for-every-file": "^1.1.0"
+  },
+  "pkg": {
+    "scripts": [
+      "build/main/**/*.js"
+    ],
+    "assets": [
+      "../../node_modules/serialport/node_modules/@serialport/bindings/build/Release/bindings.node"
+    ]
+  },
+  "bin": {
+    "rctest": "build/main/rcTest.js"
+  }
+}
