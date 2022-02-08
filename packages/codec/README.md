@@ -62,9 +62,9 @@ await connection.send(writeReq);
    Since the native API contains more than 1000 methods, not all of which you will use, 
    you can include the methods you need. See [@novastar/native](https://www.npmjs.com/package/@novastar/native) for details.
 ```ts
+import { Session } from '@novastar/codec';
 import '@novastar/native/build/main/generated/api/ReadGlobalBrightness';
 import '@novastar/native/build/main/generated/api/SetGlobalBrightness';
-import { Session } from '@novastar/codec';
 
 const session = new Session(connection);
 const screenIndex = 0;

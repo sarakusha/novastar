@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
-  node: circleci/node@4.3.0
+  node: circleci/node@5.0.0
+  win: circleci/windows@2.4.1
 commands:
   test:
     parameters:
@@ -8,6 +9,7 @@ commands:
         enum:
           - codec
           - serial
+          - net
         type: enum
     steps:
       - checkout
@@ -17,27 +19,50 @@ commands:
       - run: yarn << parameters.workspace >> cov:send
 jobs:
   codec-test:
-    executor:
-      name: node/default
-      tag: '14.15'
+    executor: node/default
     steps:
       - test:
           workspace: codec
   serial-test:
-    executor:
-      name: node/default
-      tag: '14.15'
+    executor: node/default
     steps:
       - test:
           workspace: serial
   serial-build:
-    executor:
-      name: node/default
-      tag: '14.15'
+    executor: node/default
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: yarn
+
+  native-gen:
+    executor: win/default
+    steps:
+      - checkout
+      - node/install:
+          install-yarn: true
+      - restore_cache:
+          key: deps-{{ cheksum "yarn.lock" }}
+      - run: yarn install
+      - save_cache:
+          key: deps-{{ cheksum "yarn.lock" }}
+          paths:
+            - node_modules
+            - packages\native\node_modules
+      - run: dotnet tool install --global ilspycmd
+      - run: dotnet build
+      - run: dir packages\native\dll /s > dll-list.txt
+      - restore_cache:
+          key: dll-list-{{ checksum "dll-list.txt" }}
+      - run: if not exist packages\native\decompiled mkdir packages\native\decompiled
+      - run: for /r packages\native\dll\ %d in (*.dll) do ilspycmd %d -o packages\native\decompiled
+      - save_cache:
+          key: dll-list-{{ checksum "dll-list.txt" }}
+          paths:
+            - packages\native\decompiled
+      - run: yarn native gen:build
+      - run: yarn native compile
+
 workflows:
   test:
     jobs:

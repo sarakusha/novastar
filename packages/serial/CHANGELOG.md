@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.0](https://github.com/sarakusha/novastar/compare/v1.0.5...v2.0.0-alpha.0) (2022-02-08)
+
+
+### Features
+
+* added methods to populate the list of known devices ([bf128a6](https://github.com/sarakusha/novastar/commit/bf128a63b0e4e44d27941cab94878f600fdd4ef7))
+
+
+
+
+
 ## [1.0.8](https://github.com/sarakusha/novastar/compare/v1.0.5...v1.0.8) (2021-06-07)
 
 **Note:** Version bump only for package @novastar/serial

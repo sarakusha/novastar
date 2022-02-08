@@ -1,6 +1,6 @@
 {
   "name": "@novastar/native",
-  "version": "1.0.9-alpha.0",
+  "version": "2.0.0-alpha.0",
   "description": "Structures and APIs in typescript automatically generated from decompiled NovaStar .NET libraries",
   "keywords": [
     "NovaStar",
@@ -18,6 +18,7 @@
     "url": "https://github.com/sarakusha/novastar.git",
     "directory": "packages/native"
   },
+  "homepage": "https://sarakusha.github.io/novastar/",
   "scripts": {
     "requirements": "requirements && dotnet tool list -g",
     "ilspycmd:install": "dotnet tool install ilspycmd -g",
@@ -31,7 +32,7 @@
     "build": "run-p build:*",
     "build:main": "tsc -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",
-    "gen": "yarn clean && yarn decompile && yarn gen:build && yarn compile",
+    "rebuild": "yarn clean && yarn decompile && yarn gen:build && yarn compile",
     "compile": "rimraf generated && yarn gen:generate && yarn gen:split && yarn gen:pack && yarn fix:lint && yarn build"
   },
   "devDependencies": {
@@ -40,7 +41,7 @@
     "requirements": "^1.4.1"
   },
   "dependencies": {
-    "@novastar/codec": "1.0.8",
+    "@novastar/codec": "2.0.0-alpha.0",
     "fp-ts": "^2.11.5",
     "io-ts": "^2.2.16",
     "io-ts-types": "^0.5.16",

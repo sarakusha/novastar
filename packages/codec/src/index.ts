@@ -33,7 +33,7 @@ export const decodeUIntLE = ({ data }: { data: Buffer }): number => {
  * @param value
  * @param size
  */
-export const encodeUIntLE = (value: number, size: 1 | 2 | 4): Buffer => {
+export const encodeUIntLE = (value: number, size: number): Buffer => {
   const buffer = Buffer.alloc(size);
   switch (size) {
     case 1:
