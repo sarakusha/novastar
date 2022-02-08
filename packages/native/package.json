@@ -1,0 +1,64 @@
+{
+  "name": "@novastar/native",
+  "version": "1.0.9-alpha.0",
+  "description": "Structures and APIs in typescript automatically generated from decompiled NovaStar .NET libraries",
+  "keywords": [
+    "NovaStar",
+    "DOOH",
+    "NovaLCT",
+    "Nova Mars SDK",
+    "nata-info"
+  ],
+  "main": "build/main/generated/index.js",
+  "typings": "build/main/generated/index.d.ts",
+  "module": "build/module/generated/index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sarakusha/novastar.git",
+    "directory": "packages/native"
+  },
+  "scripts": {
+    "requirements": "requirements && dotnet tool list -g",
+    "ilspycmd:install": "dotnet tool install ilspycmd -g",
+    "clean": "rimraf {bin,build,decompiled,generated,obj}",
+    "decompile": "mkdirp decompiled && glob-run ilspycmd ./dll/\\*\\*/\\*.dll -o decompiled/",
+    "gen:build": "dotnet build",
+    "gen:generate": "dotnet run bin/Debug/net5.0/gen.dll ./decompiled ./generated ./common",
+    "gen:split": "ts-node post-gen/splitter.ts",
+    "gen:pack": "ts-node post-gen/pack.ts",
+    "fix:lint": "eslint {generated,common}/ --max-warnings 5 --quiet --ext .ts --fix -c .eslintrc.js",
+    "build": "run-p build:*",
+    "build:main": "tsc -p tsconfig.json",
+    "build:module": "tsc -p tsconfig.module.json",
+    "gen": "yarn clean && yarn decompile && yarn gen:build && yarn compile",
+    "compile": "rimraf generated && yarn gen:generate && yarn gen:split && yarn gen:pack && yarn fix:lint && yarn build"
+  },
+  "devDependencies": {
+    "glob-run": "^0.1.7",
+    "mkdirp": "^1.0.4",
+    "requirements": "^1.4.1"
+  },
+  "dependencies": {
+    "@novastar/codec": "1.0.8",
+    "fp-ts": "^2.11.5",
+    "io-ts": "^2.2.16",
+    "io-ts-types": "^0.5.16",
+    "monocle-ts": "^2.3.11",
+    "newtype-ts": "^0.3.4",
+    "prettier": "^2.1.1"
+  },
+  "files": [
+    "build/main",
+    "build/module",
+    "!build/main/post-gen",
+    "!build/module/post-gen",
+    "!**/*.test.*",
+    "!**/*.spec.*",
+    "!**/*.json",
+    "!**/*.tsbuildinfo",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ]
+}

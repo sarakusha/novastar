@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="generated" pattern="file[rider.module]:decompiled/*||file[rider.module]:generated/*" />
+</component>
