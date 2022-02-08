@@ -50,7 +50,7 @@
     "prerelease:version": "lerna version --conventional-commits --conventional-prerelease --exact --no-push --no-git-tag-version",
     "codec": "yarn workspace @novastar/codec",
     "serial": "yarn workspace @novastar/serial",
-    "net": "yarn workspace @novastar/net" ,
+    "net": "yarn workspace @novastar/net",
     "native": "yarn workspace @novastar/native",
     "screen": "yarn workspace @novastar/screen",
     "doc": "run-s doc:html && open-cli build/docs/index.html",
