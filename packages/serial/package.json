@@ -21,7 +21,7 @@
   "dependencies": {
     "@novastar/codec": "2.0.0-alpha.2",
     "conf": "^10.1.1",
-    "serialport": "^9.0.7",
+    "serialport": "^10.4.0",
     "tiny-typed-emitter": "^2.0.3"
   },
   "devDependencies": {
