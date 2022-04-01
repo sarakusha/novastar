@@ -76,7 +76,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/adm-zip": "^0.4.34",
+    "@types/adm-zip": "^0.5.0",
     "@types/bl": "^5.0.2",
     "@types/debug": "^4.1.7",
     "@types/lodash": "^4.14.177",
