@@ -8501,10 +8501,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typedoc-plugin-rename-defaults@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/typedoc-plugin-rename-defaults/-/typedoc-plugin-rename-defaults-0.4.0.tgz#9739bb87ce7c084d7d48feb485ede4d4014a9b49"
-  integrity sha512-7m7MbNZKcxCA4Z+0MW06sFEmuQ+he1xfc+rLRtvvQcQypPTd3fgFmkEJKVu42t8mONC+kKS/WkbmqwzsiqI1YQ==
+typedoc-plugin-rename-defaults@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/typedoc-plugin-rename-defaults/-/typedoc-plugin-rename-defaults-0.5.1.tgz#1a99e1300f4a4ea360881b42f80d14b5ab166dba"
+  integrity sha512-1YMk56/LrYV61c3oWYZuua/y5W0Zy/u6gaXZ1iWwxiUXEg9UG/Z83HuFrPT5rMcjlQSxwcVTayWbLStPTz9Aog==
 
 typedoc@^0.22.5:
   version "0.22.11"
