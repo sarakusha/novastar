@@ -1,15 +1,15 @@
 // Nova.LCT.GigabitSystem.LEDConfigAccessorBase.dll
-import { notEmpty } from '@novastar/codec';
-import { makeStruct } from '@novastar/native/build/main/common';
-import { AutoAdjustRefreshRateParameters } from '@novastar/native/build/main/generated/AutoAdjustRefreshRateParameters';
-import { AutoAdjustRefreshRateTypeEnum } from '@novastar/native/build/main/generated/AutoAdjustRefreshRateType';
-import { ChipTypeEnum } from '@novastar/native/build/main/generated/ChipType';
-import MaxValue from '@novastar/native/build/main/generated/MaxValue';
-import type { ScanBoardProperty } from '@novastar/native/build/main/generated/ScanBoardProperty';
-import { ScreenDriveTypeEnum } from '@novastar/native/build/main/generated/ScreenDriveType';
+import { makeStruct } from '@novastar/native/lib/common';
+import { AutoAdjustRefreshRateParameters } from '@novastar/native/lib/generated/AutoAdjustRefreshRateParameters';
+import { AutoAdjustRefreshRateTypeEnum } from '@novastar/native/lib/generated/AutoAdjustRefreshRateType';
+import { ChipTypeEnum } from '@novastar/native/lib/generated/ChipType';
+import MaxValue from '@novastar/native/lib/generated/MaxValue';
+import type { ScanBoardProperty } from '@novastar/native/lib/generated/ScanBoardProperty';
+import { ScreenDriveTypeEnum } from '@novastar/native/lib/generated/ScreenDriveType';
 
 import { AutoRefreshRate } from './AutoRefreshRate';
 import { CanManualAdjustRefreshRate } from './ChipInherentProperties';
+import { notEmpty } from './common';
 import {
   CaculateMaxloadSize,
   isValidScanBdProp,

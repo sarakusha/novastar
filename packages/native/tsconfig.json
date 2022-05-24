@@ -1,12 +1,14 @@
 {
   "extends": "../../tsconfig-settings.json",
   "compilerOptions": {
+    "sourceMap": false,
+    "inlineSourceMap": false,
     "outDir": "build/main",
     "paths": {
       "fp-ts/Either": ["../../no"]
     }
   },
-  "include": ["generated/**/*.ts", "common/**/*.ts", "post-gen/**/*.ts"],
+  "include": ["generated/**/*.ts", "common/**/*.ts"],
   "exclude": ["node_modules/**", "decompiled/**", "obj/**", "bin/**", "dll/**", "src/**", "generated/Session.ts"],
   "compileOnSave": false
 }

@@ -1,20 +1,27 @@
 import { API, Connection, Session } from '@novastar/codec';
-import SerialPort, { OpenOptions, PortInfo } from 'serialport';
-import { TypedEmitter } from 'tiny-typed-emitter';
 import Conf, { Schema } from 'conf';
+import debugFactory from 'debug';
+import { SerialPort } from 'serialport';
+import { OpenOptions, PortInfo } from '@serialport/bindings-cpp';
+import { TypedEmitter } from 'tiny-typed-emitter';
 
 export type KnownDevice = [vendorId: string, productId: string];
 
-const schema: Schema<{knownDevices: KnownDevice[]}> = {
+const debug = debugFactory('novastar:serial');
+
+const schema: Schema<{ knownDevices: KnownDevice[] }> = {
   knownDevices: {
     type: 'array',
     items: {
       type: 'array',
-      items: { type: 'string', pattern: '[0-9a-fA-F]+' },
+      items: {
+        type: 'string',
+        pattern: '[0-9a-fA-F]+',
+      },
       minItems: 2,
     },
     default: [['10c4', 'ea60']],
-  }
+  },
 };
 
 const config = new Conf({ schema });
@@ -24,32 +31,47 @@ const config = new Conf({ schema });
  */
 export const getKnownDevices = (): ReadonlyArray<KnownDevice> => config.get('knownDevices');
 
+debug(
+  `known devices: ${getKnownDevices()
+    .map(([VID, PID]) => `${VID}/${PID}`)
+    .join(';')}`
+);
+
 /**
  * Add a new known device type
  * @param vendorId
  * @param productId
  */
-export const addKnownDevice = (vendorId: string | number, productId: string | number): ReadonlyArray<KnownDevice> => {
+export const addKnownDevice = (
+  vendorId: string | number,
+  productId: string | number
+): ReadonlyArray<KnownDevice> => {
   const VID = typeof vendorId === 'number' ? vendorId.toString(16) : vendorId;
   const PID = typeof productId === 'number' ? productId.toString(16) : productId;
-  const devs = config.get('knownDevices');
+  const devs = getKnownDevices();
   if (devs.findIndex(([vid, pid]) => vid === VID && pid === PID) === -1) {
     config.set('knownDevices', [...devs, [VID, PID]]);
   }
-  return config.get('knownDevices');
-}
+  return getKnownDevices();
+};
 
 /**
  * Remove known device by VID,PID
  * @param vendorId
  * @param productId
  */
-export const removeKnownDevice = (vendorId: string | number, productId: string | number): ReadonlyArray<KnownDevice> => {
+export const removeKnownDevice = (
+  vendorId: string | number,
+  productId: string | number
+): ReadonlyArray<KnownDevice> => {
   const VID = typeof vendorId === 'number' ? vendorId.toString(16) : vendorId;
   const PID = typeof productId === 'number' ? productId.toString(16) : productId;
-  config.set('knownDevice', config.get('knownDevices').filter(([vid, pid]) => vid !== VID || pid !== PID))
-  return config.get('knownDevices');
-}
+  config.set(
+    'knownDevice',
+    getKnownDevices().filter(([vid, pid]) => vid !== VID || pid !== PID)
+  );
+  return getKnownDevices();
+};
 
 /**
  * Clear all known devices
@@ -57,7 +79,7 @@ export const removeKnownDevice = (vendorId: string | number, productId: string |
 export const clearKnownDevices = (): void => config.set('knownDevices', []);
 
 const isNovastarUSBDevice =
-  (known = config.get('knownDevices')) =>
+  (known = getKnownDevices()) =>
   (portInfo: PortInfo): boolean =>
     known.findIndex(
       ([vendorId, productId]) =>
@@ -88,9 +110,11 @@ export type SerialSession = Session<SerialPort> & API;
  * @param known
  * @returns {Promise<PortInfo[]>} - paths to found devices
  */
-export const findSendingCards = async (known: ReadonlyArray<KnownDevice> = []): Promise<PortInfo[]> => {
+export const findSendingCards = async (
+  known: ReadonlyArray<KnownDevice> = []
+): Promise<PortInfo[]> => {
   const ports = await SerialPort.list();
-  return ports.filter(isNovastarUSBDevice(config.get('knownDevices').concat(known)));
+  return ports.filter(isNovastarUSBDevice(getKnownDevices().concat(known)));
 };
 
 /**
@@ -101,26 +125,29 @@ export class SerialBinding extends TypedEmitter<SerialBindingEvents> {
 
   /**
    * Connect to a serial device and open a serial session
-   * @param path
-   * @param openOptions
+   * @param opts
    */
-  open(path: string, openOptions: OpenOptions = { baudRate: 115200 }): Promise<SerialSession> {
+  open(opts: OpenOptions): Promise<SerialSession> {
     return new Promise<SerialSession>((resolve, reject) => {
+      const { path } = opts;
       let session = this.sessions[path];
       if (session) {
         resolve(session);
       } else {
-        const port = new SerialPort(path, openOptions, err => {
-          if (err) reject(err);
-          else {
-            const connection = new Connection(port);
-            session = new Session(connection);
-            this.sessions[path] = session;
-            connection.once('close', () => this.close(path));
-            resolve(session);
-            this.emit('open', path);
+        const port = new SerialPort(
+          { ...opts, parity: 'none' },
+          err => {
+            if (err) reject(err);
+            else {
+              const connection = new Connection(port);
+              session = new Session(connection);
+              this.sessions[path] = session;
+              connection.once('close', () => this.close(path));
+              resolve(session);
+              this.emit('open', path);
+            }
           }
-        });
+        );
         port.once('close', () => this.close(path));
       }
     });

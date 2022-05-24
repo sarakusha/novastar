@@ -1,10 +1,10 @@
 {
   "name": "@novastar/screen",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.3",
   "description": "NovaStar API wrapper",
-  "main": "build/main/index.js",
-  "typings": "build/main/index.d.ts",
-  "module": "build/module/index.js",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "module": "lib/index.mjs",
   "license": "MIT",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
   "repository": {
@@ -13,10 +13,17 @@
     "directory": "packages/screen"
   },
   "homepage": "https://sarakusha.github.io/novastar/",
+  "keywords": [
+    "novastar",
+    "DOOH",
+    "NovaLCT",
+    "Nova Mars SDK"
+  ],
   "scripts": {
-    "build": "run-p build:*",
+    "build": "run-p build:* && yarn hybrid",
     "build:main": "tsc -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",
+    "hybrid": "node ../../scripts/hybrid.mjs",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
     "fix:lint": "eslint src --ext .ts --fix -c ../../.eslintrc-prod.js",
@@ -26,13 +33,13 @@
     "test:prettier": "prettier \"src/**/*.ts\" --list-different",
     "test:spelling": "cspell \"{README.md,.github/*.md,src/**/*.ts}\"",
     "test:unit": "jest src",
-    "total-check": "rimraf check.log && run-for-every-file --src 'src/**.ts' --not-file 'src/*.test.ts' --run 'echo {{src-file}} >> check.log && tsc --noEmit --diagnostics --esModuleInterop --target es2021 --moduleResolution node {{src-file}} >> check.log' "
+    "total-check": "rimraf check.log && run-for-every-file --src 'src/**.ts' --not-file 'src/*.test.ts' --run 'echo {{src-file}} >> check.log && tsc --noEmit --diagnostics --esModuleInterop --target es2021 --moduleResolution node {{src-file}} >> check.log' ",
+    "yalc:publish": "yalc publish --push",
+    "yalc:update": "yarn build && yalc publish --push"
   },
   "files": [
-    "build/main",
-    "build/module",
+    "lib",
     "!**/*.spec.*",
-    "!**/*.json",
     "!**/*.tsbuildinfo",
     "CHANGELOG.md",
     "LICENSE",
@@ -52,32 +59,30 @@
       }
     }
   },
-  "sideEffects": false,
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "@novastar/codec": "2.0.0-alpha.2",
-    "@novastar/native": "2.0.0-alpha.2",
-    "@novastar/net": "2.0.0-alpha.2",
-    "@novastar/serial": "2.0.0-alpha.2",
+    "@blu3r4y/lzma": "^2.3.3",
+    "@novastar/codec": "2.0.0-alpha.3",
+    "@novastar/native": "2.0.0-alpha.3",
+    "@novastar/net": "2.0.0-alpha.3",
+    "@novastar/serial": "2.0.0-alpha.3",
     "adm-zip": "^0.5.9",
-    "bl": "^5.0.0",
     "chalk": "4",
-    "cspell": "^5.3.0",
-    "debug": "^4.3.3",
     "fast-xml-parser": "^4.0.0-beta.8",
     "fp-ts": "^2.11.5",
     "io-ts": "^2.2.16",
     "lodash": "^4.17.21",
-    "lzma": "^2.3.2",
     "tiny-typed-emitter": "^2.1.0",
     "typed-struct": "^2.2.0",
     "uuid": "^8.3.2"
   },
+  "peerDependencies": {
+    "debug": "^4.3.3"
+  },
   "devDependencies": {
-    "@types/adm-zip": "^0.4.34",
-    "@types/bl": "^5.0.2",
+    "@types/adm-zip": "^0.5.0",
     "@types/debug": "^4.1.7",
     "@types/lodash": "^4.14.177",
     "@types/lzma-native": "^4.0.1",

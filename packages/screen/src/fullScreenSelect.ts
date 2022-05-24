@@ -2,7 +2,7 @@
  * Nova.LCT.GigabitSystem.ScreenAreaAcquirer.dll
  *
  */
-import { Point } from '@novastar/native/build/main/common';
+import { Point } from '@novastar/native/lib/common';
 
 import { isComplexScreen, isSimpleScreen, isStandardScreen, LEDDisplayInfo } from './common';
 import getScreenLocation, { notEmptyXY } from './getScreenLocation';

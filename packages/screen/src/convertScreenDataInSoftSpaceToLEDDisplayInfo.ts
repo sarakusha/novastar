@@ -1,10 +1,10 @@
-import { makeStruct } from '@novastar/native/build/main/common';
-import { ComplexLEDDisplayInfo } from '@novastar/native/build/main/generated/ComplexLEDDisplayInfo';
-import { LEDDisplyTypeEnum } from '@novastar/native/build/main/generated/LEDDisplyType';
-import { ScanBoardRegionInfo } from '@novastar/native/build/main/generated/ScanBoardRegionInfo';
-import { ScreenDataInSoftSpace } from '@novastar/native/build/main/generated/ScreenDataInSoftSpace';
-import { SimpleLEDDisplayInfo } from '@novastar/native/build/main/generated/SimpleLEDDisplayInfo';
-import { StandardLEDDisplayInfo } from '@novastar/native/build/main/generated/StandardLEDDisplayInfo';
+import { makeStruct } from '@novastar/native/lib/common';
+import { ComplexLEDDisplayInfo } from '@novastar/native/lib/generated/ComplexLEDDisplayInfo';
+import { LEDDisplyTypeEnum } from '@novastar/native/lib/generated/LEDDisplyType';
+import { ScanBoardRegionInfo } from '@novastar/native/lib/generated/ScanBoardRegionInfo';
+import { ScreenDataInSoftSpace } from '@novastar/native/lib/generated/ScreenDataInSoftSpace';
+import { SimpleLEDDisplayInfo } from '@novastar/native/lib/generated/SimpleLEDDisplayInfo';
+import { StandardLEDDisplayInfo } from '@novastar/native/lib/generated/StandardLEDDisplayInfo';
 
 import { LEDDisplayInfo } from './common';
 

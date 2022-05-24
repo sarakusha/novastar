@@ -1573,13 +1573,15 @@ namespace gen
             var unions = map.Values.Distinct().Select(value => map.First(tuple => tuple.Value.Equals(value))).ToArray();
             if (unions.Length > 0)
             {
-                using StreamWriter unionsFile = new(Path.Join(outDir, $"unions.ts"));
+                var unionDir = Path.Join(outDir, "unions");
+                if (!Directory.Exists(unionDir)) Directory.CreateDirectory(unionDir);
+                using StreamWriter unionsFile = new(Path.Join(unionDir, "index.ts"));
                 // indexFile.WriteLine("export * from './unions';");
                 index.Add("unions");
                 unionsFile.WriteLine("// Automatically generated ");
                 unionsFile.WriteLine("import * as t from 'io-ts';\n");
                 unionsFile.WriteLine(string.Join(Environment.NewLine, unions.SelectMany(pair => pair.Value)
-                    .Select(typeName => $"import {{{typeName}}} from './{typeName}';")));
+                    .Select(typeName => $"import {{{typeName}}} from '../{typeName}';")));
                 unionsFile.WriteLine(
                     $"export type {{{string.Join($",{Environment.NewLine}", unions.SelectMany(pair => pair.Value))}}};");
                 foreach (var (key, value) in unions)
@@ -1599,6 +1601,7 @@ namespace gen
                 ++total;
             }
 
+/*
             index.Add("api");
             using StreamWriter indexFile = new(Path.Join(outDir, "index.ts"));
             indexFile.WriteLine("// Automatically generated!\n");
@@ -1608,6 +1611,7 @@ namespace gen
                 indexFile.WriteLine(
                     $"export {(export == "Session" ? $"{{ default as {export}}}" : "*")} from './{export}';");
             }
+ */
 
             WriteLine($"Generated {total} files");
 

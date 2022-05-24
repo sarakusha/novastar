@@ -1,9 +1,9 @@
-import { GraphicsDVIPortInfo } from '@novastar/native/build/main/generated/GraphicsDVIPortInfo';
+import { GraphicsDVIPortInfo } from '@novastar/native/lib/generated/GraphicsDVIPortInfo';
 import { isLeft } from 'fp-ts/lib/Either';
 import { PathReporter } from 'io-ts/lib/PathReporter';
 import Struct, { ExtractType } from 'typed-struct';
 
-import { crc } from './common';
+import { crc16 } from './common';
 
 export const DVIInfo = new Struct('DVIInfo')
   .UInt16LE('version')
@@ -18,7 +18,7 @@ export type DVIInfo = ExtractType<typeof DVIInfo, false>;
 
 export const decodeGraphicsDVIPortInfo = (data: Buffer): [GraphicsDVIPortInfo, number] => {
   const info = new DVIInfo(data);
-  if (info.crc !== crc(data.slice(4), 0)) throw new TypeError('Invalid dvi info crc');
+  if (info.crc !== crc16(data.slice(4), 0)) throw new TypeError('Invalid dvi info crc');
   const validation = GraphicsDVIPortInfo.decode(info.toJSON());
   if (isLeft(validation))
     throw new TypeError(`Invalid dvi info: ${PathReporter.report(validation)}`);

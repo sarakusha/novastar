@@ -1,9 +1,9 @@
-import { makeStruct } from '@novastar/native/build/main/common';
-import { CabinetInDevice } from '@novastar/native/build/main/generated/CabinetInDevice';
-import { DviSelectModeEnum } from '@novastar/native/build/main/generated/DviSelectMode';
-import { LEDDisplyTypeEnum } from '@novastar/native/build/main/generated/LEDDisplyType';
-import { OnePortLoadInfo } from '@novastar/native/build/main/generated/OnePortLoadInfo';
-import { ScreenDataInSoftSpace } from '@novastar/native/build/main/generated/ScreenDataInSoftSpace';
+import { makeStruct } from '@novastar/native/lib/common';
+import { CabinetInDevice } from '@novastar/native/lib/generated/CabinetInDevice';
+import { DviSelectModeEnum } from '@novastar/native/lib/generated/DviSelectMode';
+import { LEDDisplyTypeEnum } from '@novastar/native/lib/generated/LEDDisplyType';
+import { OnePortLoadInfo } from '@novastar/native/lib/generated/OnePortLoadInfo';
+import { ScreenDataInSoftSpace } from '@novastar/native/lib/generated/ScreenDataInSoftSpace';
 import { v4 as uuid } from 'uuid';
 
 import { isComplexScreen, isSimpleScreen, isStandardScreen, LEDDisplayInfo } from './common';
@@ -23,8 +23,8 @@ export default function convertLEDDisplayInfoToScreenDataInSoftSpace(
     return makeStruct(ScreenDataInSoftSpace, {
       UUID,
       ScreenIndex: index,
-      ScrType: LEDDisplyTypeEnum.SimpleSingleType,
       VirMode: scr.VirtualMode,
+      ScrType: LEDDisplyTypeEnum.SimpleSingleType,
       ScrX: scr.X,
       ScrY: scr.Y,
       DeviceID: scr.SenderIndex,

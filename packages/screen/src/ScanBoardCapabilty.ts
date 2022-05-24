@@ -1,4 +1,4 @@
-import type { ScanBoardProperty } from '@novastar/native/build/main/generated/ScanBoardProperty';
+import type { ScanBoardProperty } from '@novastar/native/lib/generated/ScanBoardProperty';
 
 /**
  * Nova.LCT.GigabitSystem.ScanBoardCapability

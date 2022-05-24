@@ -1,21 +1,21 @@
 import { Buffer } from 'buffer';
+import { Packet } from './Packet';
 
-export * from './lib/Packet';
-export { default as Request } from './lib/Request';
-export * from './lib/Session';
-export { default as Connection } from './lib/Connection';
-export type { ConnectionEvents } from './lib/Connection';
-export { default as ResponseError } from './lib/ResponseError';
-export { default as TimeoutError } from './lib/TimeoutError';
-export { default as ConnectionClosedError } from './lib/ConnectionClosedError';
-export * from './lib/helper';
+export * from './Packet';
+export { default as Request } from './Request';
+export * from './Session';
+export { default as Connection } from './Connection';
+export type { ConnectionEvents } from './Connection';
+export { default as ResponseError } from './ResponseError';
+export { default as TimeoutError } from './TimeoutError';
+export { default as ConnectionClosedError } from './ConnectionClosedError';
+export * from './helper';
 
 /**
  * Converts a `data` property of type `Buffer` of length 1, 2, or 4 bytes to an unsigned integer.
- * @param {{data: Buffer}} data - @see Packet
- * @returns {number}
+ * @param data - Buffer 1, 2 or 4 bytes long to convert
  */
-export const decodeUIntLE = ({ data }: { data: Buffer }): number => {
+export const decodeUIntLE = ({ data }: Packet): number => {
   switch (data.length) {
     case 1:
       return data.readUInt8();
@@ -30,8 +30,8 @@ export const decodeUIntLE = ({ data }: { data: Buffer }): number => {
 
 /**
  * Stores a non-negative number in a buffer of the specified length
- * @param value
- * @param size
+ * @param value - Non-negative integer
+ * @param size - Buffer size (1, 2, 4 bytes)
  */
 export const encodeUIntLE = (value: number, size: number): Buffer => {
   const buffer = Buffer.alloc(size);

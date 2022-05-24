@@ -1,8 +1,8 @@
 /* eslint-disable no-await-in-loop */
 import { decodeUIntLE, Request, TimeoutError } from '@novastar/codec';
-import { HDEnableModeEnum } from '@novastar/native/build/main/generated/HDEnableMode';
-import { NSCardTypeEnum } from '@novastar/native/build/main/generated/NSCardType';
-import { VedioSelectModeEnum } from '@novastar/native/build/main/generated/VedioSelectMode';
+import { HDEnableModeEnum } from '@novastar/native/lib/generated/HDEnableMode';
+import { NSCardTypeEnum } from '@novastar/native/lib/generated/NSCardType';
+import { VedioSelectModeEnum } from '@novastar/native/lib/generated/VedioSelectMode';
 
 import { GetPortNumber } from './CustomTransform';
 import { DeviceInfo } from './DeviceInfo';
@@ -32,7 +32,9 @@ async function readDeviceInfo(session: SessionAPI, index: number): Promise<Devic
   try {
     const deviceInfo: DeviceInfo = {
       model: await session.ReadControllerModelId(index),
-      mac: (await session.ReadControllerSnHigh(index)).toString('hex'),
+      mac: [...(await session.ReadControllerSnHigh(index))]
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join(':'),
       maxPackageSize: await readMaxPackageSize(session, index),
       companyId: await session.ReadCompanyID(index),
       audioControl: await session.ReadAudioControl(index),
@@ -53,7 +55,7 @@ async function readDeviceInfo(session: SessionAPI, index: number): Promise<Devic
       const req = new Request(88);
       req.address = 0x1400_0000;
       const res = await session.connection.trySend(req);
-      if (res && res.data[0] === 0xa8) {
+      if (res && res.ack === 0 && res.data[0] === 0xa8) {
         const len = res.data[17];
         deviceInfo.name = res.data.slice(18, 18 + len).toString();
       }

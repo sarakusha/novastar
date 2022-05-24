@@ -1,5 +1,5 @@
-import { LEDDisplyTypeEnum } from '@novastar/native/build/main/generated/LEDDisplyType';
-import { ScreenDataInSoftSpace } from '@novastar/native/build/main/generated/ScreenDataInSoftSpace';
+import { LEDDisplyTypeEnum } from '@novastar/native/lib/generated/LEDDisplyType';
+import { ScreenDataInSoftSpace } from '@novastar/native/lib/generated/ScreenDataInSoftSpace';
 import sortBy from 'lodash/sortBy';
 
 /**

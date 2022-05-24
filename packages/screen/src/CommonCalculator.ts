@@ -1,14 +1,14 @@
 // Nova.LCT.GigabitSystem.HardwareCaculator.dll
 // noinspection SpellCheckingInspection
 
-import { ChipTypeEnum } from '@novastar/native/build/main/generated/ChipType';
-import { CommonIrCabinetTypeEnum } from '@novastar/native/build/main/generated/CommonIrCabinetType';
-import { DataDirectionTypeEnum } from '@novastar/native/build/main/generated/DataDirectionType';
-import { ModuleCascadeDiretionEnum } from '@novastar/native/build/main/generated/ModuleCascadeDiretion';
-import type { ScanBoardProperty } from '@novastar/native/build/main/generated/ScanBoardProperty';
-import { ScreenDriveTypeEnum } from '@novastar/native/build/main/generated/ScreenDriveType';
+import { ChipTypeEnum } from '@novastar/native/lib/generated/ChipType';
+import { CommonIrCabinetTypeEnum } from '@novastar/native/lib/generated/CommonIrCabinetType';
+import { DataDirectionTypeEnum } from '@novastar/native/lib/generated/DataDirectionType';
+import { ModuleCascadeDiretionEnum } from '@novastar/native/lib/generated/ModuleCascadeDiretion';
+import type { ScanBoardProperty } from '@novastar/native/lib/generated/ScanBoardProperty';
+import { ScreenDriveTypeEnum } from '@novastar/native/lib/generated/ScreenDriveType';
 
-import { notEmptyProps } from './common';
+import { hasProps } from './common';
 import { CutMapInfo, Rectangle } from './fullScreenSelect';
 
 export function CaculateShiftUnitNum(
@@ -708,7 +708,7 @@ export function GetGclkInfoByPartNumPerRef(
   }
 }
 
-export const isValidScanBdProp = notEmptyProps(
+export const isValidScanBdProp = hasProps(
   'IsDExtendMode',
   'TwentyDataGroupEnable',
   'Is24DataGroup',
@@ -721,7 +721,7 @@ export const isValidScanBdProp = notEmptyProps(
   'SpecialFrameRate'
 );
 
-export const isValidStandardLedModuleProp = notEmptyProps('ScreenDriveType');
+export const isValidStandardLedModuleProp = hasProps('ScreenDriveType');
 
 export const GetDoorCountFromScanBdInfo = (scanBdProp: Readonly<ScanBoardProperty>): number => {
   if (!isValidScanBdProp(scanBdProp)) throw new TypeError('Invalid ScanBoardProperty');

@@ -1,8 +1,8 @@
 import fs from 'fs';
 
-import type { GraphicsDVIPortInfo } from '@novastar/native/build/main/generated/GraphicsDVIPortInfo';
-import { ScanBoardProperty } from '@novastar/native/build/main/generated/ScanBoardProperty';
-import { SystemParameterConfig } from '@novastar/native/build/main/generated/SystemParameterConfig';
+import type { GraphicsDVIPortInfo } from '@novastar/native/lib/generated/GraphicsDVIPortInfo';
+import { ScanBoardProperty } from '@novastar/native/lib/generated/ScanBoardProperty';
+import { SystemParameterConfig } from '@novastar/native/lib/generated/SystemParameterConfig';
 import Zip from 'adm-zip';
 import debugFactory from 'debug';
 import { X2jOptionsOptional, XMLParser } from 'fast-xml-parser';
@@ -16,9 +16,9 @@ import { SendParam } from './ScanBdRecordNoSendParams';
 import { decodeScannerBinData } from './ScannerBinData';
 import { decodeScreenAdjustInfo } from './ScreenAdjustInfo';
 import { decodeScreenInfo, ScreenInfo } from './ScreenInfo';
-import { crc } from './common';
+import { crc16 } from './common';
 
-const debug = debugFactory('screen:config');
+const debug = debugFactory('novastar:config');
 
 const options: X2jOptionsOptional = {
   ignoreAttributes: false,
@@ -88,7 +88,7 @@ export const decodeScreenConfig = (buffer: Buffer): ScrConfig => {
   const size = DviScreenConfigInfo.baseSize + dviInfoLength + screenInfoLength + adjustInfoLength;
   if (buffer.length < size) throw new Error('Invalid buffer length');
   if (
-    crc(buffer.slice(DviScreenConfigInfo.getOffsetOf('crc') + 2, size - adjustInfoLength), 0) !==
+    crc16(buffer.slice(DviScreenConfigInfo.getOffsetOf('crc') + 2, size - adjustInfoLength), 0) !==
     crcInfo
   )
     throw new TypeError('Invalid CRC');

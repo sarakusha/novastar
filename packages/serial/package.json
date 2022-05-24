@@ -1,6 +1,6 @@
 {
   "name": "@novastar/serial",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.3",
   "description": "Serial binding for @novastar/codec",
   "license": "MIT",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
@@ -10,8 +10,8 @@
   "keywords": [
     "novastar",
     "DOOH",
-    "RS-232",
-    "USB"
+    "NovaLCT",
+    "Nova Mars SDK"
   ],
   "repository": {
     "type": "git",
@@ -19,13 +19,14 @@
     "directory": "packages/serial"
   },
   "dependencies": {
-    "@novastar/codec": "2.0.0-alpha.2",
+    "@novastar/codec": "2.0.0-alpha.3",
+    "@serialport/bindings-cpp": "^10.7.0",
     "conf": "^10.1.1",
-    "serialport": "^9.0.7",
+    "serialport": "^10.4.0",
     "tiny-typed-emitter": "^2.0.3"
   },
-  "devDependencies": {
-    "@types/serialport": "^8.0.1"
+  "peerDependencies": {
+    "debug": "^4.3.3"
   },
   "scripts": {
     "build": "run-p build:*",
@@ -38,13 +39,14 @@
     "test:lint": "eslint src --ext .ts -c ../../.eslintrc-prod.js",
     "test:prettier": "prettier \"src/**/*.ts\" --list-different",
     "test:spelling": "cspell \"{README.md,.github/*.md,src/**/*.ts}\"",
-    "test:unit": "jest src"
+    "test:unit": "jest src",
+    "yalc:publish": "yalc publish --push",
+    "yalc:update": "yarn build && yalc publish --push"
   },
   "files": [
     "build/main",
     "build/module",
     "!**/*.spec.*",
-    "!**/*.json",
     "!**/*.tsbuildinfo",
     "CHANGELOG.md",
     "LICENSE",

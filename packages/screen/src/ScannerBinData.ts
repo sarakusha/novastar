@@ -1,7 +1,7 @@
 import Struct, { ExtractType } from 'typed-struct';
 
 import { ScanBdRecordNoSendParams, SendParam } from './ScanBdRecordNoSendParams';
-import { crc } from './common';
+import { crc16 } from './common';
 import findKnownAddresses from './findKnownAddresses';
 
 export const ScannerBinDataFlag = 'RCCB';
@@ -24,7 +24,7 @@ export const decodeScannerBinData = (buffer: Buffer): SendParam[] => {
   const { header, crc: binCrc, length, data } = new ScannerBinData(buffer);
   if (header !== ScannerBinDataFlag) throw new Error('Invalid ScannerBinData header');
   if (length !== buffer.length) throw new Error('Invalid ScannerBinData length');
-  if (crc(data, 0x5555) !== binCrc) throw new Error('Invalid ScannerBinData CRC');
+  if (crc16(data, 0x5555) !== binCrc) throw new Error('Invalid ScannerBinData CRC');
   const params: SendParam[] = [];
   const dataLength = length - ScannerBinData.baseSize;
   for (let offset = 0; offset < dataLength; ) {

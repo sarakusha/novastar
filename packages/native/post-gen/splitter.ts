@@ -1,14 +1,13 @@
 import fs from 'fs';
-import * as os from 'os';
 import path from 'path';
 
 import { notEmpty } from '@novastar/codec';
-import ts from 'typescript';
+import ts, { factory } from 'typescript';
 
 import { getTSConfig, makeImport, printer, saveSourceFile } from './common';
 
 const root = path.resolve(__dirname, '../generated/api');
-const indexFile = fs.createWriteStream(path.join(root, 'index.ts'));
+// const indexFile = fs.createWriteStream(path.join(root, 'index.ts'));
 
 const FalseToken = ts.factory.createToken(ts.SyntaxKind.FalseKeyword);
 
@@ -18,7 +17,7 @@ const makeModuleDeclaration = (name: string, body: ts.ModuleBlock): ts.ModuleDec
     undefined,
     [ts.factory.createModifier(ts.SyntaxKind.DeclareKeyword)],
     mn,
-    body
+    body,
   );
 };
 
@@ -28,7 +27,7 @@ const makeInterface = (name: string, members: ts.MethodSignature[]): ts.Interfac
 const makeMethodSignature = (
   name: string,
   param: ts.NodeArray<ts.ParameterDeclaration>,
-  type: ts.TypeReferenceNode
+  type: ts.TypeReferenceNode,
 ): ts.MethodSignature =>
   ts.factory.createMethodSignature(undefined, name, undefined, undefined, param, type);
 
@@ -38,7 +37,7 @@ const thisSession = ts.factory.createParameterDeclaration(
   undefined,
   'this',
   undefined,
-  ts.factory.createTypeReferenceNode('Session')
+  ts.factory.createTypeReferenceNode('Session'),
 );
 
 const tryReadType = ts.factory.createTypeReferenceNode('Promise', [
@@ -49,11 +48,15 @@ const tryReadType = ts.factory.createTypeReferenceNode('Promise', [
 ]);
 
 const tryWriteType = ts.factory.createTypeReferenceNode('Promise', [
-  ts.factory.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword),
+  // ts.factory.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword),
+  ts.factory.createUnionTypeNode([
+    ts.factory.createTypeReferenceNode('ErrorType'),
+    ts.factory.createLiteralTypeNode(ts.factory.createNull()),
+  ]),
 ]);
 const broadcastTypeParam = ts.factory.createTypeParameterDeclaration(
   'Broadcast',
-  ts.factory.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword)
+  ts.factory.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword),
 );
 
 const broadcastType = ts.factory.createTypeReferenceNode('Broadcast');
@@ -73,15 +76,16 @@ const returnTrySendReading = ts.factory.createReturnStatement(
     ts.factory.createPropertyAccessExpression(
       ts.factory.createPropertyAccessExpression(
         ts.factory.createToken(ts.SyntaxKind.ThisKeyword),
-        'connection'
+        'connection',
       ),
-      'trySend'
+      'trySend',
     ),
     undefined,
-    [ts.factory.createIdentifier('req')]
-  )
+    [ts.factory.createIdentifier('req')],
+  ),
 );
 
+/*
 const returnTrySendWriting = ts.factory.createReturnStatement(
   ts.factory.createBinaryExpression(
     ts.factory.createParenthesizedExpression(
@@ -90,25 +94,47 @@ const returnTrySendWriting = ts.factory.createReturnStatement(
           ts.factory.createPropertyAccessExpression(
             ts.factory.createPropertyAccessExpression(
               ts.factory.createToken(ts.SyntaxKind.ThisKeyword),
-              'connection'
+              'connection',
             ),
-            'trySend'
+            'trySend',
           ),
           undefined,
-          [ts.factory.createIdentifier('req')]
-        )
-      )
+          [ts.factory.createIdentifier('req')],
+        ),
+      ),
     ),
     ts.factory.createToken(ts.SyntaxKind.ExclamationEqualsEqualsToken),
-    ts.factory.createNull()
-  )
+    ts.factory.createNull(),
+  ),
 );
+*/
+
+const returnTrySendWriting = factory.createReturnStatement(
+  factory.createBinaryExpression(
+    factory.createPropertyAccessChain(
+      factory.createParenthesizedExpression(factory.createAwaitExpression(factory.createCallExpression(
+        factory.createPropertyAccessExpression(
+          factory.createPropertyAccessExpression(
+            factory.createThis(),
+            factory.createIdentifier('connection'),
+          ),
+          factory.createIdentifier('trySend'),
+        ),
+        undefined,
+        [factory.createIdentifier('req')],
+      ))),
+      factory.createToken(ts.SyntaxKind.QuestionDotToken),
+      factory.createIdentifier('ack'),
+    ),
+    factory.createToken(ts.SyntaxKind.QuestionQuestionToken),
+    factory.createNull(),
+  ));
 
 const makeDefaultFunctionDeclaration = (
   name: string,
   params: ts.NodeArray<ts.ParameterDeclaration>,
   statements: ts.Statement[],
-  broadcast: boolean | string
+  broadcast: boolean | string,
 ): [ts.FunctionDeclaration, string] => {
   const createName = `create${name}`;
   return [
@@ -124,13 +150,13 @@ const makeDefaultFunctionDeclaration = (
       params.map(param =>
         ts.isIdentifier(param.name) && param.name.escapedText === broadcast
           ? {
-              ...param,
-              type: broadcastType,
-            }
-          : param
+            ...param,
+            type: broadcastType,
+          }
+          : param,
       ),
       typeof broadcast === 'string' ? reqBroadcastType : broadcast ? reqTrueType : requestType,
-      ts.factory.createBlock([...statements, returnRequest])
+      ts.factory.createBlock([...statements, returnRequest]),
     ),
     createName,
   ];
@@ -140,7 +166,7 @@ const extendPrototype = (
   name: string,
   parameters: ts.NodeArray<ts.ParameterDeclaration>,
   type: ts.TypeReferenceNode,
-  statements: ts.Statement[]
+  statements: ts.Statement[],
 ) => {
   // const {
   //   parameters,
@@ -153,10 +179,10 @@ const extendPrototype = (
         ts.factory.createPropertyAccessChain(
           ts.factory.createIdentifier('Session'),
           undefined,
-          'prototype'
+          'prototype',
         ),
         undefined,
-        name
+        name,
       ),
       ts.factory.createFunctionExpression(
         [ts.factory.createToken(ts.SyntaxKind.AsyncKeyword)],
@@ -165,9 +191,9 @@ const extendPrototype = (
         undefined,
         params,
         type,
-        ts.factory.createBlock(statements)
-      )
-    )
+        ts.factory.createBlock(statements),
+      ),
+    ),
   );
 };
 
@@ -183,8 +209,8 @@ const makeValidSourceFile = (filename: string, statements: ts.Statement[]) => {
     ts.factory.createSourceFile(
       statements,
       ts.factory.createToken(ts.SyntaxKind.EndOfFileToken),
-      ts.NodeFlags.None
-    )
+      ts.NodeFlags.None,
+    ),
   );
   return ts.createSourceFile(filename, text, ts.ScriptTarget.Latest, false, ts.ScriptKind.TS);
 };
@@ -193,13 +219,17 @@ const nodeText = (node: ts.Node) =>
   printer.printNode(
     ts.EmitHint.Unspecified,
     node,
-    ts.createSourceFile('node', '', ts.ScriptTarget.Latest)
+    ts.createSourceFile('node', '', ts.ScriptTarget.Latest),
   );
 
 const unique = <T>(item: T, index: number, array: T[]) => array.indexOf(item) === index;
 
 const extendSession = (node: ts.MethodDeclaration): void => {
-  const { parameters, type, body } = node;
+  const {
+    parameters,
+    type,
+    body,
+  } = node;
   if (!ts.isIdentifier(node.name) || !body || !type || !ts.isTypeReferenceNode(type))
     throw new TypeError('Invalid method');
   const name = node.name.text;
@@ -216,7 +246,7 @@ const extendSession = (node: ts.MethodDeclaration): void => {
       .filter(
         initializer =>
           ts.isIdentifier(initializer.expression) &&
-          initializer.expression.escapedText === 'Request'
+          initializer.expression.escapedText === 'Request',
       )
       .map(initializer => initializer.arguments)
       .filter(notEmpty)
@@ -234,19 +264,19 @@ const extendSession = (node: ts.MethodDeclaration): void => {
         }
       });
   }
-  const packetImport = isReading ? ['Packet'] : [];
+  const packetImport = isReading ? ['Packet'] : ['ErrorType'];
   const srcName = path.join(root, `${name}.ts`);
-  indexFile.write(`export { default as create${name} } from './${name}';${os.EOL}`);
+  // indexFile.write(`export { default as create${name} } from './${name}';${os.EOL}`);
   const methodSignature = makeMethodSignature(name, parameters, type);
   methods.push(methodSignature);
   const tryParams =
     isReading || !broadcast
       ? parameters
       : ts.factory.createNodeArray(
-          parameters.filter(
-            param => !ts.isIdentifier(param.name) || param.name.escapedText !== broadcast
-          )
-        );
+        parameters.filter(
+          param => !ts.isIdentifier(param.name) || param.name.escapedText !== broadcast,
+        ),
+      );
   const tryName = broadcast !== true && `try${name}`;
   if (tryName)
     methods.push(makeMethodSignature(tryName, tryParams, isReading ? tryReadType : tryWriteType));
@@ -271,7 +301,7 @@ const extendSession = (node: ts.MethodDeclaration): void => {
     name,
     parameters,
     bodyStatements,
-    broadcast
+    broadcast,
   );
   const createReqVariableStatement = (broadcastName: boolean | string) =>
     ts.factory.createVariableStatement(
@@ -289,13 +319,13 @@ const extendSession = (node: ts.MethodDeclaration): void => {
                 .map(param => param.name)
                 .filter(ts.isIdentifier)
                 .map(paramName =>
-                  broadcastName && paramName.escapedText === broadcastName ? FalseToken : paramName
-                )
-            )
+                  broadcastName && paramName.escapedText === broadcastName ? FalseToken : paramName,
+                ),
+            ),
           ),
         ],
-        ts.NodeFlags.Const
-      )
+        ts.NodeFlags.Const,
+      ),
     );
   const methodPrototypeExtends = [
     extendPrototype(name, parameters, type, [createReqVariableStatement(false), last]),
@@ -305,7 +335,7 @@ const extendSession = (node: ts.MethodDeclaration): void => {
       extendPrototype(tryName, tryParams, isReading ? tryReadType : tryWriteType, [
         createReqVariableStatement(broadcast),
         isReading ? returnTrySendReading : returnTrySendWriting,
-      ])
+      ]),
     );
   }
   const statements = [
@@ -315,14 +345,14 @@ const extendSession = (node: ts.MethodDeclaration): void => {
       ...packetImport,
       'Request',
       'Session',
-      ...(imports?.filter(unique) ?? [])
+      ...(imports?.filter(unique) ?? []),
     ),
     ...constantImports,
     ...enumImports.map(src => makeImport(`../${src}`, undefined, `${src}Enum`)),
     ...commonImports,
     makeModuleDeclaration(
       '@novastar/codec',
-      ts.factory.createModuleBlock([makeInterface('API', methods)])
+      ts.factory.createModuleBlock([makeInterface('API', methods)]),
     ),
     createRequest,
     ...methodPrototypeExtends,

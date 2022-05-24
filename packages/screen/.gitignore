@@ -5,3 +5,4 @@ test
 coverage
 *.log
 /back/
+/lib/

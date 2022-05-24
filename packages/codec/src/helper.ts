@@ -62,5 +62,7 @@ export function series<T, R>(
  * @param value
  */
 export function notEmpty<TValue>(value: TValue | null | undefined | void): value is TValue {
-  return value !== undefined && value !== null && (typeof value !== 'number' || !Number.isNaN(value));
+  return (
+    value !== undefined && value !== null && (typeof value !== 'number' || !Number.isNaN(value))
+  );
 }

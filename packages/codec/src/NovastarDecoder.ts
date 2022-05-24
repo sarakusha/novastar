@@ -4,9 +4,8 @@ import { Transform, TransformCallback, TransformOptions } from 'stream';
 import debugFactory from 'debug';
 
 import { COMPUTER, Packet, RESPONSE } from './Packet';
-import { printBuffer } from './helper';
 
-const debug = debugFactory('codec:decoder');
+const debug = debugFactory('novastar:decoder');
 
 const empty = Buffer.alloc(0);
 
@@ -17,6 +16,8 @@ const lengthOffset = Packet.getOffsetOf('length');
 export default class NovastarDecoder extends Transform {
   private buf: Buffer = empty;
 
+  private last: Packet[] = [];
+
   constructor(options?: TransformOptions) {
     super({
       ...options,
@@ -26,11 +27,14 @@ export default class NovastarDecoder extends Transform {
 
   public _transform(chunk: unknown, encoding: BufferEncoding, callback: TransformCallback) {
     if (Buffer.isBuffer(chunk)) {
-      debug(`>>> ${printBuffer(chunk)}`);
       const data = Buffer.concat([this.buf, chunk]);
       if (data.length >= preamble.length) {
         this.buf = this.recognize(data);
       }
+
+      this.last.length > 0 && debug(`>>> ${this.last.join(', ')} [${this.last.map(pkg => pkg.serno)
+        .join(', ')}]`);
+      this.last.length = 0;
     }
     callback();
   }
@@ -41,12 +45,12 @@ export default class NovastarDecoder extends Transform {
   }
 
   private recognize(data: Buffer): Buffer {
-    for (let offset = 0; ; ) {
+    for (let offset = 0; ;) {
       const rest = data.length - offset;
       if (rest <= 0) return empty;
       const start = data.indexOf(
         rest < preamble.length ? preamble.slice(0, rest) : preamble,
-        offset
+        offset,
       );
       if (start === -1) return empty;
       const frame = data.slice(start);
@@ -56,7 +60,10 @@ export default class NovastarDecoder extends Transform {
       if (frame.length < total) return frame;
       const pkg = new Packet(frame.slice(0, total));
       if (Packet.crc(pkg) === pkg.crc) {
-        if (pkg.destination === COMPUTER) this.push(pkg);
+        if (pkg.destination === COMPUTER) {
+          this.push(pkg);
+          this.last.push(pkg);
+        }
         offset = start + total;
       }
       if (offset <= start) {

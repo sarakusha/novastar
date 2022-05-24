@@ -1,19 +1,19 @@
-import { notEmpty } from '@novastar/codec';
-import { makeStruct } from '@novastar/native/build/main/common';
-import { ScreenPortAddrInfo } from '@novastar/native/build/main/generated/ScreenPortAddrInfo';
+import { makeStruct } from '@novastar/native/lib/common';
+import { ScreenPortAddrInfo } from '@novastar/native/lib/generated/ScreenPortAddrInfo';
 import range from 'lodash/range';
 
 import {
   groupByProps,
+  hasProps,
   isSimpleScreen,
   isStandardScreen,
   LEDDisplayInfo,
-  notEmptyProps,
+  notEmpty,
 } from './common';
 
 const GroupKeys = ['SenderIndex', 'PortIndex'] as const;
 const groupBySenderPort = groupByProps(...GroupKeys);
-const notEmptySenderPort = notEmptyProps(...GroupKeys);
+const notEmptySenderPort = hasProps(...GroupKeys);
 
 export default function GetScreenPortAddrInfo(scr: LEDDisplayInfo) {
   if (isSimpleScreen(scr)) {

@@ -1,6 +1,6 @@
-import { LEDDisplyTypeEnum } from '@novastar/native/build/main/generated/LEDDisplyType';
-import { StandardLEDDisplayInfo } from '@novastar/native/build/main/generated/StandardLEDDisplayInfo';
-import { VirtualModeTypeEnum } from '@novastar/native/build/main/generated/VirtualModeType';
+import { LEDDisplyTypeEnum } from '@novastar/native/lib/generated/LEDDisplyType';
+import { StandardLEDDisplayInfo } from '@novastar/native/lib/generated/StandardLEDDisplayInfo';
+import { VirtualModeTypeEnum } from '@novastar/native/lib/generated/VirtualModeType';
 import debugFactory from 'debug';
 import { isLeft } from 'fp-ts/lib/Either';
 import { PathReporter } from 'io-ts/lib/PathReporter';
@@ -8,7 +8,7 @@ import Struct, { ExtractType, typed } from 'typed-struct';
 
 import { RegionInfo } from './RegionInfo';
 
-const debug = debugFactory('screen:StandardScreen');
+const debug = debugFactory('novastar:standard-screen');
 export const StandardScreen = new Struct('StandardScreen')
   .UInt8('Type', LEDDisplyTypeEnum.StandardType)
   .UInt8('VirtualMode', typed<VirtualModeTypeEnum>())

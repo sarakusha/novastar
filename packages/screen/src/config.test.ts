@@ -2,9 +2,9 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { X2jOptionsOptional, XMLParser } from 'fast-xml-parser';
-import { LZMA } from 'lzma';
+import { compress, decompress } from '@blu3r4y/lzma';
 
-import { pack, unpack } from './common';
+import { pack, toHex, unpack } from './common';
 import { loadScanBoardConfig, loadScreenConfig, loadSystemConfig } from './configs';
 
 const options: X2jOptionsOptional = {
@@ -40,20 +40,20 @@ describe('cfg', () => {
   it('RCFG', async () => {
     const pathname = path.resolve(__dirname, '../../../cfg/Q8_ICND2153_40x40.rcfgx');
     const [cfg, params] = loadScanBoardConfig(pathname);
-    // console.log({
-    //   cfg,
-    //   params: params.map(({ address, data, name }) => ({
-    //     address: toHex(address),
-    //     length: data.length,
-    //     data,
-    //     name,
-    //   })),
-    // });
+    console.log({
+      cfg,
+      params: params.map(({ address, data, name }) => ({
+        address: toHex(address),
+        length: data.length,
+        data,
+        name,
+      })),
+    });
   });
   it('SCR', () => {
     const pathname = path.resolve(__dirname, '../../../cfg/test.scr');
-    loadScreenConfig(pathname);
-    // console.log(cfg.dviInfoLength + cfg.screenInfoLength + cfg.adjustInfoLength);
+    const cfg = loadScreenConfig(pathname);
+    console.log(inspect(cfg, false, null));
   });
   it('lzma', async () => {
     const test = Buffer.from('test');
@@ -70,12 +70,12 @@ describe('cfg', () => {
       '{"SectionFormat":[{"FileType":"ScreenDataType","Addr":83894272,"SrcLength":2523,"DestLength":374,"CheckSum":3368,"Version":"1001","DecompressProps":"]\\u0000\\u0000\\u0000\\u0001"}]}';
     const [props, packed] = await pack(src);
     const lzma1 = await new Promise<Buffer>((resolve, reject) => {
-      LZMA().compress(src, 8, (res, err) => (res ? resolve(Buffer.from(res)) : reject(err)));
+      compress(src, 8, (res, err) => (res ? resolve(Buffer.from(res)) : reject(err)));
     });
     console.log({ srcLength: src.length });
     const unpacked = await unpack(comp.slice(0, 5), src.length, comp.slice(13));
     const uncomp = await new Promise<string>((resolve, reject) => {
-      LZMA().decompress(lzma1, (res, err) =>
+      decompress(lzma1, (res, err) =>
         res ? resolve(Buffer.from(res).toString()) : reject(err)
       );
     });

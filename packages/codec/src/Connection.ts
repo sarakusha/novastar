@@ -28,7 +28,7 @@ export interface ConnectionEvents {
   close(): void;
 }
 
-const debug = debugFactory('codec:connection');
+const debug = debugFactory('novastar:connection');
 
 type Result<SkipErrors extends boolean = false> = SkipErrors extends false ? Packet : Packet | null;
 
@@ -86,7 +86,10 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
   public open(): void {
     if (this.connected) return;
     this.decoder.on('data', this.listener);
-    pump(this.encoder, this.stream, this.decoder, () => this.close());
+    pump(this.encoder, this.stream, this.decoder, (err) => {
+      err && debug(`Error while pump: ${err.stack}`);
+      this.close()
+    });
     this.connected = true;
     debug('open');
     this.emit('open');
@@ -170,7 +173,9 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
     if (!this.connected) throw new ConnectionClosedError();
     const maxLength = this.getMaxLength(req);
     if (req.length > maxLength)
-      throw new TypeError(`The request size is too large. Use "send" instead of "trySend", maxLength: ${maxLength}`);
+      throw new TypeError(
+        `The request size is too large. Use "send" instead of "trySend", maxLength: ${maxLength}`
+      );
     if (!this.encoder.write(req))
       await new Promise(resolve => {
         this.encoder.once('drain', resolve);
@@ -218,7 +223,7 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
   protected listener = (res: Packet): void => {
     const [, resolve] = this.queue.find(([req]) => req.serno === res.serno) ?? [];
     if (resolve) resolve(res);
-    else debug(`Unknown package ${JSON.stringify(res)}`);
+    else if (res.source !== 255) debug(`Unknown package ${JSON.stringify(res)}`);
   };
 
   protected getMaxLength(req: Request<boolean>): number {

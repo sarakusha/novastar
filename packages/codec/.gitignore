@@ -6,3 +6,4 @@ src/**.js
 coverage
 *.log
 /bak/
+/lib/

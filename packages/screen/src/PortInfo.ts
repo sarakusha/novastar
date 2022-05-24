@@ -1,4 +1,4 @@
-import { ScanBoardConnectTypeEnum } from '@novastar/native/build/main/generated/ScanBoardConnectType';
+import { ScanBoardConnectTypeEnum } from '@novastar/native/lib/generated/ScanBoardConnectType';
 import Struct, { ExtractType, typed } from 'typed-struct';
 
 export const PortInfo = new Struct('PortInfo')

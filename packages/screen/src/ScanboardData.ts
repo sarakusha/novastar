@@ -1,16 +1,16 @@
 /* eslint-disable no-bitwise,no-param-reassign */
-import type { Chip2053ExtendPropety } from '@novastar/native/build/main/generated/Chip2053ExtendPropety';
-import type { Chip2163ExtendPropety } from '@novastar/native/build/main/generated/Chip2163ExtendPropety';
-import { ChipTypeEnum } from '@novastar/native/build/main/generated/ChipType';
-import MaxValue from '@novastar/native/build/main/generated/MaxValue';
-import MaxValueInfo from '@novastar/native/build/main/generated/MaxValueInfo';
-import { RotateAngleEnum } from '@novastar/native/build/main/generated/RotateAngle';
-import type { ScanBoardProperty } from '@novastar/native/build/main/generated/ScanBoardProperty';
-import type { ChipBaseExtendPropey } from '@novastar/native/build/main/generated/unions';
+import type { Chip2053ExtendPropety } from '@novastar/native/lib/generated/Chip2053ExtendPropety';
+import type { Chip2163ExtendPropety } from '@novastar/native/lib/generated/Chip2163ExtendPropety';
+import { ChipTypeEnum } from '@novastar/native/lib/generated/ChipType';
+import MaxValue from '@novastar/native/lib/generated/MaxValue';
+import MaxValueInfo from '@novastar/native/lib/generated/MaxValueInfo';
+import { RotateAngleEnum } from '@novastar/native/lib/generated/RotateAngle';
+import type { ScanBoardProperty } from '@novastar/native/lib/generated/ScanBoardProperty';
+import type { ChipBaseExtendPropey } from '@novastar/native/lib/generated/unions';
 import Struct, { ExtractType, Getter, Setter } from 'typed-struct';
 
 import { isValidScanBdProp } from './CommonCalculator';
-import { notEmptyProps } from './common';
+import { hasProps } from './common';
 
 const MonitorRGBCodeStruct = new Struct('MonitorRGBCode')
   .Bits8({
@@ -420,8 +420,8 @@ export const ScanboardData = new Struct('ScanboardData')
 
 export type ScanboardData = ExtractType<typeof ScanboardData, false>;
 
-const hasEnhancedMode = notEmptyProps('EnhancedMode', 'EnhancedModeSwitch');
-const is2033 = notEmptyProps('UsingBright', 'UsingSUM2033Gamma');
+const hasEnhancedMode = hasProps('EnhancedMode', 'EnhancedModeSwitch');
+const is2033 = hasProps('UsingBright', 'UsingSUM2033Gamma');
 
 const isChip2053ExtendPropety = (
   chipPropey: ChipBaseExtendPropey

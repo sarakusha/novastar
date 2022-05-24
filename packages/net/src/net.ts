@@ -3,7 +3,10 @@ import { createConnection, Socket } from 'net';
 import os, { NetworkInterfaceInfo } from 'os';
 
 import { API, Connection, notEmpty, Session } from '@novastar/codec';
+import debugFactory from 'debug';
 import { TypedEmitter } from 'tiny-typed-emitter';
+
+const debug = debugFactory('novastar:net');
 
 export const UDP_PORT = 3800;
 export const MULTICAST_ADDRESS = '224.224.125.119';
@@ -40,12 +43,14 @@ const interfaceSearch = (address: string): Promise<string[]> =>
       if (!completed) {
         completed = true;
         resolve(list);
+        debug(`stop: ${address}`);
       }
     };
     socket.on('error', complete);
     socket.on('message', (msg, rinfo) => {
       if (msg.toString().startsWith(RES) && !completed && !list.includes(rinfo.address)) {
         list.push(rinfo.address);
+        debug(`found: ${rinfo.address}`);
       }
     });
     socket.bind(UDP_PORT, address, () => {
@@ -53,6 +58,7 @@ const interfaceSearch = (address: string): Promise<string[]> =>
       socket.addMembership(MULTICAST_ADDRESS, address);
       timer = setTimeout(complete, UDP_TIMEOUT);
       socket.send(REQ, UDP_PORT, '255.255.255.255', err => err && complete());
+      debug(`start: ${address}`);
     });
   });
 
@@ -82,7 +88,14 @@ export type NetSession = Session<Socket> & API;
  * @internal For documentation purposes only. Use singleton instance exported as default
  */
 export class NetBinding extends TypedEmitter<NetBindingEvents> {
-  private sessions: Record<string, NetSession> = {};
+  #sessions: Record<string, NetSession> = {};
+
+  /**
+   * Get all network sessions
+   */
+  get sessions(): Readonly<Record<string, NetSession>> {
+    return this.#sessions;
+  }
 
   /**
    * Connect to network device and open a new session
@@ -92,14 +105,17 @@ export class NetBinding extends TypedEmitter<NetBindingEvents> {
   open(host: string, port = TCP_PORT): NetSession {
     const address = `${host}:${port}`;
     if (this.sessions[address]) return this.sessions[address];
-    const socket = createConnection(port, host, () => this.emit('open', address));
+    const socket = createConnection(port, host, () => {
+      this.emit('open', address);
+      debug(`connection ${address} opened`);
+    });
     socket.setKeepAlive(true, KEEP_ALIVE_DELAY);
     const connection = new Connection(socket, true, TCP_TIMEOUT);
     connection.once('close', () => this.close(host, port));
     const session = new Session(connection);
-    this.sessions[address] = session;
+    this.#sessions[address] = session;
     socket.on('close', () => {
-      delete this.sessions[address];
+      delete this.#sessions[address];
       session.close();
       this.emit('close', address);
     });
@@ -119,22 +135,16 @@ export class NetBinding extends TypedEmitter<NetBindingEvents> {
       const { connection } = session;
       const { stream: socket } = connection;
       if (!socket.destroyed) socket.destroy();
+      debug(`connection ${address} closed`);
     }
     return session !== undefined;
-  }
-
-  /**
-   * Get all network sessions
-   */
-  getSessions(): NetSession[] {
-    return Object.values(this.sessions);
   }
 
   /**
    * Close all network sessions
    */
   release(): void {
-    this.getSessions().forEach(session => session.close());
+    Object.values(this.sessions).forEach(session => session.close());
   }
 }
 

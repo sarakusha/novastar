@@ -1,4 +1,4 @@
-import AddressMapping from '@novastar/native/build/main/generated/AddressMapping';
+import AddressMapping from '@novastar/native/lib/generated/AddressMapping';
 
 const knownAddresses = new Map<number, string[]>();
 

@@ -1,5 +1,5 @@
-import { makeStruct } from '@novastar/native/build/main/common';
-import { ScreenAdjustParams } from '@novastar/native/build/main/generated/ScreenAdjustParams';
+import { makeStruct } from '@novastar/native/lib/common';
+import { ScreenAdjustParams } from '@novastar/native/lib/generated/ScreenAdjustParams';
 import Struct from 'typed-struct';
 
 const ScreenAdjustParam = new Struct('ScreenAdjustParam')

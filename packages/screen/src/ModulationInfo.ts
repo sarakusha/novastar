@@ -1,9 +1,9 @@
-import { makeStruct } from '@novastar/native/build/main/common';
-import { ModulationModeTypeEnum } from '@novastar/native/build/main/generated/ModulationModeType';
-import { SenderModulationInfo } from '@novastar/native/build/main/generated/SenderModulationInfo';
+import { makeStruct } from '@novastar/native/lib/common';
+import { ModulationModeTypeEnum } from '@novastar/native/lib/generated/ModulationModeType';
+import { SenderModulationInfo } from '@novastar/native/lib/generated/SenderModulationInfo';
 import Struct, { typed } from 'typed-struct';
 
-import { crc } from './common';
+import { crc16 } from './common';
 
 export const SenderModulationFlag = 'SSPE';
 export const SenderModulationDataVer = 1002;
@@ -39,7 +39,7 @@ const useDistributor = [ModulationModeTypeEnum.OneToEight, ModulationModeTypeEnu
 
 export const decodeModulationInfo = (buf: Buffer): Required<SenderModulationInfo>[] => {
   const header = new ModulationInfoHeader(buf);
-  if (crc(buf.slice(ModulationInfoHeader.getOffsetOf('crc') + 2), 0) !== header.crc)
+  if (crc16(buf.slice(ModulationInfoHeader.getOffsetOf('crc') + 2), 0) !== header.crc)
     throw new Error('Invalid ModulationInfoHeader crc');
   const result: Required<SenderModulationInfo>[] = [];
   for (
@@ -90,6 +90,6 @@ export const encodeModulationInfo = (
     offset += size;
   }
   const raw = ModulationInfoHeader.raw(infoHeader);
-  infoHeader.crc = crc(raw.slice(ModulationInfoHeader.getOffsetOf('crc') + 2), 0);
+  infoHeader.crc = crc16(raw.slice(ModulationInfoHeader.getOffsetOf('crc') + 2), 0);
   return raw;
 };

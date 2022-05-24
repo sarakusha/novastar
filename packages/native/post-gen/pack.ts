@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs, { readdirSync } from 'fs';
 import path from 'path';
 
 import { notEmpty } from '@novastar/codec';
@@ -34,11 +34,22 @@ const hasExportKeyword = (st: Statement): boolean =>
 const isWithDefaultInitializer = makeIsWithDefaultInitializer(1);
 
 const dir = path.resolve(__dirname, '../generated');
-const files = fs
-  .readdirSync(dir)
-  .filter(filename => filename !== 'Session.ts')
-  .map(filename => path.join(dir, filename))
-  .filter(pathname => fs.statSync(pathname).isFile());
+
+function getFiles(directory: string): string[] {
+  const entries = readdirSync(directory, { withFileTypes: true });
+  return entries.reduce((acc, dirent) => {
+    const res = path.resolve(directory, dirent.name);
+    return [...acc, ...(dirent.isDirectory() ? getFiles(res) : [res])];
+  }, [] as string[]);
+}
+
+const files = getFiles(dir);
+
+// const files = fs
+//   .readdirSync(dir)
+//   .filter(filename => filename !== 'Session.ts')
+//   .map(filename => path.join(dir, filename))
+//   .filter(pathname => fs.statSync(pathname).isFile());
 
 const withDefaults: Record<string, number> = {};
 const buffers: Record<string, number> = {};
@@ -47,7 +58,7 @@ const config = getTSConfig();
 const program = ts.createProgram(files, config);
 
 const parseUnions = (): UnionMap => {
-  const pathname = path.join(dir, 'unions.ts');
+  const pathname = path.join(dir, 'unions', 'index.ts');
   const source = program.getSourceFile(pathname);
   if (!source) throw new TypeError(`File not found: ${pathname}`);
   const stats = source.statements
@@ -61,7 +72,10 @@ const parseUnions = (): UnionMap => {
             declarations: [decl],
           },
         } = stat;
-        const { initializer, name } = decl;
+        const {
+          initializer,
+          name,
+        } = decl;
         if (!initializer || !ts.isIdentifier(name) || !ts.isCallExpression(initializer))
           return undefined;
         const {
@@ -80,7 +94,7 @@ const parseUnions = (): UnionMap => {
           .map(({ escapedText }) => escapedText.toString());
         return [baseTypeName, derivedNames];
       })
-      .filter(notEmpty)
+      .filter(notEmpty),
   );
 };
 
@@ -159,15 +173,15 @@ function createExportStatement(key: string, a: ts.Expression, b?: ts.Expression)
     expression = factory.createNewExpression(
       factory.createIdentifier('BufferFromBase64'),
       undefined,
-      [factory.createStringLiteral(key, true), a]
+      [factory.createStringLiteral(key, true), a],
     );
   }
   return factory.createVariableStatement(
     [factory.createModifier(SyntaxKind.ExportKeyword)],
     factory.createVariableDeclarationList(
       [factory.createVariableDeclaration(key, undefined, undefined, expression)],
-      NodeFlags.Const
-    )
+      NodeFlags.Const,
+    ),
   );
 }
 
@@ -182,7 +196,7 @@ const updateWithDefault = (prop: PropertyAssignment): PropertyAssignment => {
       return factory.updatePropertyAssignment(
         prop,
         prop.name,
-        factory.createPropertyAccessExpression(factory.createIdentifier('common'), key)
+        factory.createPropertyAccessExpression(factory.createIdentifier('common'), key),
       );
     }
   }
@@ -200,7 +214,7 @@ const updateBufferInitializer = (prop: PropertyAssignment): PropertyAssignment =
       return factory.updatePropertyAssignment(
         prop,
         prop.name,
-        factory.createPropertyAccessExpression(factory.createIdentifier('common'), key)
+        factory.createPropertyAccessExpression(factory.createIdentifier('common'), key),
       );
     }
   }
@@ -213,8 +227,8 @@ files
   .filter(
     filename =>
       !['AddressMapping.ts', 'unions.ts', 'SingleRefreshRateParam.ts'].includes(
-        path.basename(filename)
-      )
+        path.basename(filename),
+      ),
   )
   .forEach(sourceName => {
     const source = program.getSourceFile(sourceName);
@@ -240,25 +254,25 @@ stats.unshift(
     factory.createImportClause(
       false,
       undefined,
-      factory.createNamespaceImport(factory.createIdentifier('t'))
+      factory.createNamespaceImport(factory.createIdentifier('t')),
     ),
-    factory.createStringLiteral('io-ts', true)
+    factory.createStringLiteral('io-ts', true),
   ),
   makeImport('../generated/MaxValue', 'MaxValue'),
   makeImport(
     './integers',
     undefined,
-    ...['withDefault', 'BufferFromBase64', ...integerImports].sort()
-  )
+    ...['withDefault', 'BufferFromBase64', ...integerImports].sort(),
+  ),
 );
 
 stats.length &&
-  ts.addSyntheticLeadingComment(
-    stats[0],
-    ts.SyntaxKind.MultiLineCommentTrivia,
-    ' Automatically generated ',
-    true
-  );
+ts.addSyntheticLeadingComment(
+  stats[0],
+  ts.SyntaxKind.MultiLineCommentTrivia,
+  ' Automatically generated ',
+  true,
+);
 
 const typesPath = path.resolve(__dirname, '../common/types.ts');
 const types = makeValidSourceFile(typesPath, stats);

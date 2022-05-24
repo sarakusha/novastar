@@ -39,7 +39,6 @@ describe('test ts', () => {
           console.log('type', typeChecker.typeToString(type));
         }
       });
-    ts.SyntaxKind;
     console.log('Ok');
   });
 });

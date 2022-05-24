@@ -1,11 +1,11 @@
 {
   "name": "@novastar/codec",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.3",
   "description": "Core API for communication with devices using NovaStar protocol",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
-  "main": "build/main/index.js",
-  "typings": "build/main/index.d.ts",
-  "module": "build/module/index.js",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "module": "lib/index.mjs",
   "license": "MIT",
   "keywords": [
     "NovaStar",
@@ -20,9 +20,10 @@
   },
   "homepage": "https://sarakusha.github.io/novastar/",
   "scripts": {
-    "build": "run-p build:*",
+    "build": "run-p build:* && yarn hybrid",
     "build:main": "tsc -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",
+    "hybrid": "node ../../scripts/hybrid.mjs",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
     "fix:lint": "eslint src --ext .ts --fix -c ../../.eslintrc-prod.js",
@@ -41,13 +42,14 @@
     "cov:lcov": "jest src --coverage --coverageReporters=lcov",
     "cov:send": "run-s cov:lcov && curl -s https://codecov.io/bash | bash",
     "release": "standard-version",
-    "clean": "rimraf {build/*,coverage}"
+    "clean": "rimraf {build/*,coverage}",
+    "yalc:publish": "yalc publish --push",
+    "yalc:update": "yarn build && yalc publish --push"
   },
   "engines": {
     "node": ">=14"
   },
   "dependencies": {
-    "debug": "^4.3.2",
     "pump": "^3.0.0",
     "tiny-typed-emitter": "^2.0.3",
     "typed-struct": "^2.2.0"
@@ -56,11 +58,12 @@
     "@types/debug": "^4.1.7",
     "@types/pump": "^1.1.1"
   },
+  "peerDependencies": {
+    "debug": "^4.3.3"
+  },
   "files": [
-    "build/main",
-    "build/module",
+    "lib",
     "!**/*.spec.*",
-    "!**/*.json",
     "!**/*.tsbuildinfo",
     "CHANGELOG.md",
     "LICENSE",

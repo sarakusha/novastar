@@ -4,9 +4,8 @@ import { Transform, TransformCallback, TransformOptions } from 'stream';
 import debugFactory from 'debug';
 
 import Request from './Request';
-import { printBuffer } from './helper';
 
-const debug = debugFactory('codec:encoder');
+const debug = debugFactory('novastar:encoder');
 
 export default class NovastarEncoder extends Transform {
   constructor(options?: TransformOptions) {
@@ -22,7 +21,7 @@ export default class NovastarEncoder extends Transform {
       if (pkg instanceof Request) {
         Request.crc(pkg, true);
         const raw = Request.raw(pkg);
-        debug(`<<< ${printBuffer(raw)}`);
+        debug(`<<< ${pkg} [${pkg.serno}:${pkg.tag ?? ''}]`);
         this.push(raw);
       }
     });

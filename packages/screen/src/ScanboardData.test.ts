@@ -1,7 +1,7 @@
 import path from 'path';
 
 import { printBuffer } from '@novastar/codec';
-import type { ScanBoardProperty } from '@novastar/native/build/main/generated/ScanBoardProperty';
+import type { ScanBoardProperty } from '@novastar/native/lib/generated/ScanBoardProperty';
 
 // import sortBy from 'lodash/sortBy';
 // import { notEmptyProps } from './common';

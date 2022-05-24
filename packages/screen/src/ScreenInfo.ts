@@ -1,13 +1,13 @@
-import { LEDDisplyTypeEnum } from '@novastar/native/build/main/generated/LEDDisplyType';
-import ScreenInfoRelativeAddress from '@novastar/native/build/main/generated/ScreenInfoRelativeAddress';
+import { LEDDisplyTypeEnum } from '@novastar/native/lib/generated/LEDDisplyType';
+import ScreenInfoRelativeAddress from '@novastar/native/lib/generated/ScreenInfoRelativeAddress';
 import debugFactory from 'debug';
 
 import { decodeComplexLEDDisplayInfo } from './ComplexScreen';
 import { decodeSimpleLEDDisplayInfo } from './SimpleSingleScreen';
 import { decodeStandardLEDDisplayInfo } from './StandardScreen';
-import { crc, LEDDisplayInfo } from './common';
+import { crc16, LEDDisplayInfo } from './common';
 
-const debug = debugFactory('screen:parseScreenInfo');
+const debug = debugFactory('novastar:ScreenInfo');
 const ScreenDataNewVer = 1005;
 
 export type DVI1600Info = {
@@ -25,7 +25,7 @@ export type DVI1600Info = {
 function decodeDVI1600Info(data: Buffer): DVI1600Info | undefined {
   const StartAddressIndex = 28;
   const scrCrc = data.readUInt16LE(ScreenInfoRelativeAddress.SCREEN_HEADERINFO_CRC);
-  if (crc(data.slice(ScreenInfoRelativeAddress.SCREEN_HEADERINFO_RESERVED), 0) !== scrCrc)
+  if (crc16(data.slice(ScreenInfoRelativeAddress.SCREEN_HEADERINFO_RESERVED), 0) !== scrCrc)
     throw new TypeError('Invalid CRC');
   const screenCount = data.readUInt8(ScreenInfoRelativeAddress.SCREEN_HEADERINFO_SCREENCOUNT);
   const typeOffset =
@@ -54,7 +54,7 @@ export type ScreenInfo = {
  */
 export function decodeScreenInfo(data: Buffer): ScreenInfo {
   if (
-    crc(data.slice(ScreenInfoRelativeAddress.SCREEN_HEADERINFO_RESERVED), 0) !==
+    crc16(data.slice(ScreenInfoRelativeAddress.SCREEN_HEADERINFO_RESERVED), 0) !==
     data.readUInt16LE(ScreenInfoRelativeAddress.SCREEN_HEADERINFO_CRC)
   )
     throw new Error('Invalid screen info crc');

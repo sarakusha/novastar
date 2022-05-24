@@ -22,7 +22,11 @@ export const PointFromString = new t.Type<Point, `${bigint}, ${bigint}`>(
       const values = u.split(',');
       if (values.length === 2) {
         const [x, y] = values.map(Number);
-        if (Number.isInteger(x) && Number.isInteger(y)) return t.success({ x, y });
+        if (Number.isInteger(x) && Number.isInteger(y))
+          return t.success({
+            x,
+            y,
+          });
       }
     } else if (Point.is(u)) return t.success(u);
     return t.failure(u, c, `Invalid Point: ${typeof u}, ${JSON.stringify(u)}`);
@@ -73,7 +77,7 @@ export const XMLArray = <C extends t.Mixed>(item: C, itemTypeName: string): t.Ar
     item
   );
 type Mix<A, B> = {
-  [P in keyof (A | B)]: Partial<A[P]> | B[P];
+  [P in keyof (A | B)]: A[P] | B[P];
 };
 type FilterFlags<Base, Condition> = {
   [Key in keyof Base]: Base[Key] extends Condition ? Key : never;

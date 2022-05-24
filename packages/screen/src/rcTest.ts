@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
-import { ChipTypeEnum } from '@novastar/native/build/main/generated/ChipType';
-import { TestModeEnum } from '@novastar/native/build/main/generated/TestMode';
+import { ChipTypeEnum } from '@novastar/native/lib/generated/ChipType';
+import { TestModeEnum } from '@novastar/native/lib/generated/TestMode';
 import serial, { findSendingCards } from '@novastar/serial';
 import chalk from 'chalk';
 
@@ -89,7 +89,7 @@ const find = async (): Promise<void> => {
       console.log(chalk.red('Устройства не найдены'));
       return;
     }
-    const session: SessionAPI = await serial.open(port.path);
+    const session: SessionAPI = await serial.open({ path: port.path, baudRate: 115200 });
     screen = new ScreenConfigurator(session);
     await screen.reload();
     console.log(`Найден ${screen.devices[0]?.name}`);
@@ -116,24 +116,23 @@ const setMode = async (mode: TestModeEnum): Promise<void> => {
 };
 
 const readChipType = async (): Promise<void> => {
-  const chipType = await screen?.ReadChipType();
-  if (chipType === null || chipType === undefined) {
-    console.log(chalk.red('Не удалось считать тип чипа'));
+  if (screen) {
+    const chipType = await screen.ReadFirstChipType();
+    if (chipType === null) {
+      console.log(chalk.red('Не удалось считать тип чипа'));
+    } else {
+      console.log(chalk.green(ChipTypeEnum[chipType]));
+    }
+    for await (const rem of screen.ReadReceivingCardFPGARemarks()) {
+      console.log(rem ? chalk.green(rem) : chalk.red('Не удалось прочитать FPGA'));
+    }
+    for await (const rem of await screen.ReadReceivingCardMCURemarks()) {
+      console.log(rem ? chalk.green(rem) : chalk.red('Не удалось прочитать MCU'));
+    }
   } else {
-    console.log(chalk.green(ChipTypeEnum[chipType]));
+    console.log(chalk.red('Хост не найден'));
   }
-  const fpga = await screen?.ReadReceivingCardFPGARemarks();
-  if (fpga && fpga.length > 0) {
-    fpga.forEach(rem => console.log(chalk.green(rem)));
-  } else {
-    console.log(chalk.red('Не удалось прочитать FPGA'));
-  }
-  const mcu = await screen?.ReadReceivingCardMCURemarks();
-  if (mcu && mcu.length > 0) {
-    mcu.forEach(rem => console.log(chalk.green(rem)));
-  } else {
-    console.log(chalk.red('Не удалось прочитать MCU'));
-  }
+
   await delay(2000);
 };
 

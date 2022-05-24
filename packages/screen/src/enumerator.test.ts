@@ -1,28 +1,31 @@
-/* eslint-disable unused-imports/no-unused-imports */
-import { DeviceType, printBuffer, Request } from '@novastar/codec';
-import AddressMapping from '@novastar/native/build/main/generated/AddressMapping';
-import { TestModeEnum } from '@novastar/native/build/main/generated/TestMode';
-import net, { findNetDevices } from '@novastar/net';
+
+import AddressMapping from '@novastar/native/lib/generated/AddressMapping';
 import serial, { findSendingCards } from '@novastar/serial';
+import { inspect } from 'util';
+import { DeviceType, Request } from '@novastar/codec';
+import { TestModeEnum } from '@novastar/native/lib/generated/TestMode';
+import net, { findNetDevices } from '@novastar/net';
 
 import './api';
 import ScreenConfigurator from './ScreenConfigurator';
 import { SessionAPI } from './Session';
 
-jest.setTimeout(20000);
+jest.setTimeout(50000);
+
+const delay = (ms: number): Promise<void> => new Promise(resolve => { setTimeout(resolve, ms); })
 
 describe('enumerator', () => {
   let session: SessionAPI;
   beforeAll(async () => {
-    // const [address] = await findNetDevices();
-    // if (address) {
-    //   session = net.open(address);
-    // }
-    // console.log({ address });
-    const [port] = await findSendingCards();
-    if (port) {
-      session = await serial.open(port.path);
+    const [address] = await findNetDevices();
+    if (address) {
+      session = net.open(address);
     }
+    console.log({ address });
+    // const [port] = await findSendingCards();
+    // if (port) {
+    //   session = await serial.open({ path: port.path, baudRate: 115200 });
+    // }
   });
   test('devices', async () => {
     if (session) {
@@ -32,16 +35,34 @@ describe('enumerator', () => {
 
       const configurator = new ScreenConfigurator(session);
       await configurator.reload();
-      const remarks = await session.ReadScanner_FPGAProgramRemarks(0, 0, 0);
+      // const data = Buffer.from([0, 0, 0, 0, 85, 170, 1, 2, 128, 255, 129]);
+      //
+      // const req = new Request(data);
+      // req.address = AddressMapping.FuncCard_WriteOutDeviceAddr;
+      // req.deviceType = DeviceType.FunctionCard;
+      // await session.connection.send(req);
+      // await delay(1000);
+      // const val = await session.FuncCard_ReadOutDeviceValue_1(0,0,0);
+      // const val = await configurator.ReadFirstFuncCardLightSensor();
+      // console.log({ val });
+      // await configurator.WriteBrightness(0.1);
+      // await configurator.WriteDisplayMode(TestModeEnum.InclineLine_Mode);
+      // console.log({ brightness: await configurator.ReadFirstBrightness() });
+      for await (const status of configurator.ReadHWStatus()) {
+        console.log(inspect(status, false, null));
+      }
+      await delay(35000);
+      await configurator.reload();
+      // const remarks = await session.ReadScanner_FPGAProgramRemarks(0, 0, 0);
       // const req = new Request(AddressMapping.CoefficientOccupancy);
       // req.address = AddressMapping.CoefficientAddr;
       // req.deviceType = DeviceType.ReceivingCard;
       // const res = await session.connection.send(req);
       // console.log(res.ack === 0, res.data.length, printBuffer(res.data));
-      console.log({ remarks: remarks.toString().trim() });
-      await configurator.WriteBrightness(50);
-      await configurator.ReadBrightness();
-      await configurator.ReadChipType(0);
+      // console.log({ remarks: remarks.toString().trim() });
+      // await configurator.WriteBrightness(50);
+      // await configurator.ReadBrightness();
+      // await configurator.ReadChipType(0);
       // await configurator.WriteDisplayMode(TestModeEnum.InclineLine_Mode);
       // await configurator.save();
       // const devices = await enumerateDevices(session);
@@ -59,5 +80,13 @@ describe('enumerator', () => {
       // await screen.read1();
     }
   });
+  // test('test', () => {
+  //   enum Test {
+  //     a,
+  //     b,
+  //     c,
+  //   }
+  //   console.log(Object.values(Test));
+  // });
   afterAll(() => session?.close());
 });
