@@ -4746,7 +4746,7 @@ iconv-lite@^0.4.24:
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
-iconv-lite@^0.6.2, iconv-lite@^0.6.3:
+iconv-lite@^0.6.2:
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.6.3.tgz#a52f80bf38da1952eb5c681790719871a1a72501"
   integrity sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==
@@ -8278,11 +8278,9 @@ type-fest@^1.0.1, type-fest@^1.2.1, type-fest@^1.2.2:
   integrity sha512-yGSza74xk0UG8k+pLh5oeoYirvIiWo5t0/o3zHHAO2tRDiZcxWP7fywNlXhqb6/r6sWvwi+RsyQMWhVLe4BVuA==
 
 typed-struct@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/typed-struct/-/typed-struct-2.2.0.tgz#57e4470e705b23d4de839fe9c71cc88f623bde38"
-  integrity sha512-pi5FY9ozGuC1mGg9BlAwzOC8LUSFmdxiaRYkD6p6yzexbwApT4HjIcujy5zTZs1B5G4bpFA3INF7NZzopfbtXA==
-  optionalDependencies:
-    iconv-lite "^0.6.3"
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/typed-struct/-/typed-struct-2.3.0.tgz#c8b6085e1c321769de62e595f4d9422511ce9c1e"
+  integrity sha512-pPinkWRYs1d9EqBc0aREOoeDOhvuGsAWKgQQA6/ZbPuUheTAdxunXlCzzOZ/ncItpXpIK5PPHLbqj2E9c6c67w==
 
 typedarray-to-buffer@^3.1.5:
   version "3.1.5"
