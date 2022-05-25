@@ -1,3 +1,4 @@
 bak/
 node_modules/
 build/
+eslint-plugin-import-resolver.js

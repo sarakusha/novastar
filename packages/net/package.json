@@ -1,10 +1,17 @@
 {
   "name": "@novastar/net",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "description": "Network binding for @novastar/codec",
   "main": "build/main/net.js",
-  "typings": "build/main/net.d.ts",
+  "types": "build/module/net.d.ts",
   "module": "build/module/net.js",
+  "exports": {
+    ".": {
+      "require": "./build/main/net.js",
+      "default": "./build/module/net.js"
+    },
+    "./package.json": "./package.json"
+  },
   "license": "MIT",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
   "repository": {
@@ -31,12 +38,11 @@
     "test:prettier": "prettier \"src/**/*.ts\" --list-different",
     "test:spelling": "cspell \"{README.md,.github/*.md,src/**/*.ts}\"",
     "test:unit": "jest src",
-    "yalc:publish": "yalc publish --push",
+    "yalc:push": "yalc push",
     "yalc:update": "yarn build && yalc publish --push"
   },
   "files": [
-    "build/main",
-    "build/module",
+    "build",
     "!**/*.spec.*",
     "!**/*.tsbuildinfo",
     "CHANGELOG.md",
@@ -57,7 +63,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@novastar/codec": "2.0.0-alpha.3",
+    "@novastar/codec": "2.0.0-alpha.4",
     "tiny-typed-emitter": "^2.1.0"
   },
   "peerDependencies": {

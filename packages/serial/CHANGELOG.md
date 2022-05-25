@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.4](https://github.com/sarakusha/novastar/compare/v1.0.5...v2.0.0-alpha.4) (2022-05-25)
+
+
+### Features
+
+* added methods to populate the list of known devices ([9d71d33](https://github.com/sarakusha/novastar/commit/9d71d33a7899657b8c7166eb00aa8432e151f2e7))
+
+
+
+
+
 # [2.0.0-alpha.3](https://github.com/sarakusha/novastar/compare/v1.0.5...v2.0.0-alpha.3) (2022-05-24)
 
 

@@ -1,8 +1,8 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import { X2jOptionsOptional, XMLParser } from 'fast-xml-parser';
 import { compress, decompress } from '@blu3r4y/lzma';
+import { X2jOptionsOptional, XMLParser } from 'fast-xml-parser';
 
 import { pack, toHex, unpack } from './common';
 import { loadScanBoardConfig, loadScreenConfig, loadSystemConfig } from './configs';
@@ -75,9 +75,7 @@ describe('cfg', () => {
     console.log({ srcLength: src.length });
     const unpacked = await unpack(comp.slice(0, 5), src.length, comp.slice(13));
     const uncomp = await new Promise<string>((resolve, reject) => {
-      decompress(lzma1, (res, err) =>
-        res ? resolve(Buffer.from(res).toString()) : reject(err)
-      );
+      decompress(lzma1, (res, err) => (res ? resolve(Buffer.from(res).toString()) : reject(err)));
     });
     console.log({
       uncomp,

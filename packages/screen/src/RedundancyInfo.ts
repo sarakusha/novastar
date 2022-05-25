@@ -1,5 +1,5 @@
-import { makeStruct } from '@novastar/native/lib/common';
-import { SenderRedundancyInfo } from '@novastar/native/lib/generated/SenderRedundancyInfo';
+import { SenderRedundancyInfo } from '@novastar/native/SenderRedundancyInfo';
+import { makeStruct } from '@novastar/native/common';
 import Struct, { ExtractType } from 'typed-struct';
 
 import { crc16 } from './common';

@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import type { ScanBoardProperty } from '@novastar/native/lib/generated/ScanBoardProperty';
+import type { ScanBoardProperty } from '@novastar/native/ScanBoardProperty';
 
 import ScanBoardCapability from './ScanBoardCapabilty';
 

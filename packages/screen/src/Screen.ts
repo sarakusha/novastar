@@ -1,5 +1,5 @@
 import { Request } from '@novastar/codec';
-import SoftwareSpaceBaseAddress from '@novastar/native/lib/generated/SoftwareSpaceBaseAddress';
+import SoftwareSpaceBaseAddress from '@novastar/native/SoftwareSpaceBaseAddress';
 
 import { SessionAPI } from './Session';
 

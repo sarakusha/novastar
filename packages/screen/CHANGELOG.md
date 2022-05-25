@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.4](https://github.com/sarakusha/novastar/compare/v1.0.5...v2.0.0-alpha.4) (2022-05-25)
+
+**Note:** Version bump only for package @novastar/screen
+
+
+
+
+
 # [2.0.0-alpha.3](https://github.com/sarakusha/novastar/compare/v1.0.5...v2.0.0-alpha.3) (2022-05-24)
 
 **Note:** Version bump only for package @novastar/screen

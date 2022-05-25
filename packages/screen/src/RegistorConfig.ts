@@ -1,4 +1,4 @@
-import { ChipTypeEnum } from '@novastar/native/lib/generated/ChipType';
+import { ChipTypeEnum } from '@novastar/native/ChipType';
 import Struct, { ExtractType, typed } from 'typed-struct';
 
 export const RegistorConfig = new Struct('RegistorConfig')

@@ -1,12 +1,19 @@
 {
   "name": "@novastar/serial",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "description": "Serial binding for @novastar/codec",
   "license": "MIT",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
   "main": "build/main/serial.js",
-  "typings": "build/main/serial.d.ts",
+  "types": "build/module/serial.d.ts",
   "module": "build/module/serial.js",
+  "exports": {
+    ".": {
+      "require": "./build/main/serial.js",
+      "default": "./build/module/serial.js"
+    },
+    "./package.json": "./package.json"
+  },
   "keywords": [
     "novastar",
     "DOOH",
@@ -19,7 +26,7 @@
     "directory": "packages/serial"
   },
   "dependencies": {
-    "@novastar/codec": "2.0.0-alpha.3",
+    "@novastar/codec": "2.0.0-alpha.4",
     "@serialport/bindings-cpp": "^10.7.0",
     "conf": "^10.1.1",
     "serialport": "^10.4.0",
@@ -40,7 +47,7 @@
     "test:prettier": "prettier \"src/**/*.ts\" --list-different",
     "test:spelling": "cspell \"{README.md,.github/*.md,src/**/*.ts}\"",
     "test:unit": "jest src",
-    "yalc:publish": "yalc publish --push",
+    "yalc:push": "yalc push",
     "yalc:update": "yarn build && yalc publish --push"
   },
   "files": [

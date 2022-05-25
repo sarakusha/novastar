@@ -213,7 +213,7 @@ namespace gen
             var name = node.Identifier.ValueText;
             var lines = new List<(string line, string comment)>
             {
-                ("import * as common from '../common';\n", null),
+                ("import * as common from '../lib/common';\n", null),
                 ("/** @category Enums */", null),
                 ($"export enum {name}Enum {{", null)
             };
@@ -378,7 +378,7 @@ namespace gen
                 imports = imports.Where(typeName => typeName != "DateTime").ToArray();
             }
 
-            lines.Add(($"\nimport * as common from '../common';\n", null));
+            lines.Add(($"\nimport * as common from '../lib/common';\n", null));
             lines.AddRange(imports.Select(external =>
                 ((string line, string comment))(
                     $"import {{ {(baseTypes.Contains(external) && GetBaseTypeT(external, baseClasses) != external ? $"{GetBaseTypeT(external, baseClasses)}, {external}" : (enums.Contains(external) ? $"{external}, {external}Enum" : external))} }} from './{external}';",
@@ -1601,7 +1601,6 @@ namespace gen
                 ++total;
             }
 
-/*
             index.Add("api");
             using StreamWriter indexFile = new(Path.Join(outDir, "index.ts"));
             indexFile.WriteLine("// Automatically generated!\n");
@@ -1611,7 +1610,6 @@ namespace gen
                 indexFile.WriteLine(
                     $"export {(export == "Session" ? $"{{ default as {export}}}" : "*")} from './{export}';");
             }
- */
 
             WriteLine($"Generated {total} files");
 

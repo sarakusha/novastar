@@ -1,9 +1,9 @@
-import { makeStruct } from '@novastar/native/lib/common';
-import { CabinetInDevice } from '@novastar/native/lib/generated/CabinetInDevice';
-import { DviSelectModeEnum } from '@novastar/native/lib/generated/DviSelectMode';
-import { LEDDisplyTypeEnum } from '@novastar/native/lib/generated/LEDDisplyType';
-import { OnePortLoadInfo } from '@novastar/native/lib/generated/OnePortLoadInfo';
-import { ScreenDataInSoftSpace } from '@novastar/native/lib/generated/ScreenDataInSoftSpace';
+import { CabinetInDevice } from '@novastar/native/CabinetInDevice';
+import { DviSelectModeEnum } from '@novastar/native/DviSelectMode';
+import { LEDDisplyTypeEnum } from '@novastar/native/LEDDisplyType';
+import { OnePortLoadInfo } from '@novastar/native/OnePortLoadInfo';
+import { ScreenDataInSoftSpace } from '@novastar/native/ScreenDataInSoftSpace';
+import { makeStruct } from '@novastar/native/common';
 import { v4 as uuid } from 'uuid';
 
 import { isComplexScreen, isSimpleScreen, isStandardScreen, LEDDisplayInfo } from './common';

@@ -1,5 +1,5 @@
-import { makeStruct } from '@novastar/native/lib/common';
-import { ScreenPortAddrInfo } from '@novastar/native/lib/generated/ScreenPortAddrInfo';
+import { ScreenPortAddrInfo } from '@novastar/native/ScreenPortAddrInfo';
+import { makeStruct } from '@novastar/native/common';
 import range from 'lodash/range';
 
 import {

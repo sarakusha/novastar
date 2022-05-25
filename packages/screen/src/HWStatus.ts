@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import AddressMapping from '@novastar/native/lib/generated/AddressMapping';
+import AddressMapping from '@novastar/native/AddressMapping';
 import Struct, { ExtractType } from 'typed-struct';
 
 const TempInfo = new Struct('TempInfo')

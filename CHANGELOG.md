@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.4](https://github.com/sarakusha/novastar/compare/v1.0.5...v2.0.0-alpha.4) (2022-05-25)
+
+
+### Bug Fixes
+
+* **connection:** catching data transmission errors ([8e74593](https://github.com/sarakusha/novastar/commit/8e74593453fec98aebb84134d67e833e57a71f36))
+* decoding many packets at a time ([6fd7b3f](https://github.com/sarakusha/novastar/commit/6fd7b3f726d5542d498f965881f4ce91d258c6e9))
+
+
+### Features
+
+* added debug output ([91e891a](https://github.com/sarakusha/novastar/commit/91e891a8103d9c59665353b99a851628bfec3c44))
+* added methods to populate the list of known devices ([9d71d33](https://github.com/sarakusha/novastar/commit/9d71d33a7899657b8c7166eb00aa8432e151f2e7))
+* added trySend method ([87e5ec4](https://github.com/sarakusha/novastar/commit/87e5ec428c12bf4b9a9bca0a767ccfb3a0f4d1da))
+* automatic splitting into chunks when the maximum data size is exceeded ([1198d22](https://github.com/sarakusha/novastar/commit/1198d228a841b84292cd0c7f465c0be655c991b4))
+* custom errors ([79df51f](https://github.com/sarakusha/novastar/commit/79df51f5b935ecad0961926c649ed785723eb0b2))
+* **session:** expandable session ([e5a3024](https://github.com/sarakusha/novastar/commit/e5a30243585467caba7cb60ce965e57ecac9d9b4))
+* some helper functions ([14f504f](https://github.com/sarakusha/novastar/commit/14f504f6fc65d45c13629976ddff0a38a1f3d13d))
+* some helper functions ([09acf48](https://github.com/sarakusha/novastar/commit/09acf48e2956d84571e1d8d6541cc61f0add3023))
+
+
+### Reverts
+
+* 1.0.8 ([a59bda0](https://github.com/sarakusha/novastar/commit/a59bda0e9acd1660280dc32ac4a0e732c4148ee4))
+
+
+### BREAKING CHANGES
+
+* **session:** Session no longer contains API methods out of the box
+
+
+
+
+
 # [2.0.0-alpha.3](https://github.com/sarakusha/novastar/compare/v1.0.5...v2.0.0-alpha.3) (2022-05-24)
 
 

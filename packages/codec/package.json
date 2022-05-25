@@ -1,11 +1,30 @@
 {
   "name": "@novastar/codec",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "description": "Core API for communication with devices using NovaStar protocol",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
-  "module": "lib/index.mjs",
+  "main": "build/main/index.js",
+  "types": "build/module/index.d.ts",
+  "module": "build/module/index.js",
+  "exports": {
+    ".": {
+      "require": "./build/main/index.js",
+      "default": "./build/module/index.js"
+    },
+    "./": {
+      "require": "./build/main/",
+      "default": "./build/module/"
+    },
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./build/module/*",
+        "./build/module/index.d.ts"
+      ]
+    }
+  },
   "license": "MIT",
   "keywords": [
     "NovaStar",
@@ -20,10 +39,9 @@
   },
   "homepage": "https://sarakusha.github.io/novastar/",
   "scripts": {
-    "build": "run-p build:* && yarn hybrid",
+    "build": "run-p build:*",
     "build:main": "tsc -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",
-    "hybrid": "node ../../scripts/hybrid.mjs",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
     "fix:lint": "eslint src --ext .ts --fix -c ../../.eslintrc-prod.js",
@@ -43,7 +61,7 @@
     "cov:send": "run-s cov:lcov && curl -s https://codecov.io/bash | bash",
     "release": "standard-version",
     "clean": "rimraf {build/*,coverage}",
-    "yalc:publish": "yalc publish --push",
+    "yalc:push": "yalc push",
     "yalc:update": "yarn build && yalc publish --push"
   },
   "engines": {
@@ -62,7 +80,7 @@
     "debug": "^4.3.3"
   },
   "files": [
-    "lib",
+    "build",
     "!**/*.spec.*",
     "!**/*.tsbuildinfo",
     "CHANGELOG.md",

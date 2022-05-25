@@ -1,7 +1,7 @@
-import { AudioControlModeEnum } from '@novastar/native/lib/generated/AudioControlMode';
-import { DviSelectModeEnum } from '@novastar/native/lib/generated/DviSelectMode';
-import { HDEnableModeEnum } from '@novastar/native/lib/generated/HDEnableMode';
-import { VedioSelectModeEnum } from '@novastar/native/lib/generated/VedioSelectMode';
+import { AudioControlModeEnum } from '@novastar/native/AudioControlMode';
+import { DviSelectModeEnum } from '@novastar/native/DviSelectMode';
+import { HDEnableModeEnum } from '@novastar/native/HDEnableMode';
+import { VedioSelectModeEnum } from '@novastar/native/VedioSelectMode';
 
 import { PortCount } from './CustomTransform';
 

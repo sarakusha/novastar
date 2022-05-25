@@ -1,12 +1,12 @@
 // Nova.LCT.GigabitSystem.HardwareCaculator.dll
 // noinspection SpellCheckingInspection
 
-import { ChipTypeEnum } from '@novastar/native/lib/generated/ChipType';
-import { CommonIrCabinetTypeEnum } from '@novastar/native/lib/generated/CommonIrCabinetType';
-import { DataDirectionTypeEnum } from '@novastar/native/lib/generated/DataDirectionType';
-import { ModuleCascadeDiretionEnum } from '@novastar/native/lib/generated/ModuleCascadeDiretion';
-import type { ScanBoardProperty } from '@novastar/native/lib/generated/ScanBoardProperty';
-import { ScreenDriveTypeEnum } from '@novastar/native/lib/generated/ScreenDriveType';
+import { ChipTypeEnum } from '@novastar/native/ChipType';
+import { CommonIrCabinetTypeEnum } from '@novastar/native/CommonIrCabinetType';
+import { DataDirectionTypeEnum } from '@novastar/native/DataDirectionType';
+import { ModuleCascadeDiretionEnum } from '@novastar/native/ModuleCascadeDiretion';
+import type { ScanBoardProperty } from '@novastar/native/ScanBoardProperty';
+import { ScreenDriveTypeEnum } from '@novastar/native/ScreenDriveType';
 
 import { hasProps } from './common';
 import { CutMapInfo, Rectangle } from './fullScreenSelect';

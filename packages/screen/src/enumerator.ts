@@ -1,8 +1,8 @@
 /* eslint-disable no-await-in-loop */
 import { decodeUIntLE, Request, TimeoutError } from '@novastar/codec';
-import { HDEnableModeEnum } from '@novastar/native/lib/generated/HDEnableMode';
-import { NSCardTypeEnum } from '@novastar/native/lib/generated/NSCardType';
-import { VedioSelectModeEnum } from '@novastar/native/lib/generated/VedioSelectMode';
+import { HDEnableModeEnum } from '@novastar/native/HDEnableMode';
+import { NSCardTypeEnum } from '@novastar/native/NSCardType';
+import { VedioSelectModeEnum } from '@novastar/native/VedioSelectMode';
 
 import { GetPortNumber } from './CustomTransform';
 import { DeviceInfo } from './DeviceInfo';

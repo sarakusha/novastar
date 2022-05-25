@@ -1,7 +1,7 @@
 // noinspection JSUnusedLocalSymbols
-import { ChipTypeEnum } from '@novastar/native/lib/generated/ChipType';
-import { DetectPointTypeEnum } from '@novastar/native/lib/generated/DetectPointType';
-import { ScanTypeEnum } from '@novastar/native/lib/generated/ScanType';
+import { ChipTypeEnum } from '@novastar/native/ChipType';
+import { DetectPointTypeEnum } from '@novastar/native/DetectPointType';
+import { ScanTypeEnum } from '@novastar/native/ScanType';
 
 type ValueGain = readonly [value: number, gain: number];
 

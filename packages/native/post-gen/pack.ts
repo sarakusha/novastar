@@ -258,7 +258,7 @@ stats.unshift(
     ),
     factory.createStringLiteral('io-ts', true),
   ),
-  makeImport('../generated/MaxValue', 'MaxValue'),
+  makeImport('../../generated/MaxValue', 'MaxValue'),
   makeImport(
     './integers',
     undefined,
@@ -274,6 +274,6 @@ ts.addSyntheticLeadingComment(
   true,
 );
 
-const typesPath = path.resolve(__dirname, '../common/types.ts');
+const typesPath = path.resolve(__dirname, '../lib/common/types.ts');
 const types = makeValidSourceFile(typesPath, stats);
 saveSourceFile(types);

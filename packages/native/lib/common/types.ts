@@ -1,7 +1,7 @@
 /* Automatically generated */
 import * as t from 'io-ts';
 
-import MaxValue from '../generated/MaxValue';
+import MaxValue from '../../generated/MaxValue';
 
 import { Bool, BufferFromBase64, Int32, Numeric, UInt16, UInt8, withDefault } from './integers';
 

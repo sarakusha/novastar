@@ -1,4 +1,4 @@
-import { ChipTypeEnum } from '@novastar/native/lib/generated/ChipType';
+import { ChipTypeEnum } from '@novastar/native/ChipType';
 
 export default function GetHWDriverFunction(chipType: ChipTypeEnum): number {
   switch (chipType) {

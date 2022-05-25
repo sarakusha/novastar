@@ -1,21 +1,21 @@
 // Nova.LCT.GigabitSystem.LEDConfigAccessorBase.dll
-import { makeStruct } from '@novastar/native/lib/common';
-import { AutoAdjustRefreshRateParameters } from '@novastar/native/lib/generated/AutoAdjustRefreshRateParameters';
-import { AutoAdjustRefreshRateTypeEnum } from '@novastar/native/lib/generated/AutoAdjustRefreshRateType';
-import { ChipTypeEnum } from '@novastar/native/lib/generated/ChipType';
-import MaxValue from '@novastar/native/lib/generated/MaxValue';
-import type { ScanBoardProperty } from '@novastar/native/lib/generated/ScanBoardProperty';
-import { ScreenDriveTypeEnum } from '@novastar/native/lib/generated/ScreenDriveType';
+import { AutoAdjustRefreshRateParameters } from '@novastar/native/AutoAdjustRefreshRateParameters';
+import { AutoAdjustRefreshRateTypeEnum } from '@novastar/native/AutoAdjustRefreshRateType';
+import { ChipTypeEnum } from '@novastar/native/ChipType';
+import MaxValue from '@novastar/native/MaxValue';
+import type { ScanBoardProperty } from '@novastar/native/ScanBoardProperty';
+import { ScreenDriveTypeEnum } from '@novastar/native/ScreenDriveType';
+import { makeStruct } from '@novastar/native/common';
 
 import { AutoRefreshRate } from './AutoRefreshRate';
 import { CanManualAdjustRefreshRate } from './ChipInherentProperties';
-import { notEmpty } from './common';
 import {
   CaculateMaxloadSize,
   isValidScanBdProp,
   isValidStandardLedModuleProp,
 } from './CommonCalculator';
 import ScannerCapabilityICN2053 from './ScannerCapabilityICN2053';
+import { notEmpty } from './common';
 
 export const OneParameterLen = 16;
 

@@ -1,6 +1,6 @@
-import { makeStruct } from '@novastar/native/lib/common';
-import { ModulationModeTypeEnum } from '@novastar/native/lib/generated/ModulationModeType';
-import { SenderModulationInfo } from '@novastar/native/lib/generated/SenderModulationInfo';
+import { ModulationModeTypeEnum } from '@novastar/native/ModulationModeType';
+import { SenderModulationInfo } from '@novastar/native/SenderModulationInfo';
+import { makeStruct } from '@novastar/native/common';
 import Struct, { typed } from 'typed-struct';
 
 import { crc16 } from './common';

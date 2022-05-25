@@ -1,6 +1,6 @@
-import { UInt32, UInt8 } from '@novastar/native/lib/common';
-import { LEDDisplyTypeEnum } from '@novastar/native/lib/generated/LEDDisplyType';
-import { ScreenDataInSoftSpace } from '@novastar/native/lib/generated/ScreenDataInSoftSpace';
+import { LEDDisplyTypeEnum } from '@novastar/native/LEDDisplyType';
+import { ScreenDataInSoftSpace } from '@novastar/native/ScreenDataInSoftSpace';
+import { UInt32, UInt8 } from '@novastar/native/common';
 import sortBy from 'lodash/sortBy';
 
 /**

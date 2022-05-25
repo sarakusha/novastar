@@ -1,4 +1,4 @@
-import { ScanBoardConnectTypeEnum } from '@novastar/native/lib/generated/ScanBoardConnectType';
+import { ScanBoardConnectTypeEnum } from '@novastar/native/ScanBoardConnectType';
 import Struct, { ExtractType, typed } from 'typed-struct';
 
 export const ScreenConfigInfo = new Struct('ScreenConfigInfo')

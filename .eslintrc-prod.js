@@ -1,3 +1,4 @@
+const path = require('path');
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
@@ -50,5 +51,20 @@ module.exports = {
         message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.',
       },
     ],
+  },
+  settings: {
+    /**
+     * ESLint import resolver for ESM modules via package.json exports map
+     * https://gist.github.com/danielweck/cd63af8e9a8b3492abacc312af9f28fd
+     */
+    'import/resolver': {
+      // optionally, if TypeScript project:
+      // https://github.com/alexgorbatchev/eslint-import-resolver-typescript
+      typescript: {
+        alwaysTryTypes: true,
+        project: 'packages/*/tsconfig.json',
+      },
+      [path.resolve(__dirname, 'eslint-plugin-import-resolver.js')]: { someConfig: 1 },
+    },
   },
 };

@@ -1,4 +1,4 @@
-import { NSCardTypeEnum } from '@novastar/native/lib/generated/NSCardType';
+import { NSCardTypeEnum } from '@novastar/native/NSCardType';
 
 /**
  * SenderStateForm

@@ -1,12 +1,12 @@
 /* eslint-disable no-bitwise,no-param-reassign */
-import type { Chip2053ExtendPropety } from '@novastar/native/lib/generated/Chip2053ExtendPropety';
-import type { Chip2163ExtendPropety } from '@novastar/native/lib/generated/Chip2163ExtendPropety';
-import { ChipTypeEnum } from '@novastar/native/lib/generated/ChipType';
-import MaxValue from '@novastar/native/lib/generated/MaxValue';
-import MaxValueInfo from '@novastar/native/lib/generated/MaxValueInfo';
-import { RotateAngleEnum } from '@novastar/native/lib/generated/RotateAngle';
-import type { ScanBoardProperty } from '@novastar/native/lib/generated/ScanBoardProperty';
-import type { ChipBaseExtendPropey } from '@novastar/native/lib/generated/unions';
+import type { Chip2053ExtendPropety } from '@novastar/native/Chip2053ExtendPropety';
+import type { Chip2163ExtendPropety } from '@novastar/native/Chip2163ExtendPropety';
+import { ChipTypeEnum } from '@novastar/native/ChipType';
+import MaxValue from '@novastar/native/MaxValue';
+import MaxValueInfo from '@novastar/native/MaxValueInfo';
+import { RotateAngleEnum } from '@novastar/native/RotateAngle';
+import type { ScanBoardProperty } from '@novastar/native/ScanBoardProperty';
+import type { ChipBaseExtendPropey } from '@novastar/native/unions';
 import Struct, { ExtractType, Getter, Setter } from 'typed-struct';
 
 import { isValidScanBdProp } from './CommonCalculator';

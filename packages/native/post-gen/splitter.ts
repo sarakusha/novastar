@@ -1,4 +1,5 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 
 import { notEmpty } from '@novastar/codec';
@@ -7,7 +8,7 @@ import ts, { factory } from 'typescript';
 import { getTSConfig, makeImport, printer, saveSourceFile } from './common';
 
 const root = path.resolve(__dirname, '../generated/api');
-// const indexFile = fs.createWriteStream(path.join(root, 'index.ts'));
+const indexFile = fs.createWriteStream(path.join(root, 'index.ts'));
 
 const FalseToken = ts.factory.createToken(ts.SyntaxKind.FalseKeyword);
 
@@ -266,7 +267,7 @@ const extendSession = (node: ts.MethodDeclaration): void => {
   }
   const packetImport = isReading ? ['Packet'] : ['ErrorType'];
   const srcName = path.join(root, `${name}.ts`);
-  // indexFile.write(`export { default as create${name} } from './${name}';${os.EOL}`);
+  indexFile.write(`export { default as create${name} } from './${name}';${os.EOL}`);
   const methodSignature = makeMethodSignature(name, parameters, type);
   methods.push(methodSignature);
   const tryParams =
@@ -289,7 +290,7 @@ const extendSession = (node: ts.MethodDeclaration): void => {
   const imports = bodyText.match(/(decodeUIntLE)|(encodeUIntLE)/g);
   const makeBytes = bodyText.indexOf('makeOutDeviceBytes') !== -1;
   const commonImports = makeBytes
-    ? [makeImport('../../common/makeOutDeviceBytes', 'makeOutDeviceBytes')]
+    ? [makeImport('../../lib/common/makeOutDeviceBytes', 'makeOutDeviceBytes')]
     : [];
   const constants = bodyText.match(/(AddressMapping)|(MaxValueInfo)/g);
   const constantImports = constants

@@ -1,9 +1,5 @@
-
-import AddressMapping from '@novastar/native/lib/generated/AddressMapping';
-import serial, { findSendingCards } from '@novastar/serial';
 import { inspect } from 'util';
-import { DeviceType, Request } from '@novastar/codec';
-import { TestModeEnum } from '@novastar/native/lib/generated/TestMode';
+
 import net, { findNetDevices } from '@novastar/net';
 
 import './api';
@@ -12,7 +8,10 @@ import { SessionAPI } from './Session';
 
 jest.setTimeout(50000);
 
-const delay = (ms: number): Promise<void> => new Promise(resolve => { setTimeout(resolve, ms); })
+const delay = (ms: number): Promise<void> =>
+  new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
 
 describe('enumerator', () => {
   let session: SessionAPI;

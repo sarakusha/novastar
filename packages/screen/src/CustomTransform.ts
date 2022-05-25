@@ -2,9 +2,9 @@
  * Nova.LCT.GigabitSystem.DataClass, Nova.LCT.GigabitSystem.Common::CustomTransform
  */
 
-import { ChipTypeEnum } from '@novastar/native/lib/generated/ChipType';
-import { NSCardTypeEnum } from '@novastar/native/lib/generated/NSCardType';
-import { ScreenDriveTypeEnum } from '@novastar/native/lib/generated/ScreenDriveType';
+import { ChipTypeEnum } from '@novastar/native/ChipType';
+import { NSCardTypeEnum } from '@novastar/native/NSCardType';
+import { ScreenDriveTypeEnum } from '@novastar/native/ScreenDriveType';
 
 export const GetSmartMode = (
   isSmartMode: boolean,

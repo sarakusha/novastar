@@ -1,5 +1,5 @@
-import { LEDDisplyTypeEnum } from '@novastar/native/lib/generated/LEDDisplyType';
-import ScreenInfoRelativeAddress from '@novastar/native/lib/generated/ScreenInfoRelativeAddress';
+import { LEDDisplyTypeEnum } from '@novastar/native/LEDDisplyType';
+import ScreenInfoRelativeAddress from '@novastar/native/ScreenInfoRelativeAddress';
 import debugFactory from 'debug';
 
 import { decodeComplexLEDDisplayInfo } from './ComplexScreen';

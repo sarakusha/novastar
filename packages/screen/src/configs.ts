@@ -1,8 +1,8 @@
 import fs from 'fs';
 
-import type { GraphicsDVIPortInfo } from '@novastar/native/lib/generated/GraphicsDVIPortInfo';
-import { ScanBoardProperty } from '@novastar/native/lib/generated/ScanBoardProperty';
-import { SystemParameterConfig } from '@novastar/native/lib/generated/SystemParameterConfig';
+import type { GraphicsDVIPortInfo } from '@novastar/native/GraphicsDVIPortInfo';
+import { ScanBoardProperty } from '@novastar/native/ScanBoardProperty';
+import { SystemParameterConfig } from '@novastar/native/SystemParameterConfig';
 import Zip from 'adm-zip';
 import debugFactory from 'debug';
 import { X2jOptionsOptional, XMLParser } from 'fast-xml-parser';

@@ -1,11 +1,11 @@
 /* eslint-disable no-bitwise */
-import { ComplexLEDDisplayInfo } from '@novastar/native/lib/generated/ComplexLEDDisplayInfo';
-import { LEDDisplyTypeEnum } from '@novastar/native/lib/generated/LEDDisplyType';
-import { ScanBoardConnectTypeEnum } from '@novastar/native/lib/generated/ScanBoardConnectType';
-import { SimpleLEDDisplayInfo } from '@novastar/native/lib/generated/SimpleLEDDisplayInfo';
-import { StandardLEDDisplayInfo } from '@novastar/native/lib/generated/StandardLEDDisplayInfo';
-import groupBy from 'lodash/groupBy';
 import { compress, decompress } from '@blu3r4y/lzma';
+import { ComplexLEDDisplayInfo } from '@novastar/native/ComplexLEDDisplayInfo';
+import { LEDDisplyTypeEnum } from '@novastar/native/LEDDisplyType';
+import { ScanBoardConnectTypeEnum } from '@novastar/native/ScanBoardConnectType';
+import { SimpleLEDDisplayInfo } from '@novastar/native/SimpleLEDDisplayInfo';
+import { StandardLEDDisplayInfo } from '@novastar/native/StandardLEDDisplayInfo';
+import groupBy from 'lodash/groupBy';
 
 /**
  * 'Not Empty' type guard

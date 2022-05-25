@@ -2,10 +2,10 @@
 /**
  * Nova.LCT.GigabitSystem.ScanBoardCapability
  */
-import { ChipTypeEnum } from '@novastar/native/lib/generated/ChipType';
-import { DataDirectionTypeEnum } from '@novastar/native/lib/generated/DataDirectionType';
-import type { ScanBoardProperty } from '@novastar/native/lib/generated/ScanBoardProperty';
-import { ScreenDriveTypeEnum } from '@novastar/native/lib/generated/ScreenDriveType';
+import { ChipTypeEnum } from '@novastar/native/ChipType';
+import { DataDirectionTypeEnum } from '@novastar/native/DataDirectionType';
+import type { ScanBoardProperty } from '@novastar/native/ScanBoardProperty';
+import { ScreenDriveTypeEnum } from '@novastar/native/ScreenDriveType';
 
 import {
   CaculateShiftUnitNum,

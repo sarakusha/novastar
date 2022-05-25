@@ -1,6 +1,6 @@
 # @novastar/native
 
-Structures and APIs in typescript automatically generated from decompiled *NovsStar* .NET libraries.
+Structures and APIs in typescript automatically generated from decompiled *NovaStar* .NET libraries.
 
 Go to [API](https://sarakusha.github.io/novastar/modules/_novastar_native.html) documentation.
 
@@ -22,23 +22,21 @@ $ yarn add @novastar/native@next
 Since the native API contains more than 1000 methods, not all of which you will use,
 you can include the methods you need. To do this, create a file `api.ts` and import 
 the functionality you need.
-If you are using commonjs modules, then use path `@novastar/native/build/main/generated/api/...`,
-if you need ES6 modules, then use path `@novastar/native/build/module/generated/api/...`.
 
 // api.ts
 ```ts
-import '@novastar/native/build/main/generated/api/ReadDviMode';
-import '@novastar/native/build/main/generated/api/ReadDviSelect';
-import '@novastar/native/build/main/generated/api/ReadGlobalBrightness';
-import '@novastar/native/build/main/generated/api/ReadIsHasDVI';
-import '@novastar/native/build/main/generated/api/ReadAllBrightnessInfo';
-import '@novastar/native/build/main/generated/api/ReadSelfTestMode';
-import '@novastar/native/build/main/generated/api/SetGlobalBrightness';
-import '@novastar/native/build/main/generated/api/SetSelfTestMode';
-import '@novastar/native/build/main/generated/api/SetGamma';
-import '@novastar/native/build/main/generated/api/ReadGamma';
-import '@novastar/native/build/main/generated/api/ReadScanner_McuProgramRemarks';
-import '@novastar/native/build/main/generated/api/ReadScanner_FPGAProgramRemarks';
+import '@novastar/native/api/ReadDviMode';
+import '@novastar/native/api/ReadDviSelect';
+import '@novastar/native/api/ReadGlobalBrightness';
+import '@novastar/native/api/ReadIsHasDVI';
+import '@novastar/native/api/ReadAllBrightnessInfo';
+import '@novastar/native/api/ReadSelfTestMode';
+import '@novastar/native/api/SetGlobalBrightness';
+import '@novastar/native/api/SetSelfTestMode';
+import '@novastar/native/api/SetGamma';
+import '@novastar/native/api/ReadGamma';
+import '@novastar/native/api/ReadScanner_McuProgramRemarks';
+import '@novastar/native/api/ReadScanner_FPGAProgramRemarks';
 ```
 Each import adds new methods to the `Session` class and extends `API` interface.
 If you import the file `MethodName`, then the async methods `MethodName` and `tryMethodName` will be added.
@@ -72,8 +70,6 @@ await session.SetGamma(0, 0, 0, false, 2.6);
 ```
 
 Structs and enumerations are also best imported via direct paths.
-If you are using commonjs modules, then use path `@novastar/native/build/main/generated/...`,
-if you need ES6 modules, then use path `@novastar/native/build/module/generated/...`.
 
 Enum types end with `Enum` in their names.
 Each file contains, in addition to the type, a codec that can be used to validate
@@ -83,7 +79,7 @@ and convert input data. See [io-ts](https://www.npmjs.com/package/io-ts) for det
 Not all APIs have been automatically converted from decompiled code. In addition,
 the resulting code may contain errors. There is also no description of API,
 and we can only guess about its purpose based on its name.
-Unfortunately, many names may contain syntax and semantic errors (code was written in China).
+Unfortunately, many names may contain syntax and semantic errors (original names are preserved).
 Refer to the decompiled code if in doubt.
 
 ## Development

@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer';
 
-import AddressMapping from '../generated/AddressMapping';
-import { BaudRateTypeEnum } from '../generated/BaudRateType';
+import AddressMapping from '../../generated/AddressMapping';
+import { BaudRateTypeEnum } from '../../generated/BaudRateType';
 
 const makeOutDeviceBytes = (
   outDeviceAddress: number,

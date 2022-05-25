@@ -1,6 +1,6 @@
-import { ComplexLEDDisplayInfo } from '@novastar/native/lib/generated/ComplexLEDDisplayInfo';
-import { LEDDisplyTypeEnum } from '@novastar/native/lib/generated/LEDDisplyType';
-import { VirtualModeTypeEnum } from '@novastar/native/lib/generated/VirtualModeType';
+import { ComplexLEDDisplayInfo } from '@novastar/native/ComplexLEDDisplayInfo';
+import { LEDDisplyTypeEnum } from '@novastar/native/LEDDisplyType';
+import { VirtualModeTypeEnum } from '@novastar/native/VirtualModeType';
 import { isLeft } from 'fp-ts/lib/Either';
 import { PathReporter } from 'io-ts/lib/PathReporter';
 import Struct, { ExtractType, typed } from 'typed-struct';

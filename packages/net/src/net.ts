@@ -2,7 +2,7 @@ import * as dgram from 'dgram';
 import { createConnection, Socket } from 'net';
 import os, { NetworkInterfaceInfo } from 'os';
 
-import { API, Connection, notEmpty, Session } from '@novastar/codec';
+import { API, Connection, delay, notEmpty, Session } from '@novastar/codec';
 import debugFactory from 'debug';
 import { TypedEmitter } from 'tiny-typed-emitter';
 
@@ -29,6 +29,8 @@ export interface NetBindingEvents {
    * @param address Device address
    */
   close(address: string): void;
+
+  disconnect(address: string): void;
 }
 
 const interfaceSearch = (address: string): Promise<string[]> =>
@@ -84,6 +86,11 @@ export const findNetDevices = async (): Promise<string[]> => {
  */
 export type NetSession = Session<Socket> & API;
 
+const parseAddress = (address: string): [host: string, port: number] => {
+  const [host, port = TCP_PORT] = address.split(':', 2);
+  return [host, +port];
+}
+
 /**
  * @internal For documentation purposes only. Use singleton instance exported as default
  */
@@ -99,43 +106,57 @@ export class NetBinding extends TypedEmitter<NetBindingEvents> {
 
   /**
    * Connect to network device and open a new session
-   * @param host
-   * @param port
+   * @param address host(:port)?
    */
-  open(host: string, port = TCP_PORT): NetSession {
-    const address = `${host}:${port}`;
-    if (this.sessions[address]) return this.sessions[address];
-    const socket = createConnection(port, host, () => {
-      this.emit('open', address);
-      debug(`connection ${address} opened`);
+  open(address: string): NetSession {
+    const [host, port] = parseAddress(address);
+    const fullAddress = `${host}:${port}`;
+    if (this.sessions[fullAddress]) return this.sessions[fullAddress];
+    const socket = createConnection(port, host);
+    const connection = new Connection(socket, false, TCP_TIMEOUT);
+    // connection.once('close', () => this.close(fullAddress));
+    socket.on('connect', () => {
+      connection.open();
     });
+    connection.on('open', () => {
+      this.emit('open', fullAddress);
+      debug(`connection ${fullAddress} opened`);
+    })
     socket.setKeepAlive(true, KEEP_ALIVE_DELAY);
-    const connection = new Connection(socket, true, TCP_TIMEOUT);
-    connection.once('close', () => this.close(host, port));
     const session = new Session(connection);
-    this.#sessions[address] = session;
-    socket.on('close', () => {
-      delete this.#sessions[address];
-      session.close();
-      this.emit('close', address);
+    this.#sessions[fullAddress] = session;
+    let reconnecting = false;
+    socket.on('close', async hadError => {
+      if (hadError && !reconnecting) {
+        reconnecting = true;
+        this.emit('disconnect', fullAddress);
+        await delay(1000);
+        socket.connect(port, host, () => {
+          reconnecting = false;
+        });
+      } else {
+        delete this.#sessions[fullAddress];
+        this.close(fullAddress)
+        this.emit('close', fullAddress);
+      }
     });
     return session;
   }
 
   /**
    * Close network session
-   * @param host
-   * @param port
+   * @param address host(:port)?
    * @returns `false` if no connection is found
    */
-  close(host: string, port = TCP_PORT): boolean {
-    const address = `${host}:${port}`;
-    const session = this.sessions[address];
+  close(address: string): boolean {
+    const [host, port] = parseAddress(address);
+    const fullAddress = `${host}:${port}`;
+    const session = this.sessions[fullAddress];
     if (session) {
       const { connection } = session;
       const { stream: socket } = connection;
       if (!socket.destroyed) socket.destroy();
-      debug(`connection ${address} closed`);
+      debug(`connection ${fullAddress} closed`);
     }
     return session !== undefined;
   }

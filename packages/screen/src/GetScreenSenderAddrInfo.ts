@@ -1,9 +1,9 @@
-import { makeStruct } from '@novastar/native/lib/common';
-import { ScreenPortAddrInfo } from '@novastar/native/lib/generated/ScreenPortAddrInfo';
+import { ScreenPortAddrInfo } from '@novastar/native/ScreenPortAddrInfo';
+import { makeStruct } from '@novastar/native/common';
 import sumBy from 'lodash/sumBy';
 
 import GetScreenPortAddrInfo from './GetScreenPortAddrInfo';
-import { groupByProps, LEDDisplayInfo, hasProps } from './common';
+import { groupByProps, hasProps, LEDDisplayInfo } from './common';
 
 const groupBySender = groupByProps('SenderIndex');
 const notEmptySender = hasProps('SenderIndex');

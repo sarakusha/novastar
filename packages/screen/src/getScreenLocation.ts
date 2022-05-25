@@ -1,6 +1,6 @@
-import { Point } from '@novastar/native/lib/common';
-import sortBy from 'lodash/sortBy';
+import type { Point } from '@novastar/native/common';
 import last from 'lodash/last';
+import sortBy from 'lodash/sortBy';
 
 import { hasProps, isSimpleScreen, isStandardScreen, LEDDisplayInfo } from './common';
 

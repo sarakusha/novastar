@@ -16,16 +16,16 @@ export {
 } from './common';
 export type { LEDDisplayInfo } from './common';
 export type { PortCount } from './CustomTransform';
-export { AudioControlModeEnum } from '@novastar/native/lib/generated/AudioControlMode';
-export { DviSelectModeEnum } from '@novastar/native/lib/generated/DviSelectMode';
-export { HDEnableModeEnum } from '@novastar/native/lib/generated/HDEnableMode';
-export { VedioSelectModeEnum } from '@novastar/native/lib/generated/VedioSelectMode';
-export type { SenderModulationInfo } from '@novastar/native/lib/generated/SenderModulationInfo';
-export type { SenderRedundancyInfo } from '@novastar/native/lib/generated/SenderRedundancyInfo';
-export { ScanBoardConnectTypeEnum } from '@novastar/native/lib/generated/ScanBoardConnectType';
-export { SimpleLEDDisplayInfo } from '@novastar/native/lib/generated/SimpleLEDDisplayInfo';
-export { StandardLEDDisplayInfo } from '@novastar/native/lib/generated/StandardLEDDisplayInfo';
-export { ZoomTypeEnum } from '@novastar/native/lib/generated/ZoomType';
+export { AudioControlModeEnum } from '@novastar/native/AudioControlMode';
+export { DviSelectModeEnum } from '@novastar/native/DviSelectMode';
+export { HDEnableModeEnum } from '@novastar/native/HDEnableMode';
+export { VedioSelectModeEnum } from '@novastar/native/VedioSelectMode';
+export type { SenderModulationInfo } from '@novastar/native/SenderModulationInfo';
+export type { SenderRedundancyInfo } from '@novastar/native/SenderRedundancyInfo';
+export { ScanBoardConnectTypeEnum } from '@novastar/native/ScanBoardConnectType';
+export { SimpleLEDDisplayInfo } from '@novastar/native/SimpleLEDDisplayInfo';
+export { StandardLEDDisplayInfo } from '@novastar/native/StandardLEDDisplayInfo';
+export { ZoomTypeEnum } from '@novastar/native/ZoomType';
 
 export type { API, SessionAPI } from './Session';
 
