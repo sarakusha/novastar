@@ -1,6 +1,6 @@
 {
   "name": "@novastar/net",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0-alpha.5",
   "description": "Network binding for @novastar/codec",
   "main": "build/main/net.js",
   "types": "build/module/net.d.ts",
@@ -63,7 +63,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@novastar/codec": "2.0.0-alpha.4",
+    "@novastar/codec": "2.0.0-alpha.5",
     "tiny-typed-emitter": "^2.1.0"
   },
   "peerDependencies": {
