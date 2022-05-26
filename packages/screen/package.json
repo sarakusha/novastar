@@ -52,6 +52,7 @@
   },
   "files": [
     "build",
+    "!**/*.test.*",
     "!**/*.spec.*",
     "!**/*.tsbuildinfo",
     "CHANGELOG.md",
@@ -70,17 +71,21 @@
       "ts-jest": {
         "isolatedModules": true
       }
+    },
+    "moduleNameMapper": {
+      "^@novastar/native/common$": "@novastar/native/common",
+      "^@novastar/native/((?!build).*)(?<!\\.js)$": "@novastar/native/$1.js"
     }
   },
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "@blu3r4y/lzma": "^2.3.3",
     "@novastar/codec": "2.0.0-alpha.5",
     "@novastar/native": "2.0.0-alpha.5",
     "@novastar/net": "2.0.0-alpha.5",
     "@novastar/serial": "2.0.0-alpha.5",
+    "@sarakusha/lzma": "^2.3.3",
     "adm-zip": "^0.5.9",
     "chalk": "4",
     "fast-xml-parser": "^4.0.0-beta.8",
@@ -88,7 +93,7 @@
     "io-ts": "^2.2.16",
     "lodash": "^4.17.21",
     "tiny-typed-emitter": "^2.1.0",
-    "typed-struct": "^2.2.0",
+    "typed-struct": "^2.3.0",
     "uuid": "^8.3.2"
   },
   "peerDependencies": {

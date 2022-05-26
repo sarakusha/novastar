@@ -286,11 +286,6 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@blu3r4y/lzma@^2.3.3":
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/@blu3r4y/lzma/-/lzma-2.3.3.tgz#343a738b553d0a8965fa75366834f5675c6a54bf"
-  integrity sha512-2ckRSsYewLAgq/s8tUW3o5gurtCNYga1f9l0egV4QlT8hgVEilQHRt18s+behmPL2M/BPBxUINaOz67u++r0wA==
-
 "@commitlint/cli@^17.0.0":
   version "17.0.0"
   resolved "https://registry.yarnpkg.com/@commitlint/cli/-/cli-17.0.0.tgz#6c86c6b0eba4ba1204a19833c3c962b623f35518"
@@ -1863,6 +1858,11 @@
   integrity sha512-s1zLBjWhdEI2zwaoSgyOFoKSl109CUcVBCc7biPJ3aAf6LGLU6szDvi31JPU7bxfla2lqfhjbbg/5DdFNxOwHw==
   dependencies:
     "@octokit/openapi-types" "^11.2.0"
+
+"@sarakusha/lzma@^2.3.3":
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/@sarakusha/lzma/-/lzma-2.3.3.tgz#eb69b2389cfde11d28b0f7eca9d11cefd3302945"
+  integrity sha512-DNma77cHyV+iJZyCw1mUwh+4tST9EnJilDrMf+jRVvW9WP2rT/Jb+uzNusinoEJLifvx66XCNsx1YtRkrzDY9g==
 
 "@serialport/binding-mock@10.2.2":
   version "10.2.2"
@@ -4746,7 +4746,7 @@ iconv-lite@^0.4.24:
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
-iconv-lite@^0.6.2, iconv-lite@^0.6.3:
+iconv-lite@^0.6.2:
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.6.3.tgz#a52f80bf38da1952eb5c681790719871a1a72501"
   integrity sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==
@@ -8277,12 +8277,10 @@ type-fest@^1.0.1, type-fest@^1.2.1, type-fest@^1.2.2:
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-1.4.0.tgz#e9fb813fe3bf1744ec359d55d1affefa76f14be1"
   integrity sha512-yGSza74xk0UG8k+pLh5oeoYirvIiWo5t0/o3zHHAO2tRDiZcxWP7fywNlXhqb6/r6sWvwi+RsyQMWhVLe4BVuA==
 
-typed-struct@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/typed-struct/-/typed-struct-2.2.0.tgz#57e4470e705b23d4de839fe9c71cc88f623bde38"
-  integrity sha512-pi5FY9ozGuC1mGg9BlAwzOC8LUSFmdxiaRYkD6p6yzexbwApT4HjIcujy5zTZs1B5G4bpFA3INF7NZzopfbtXA==
-  optionalDependencies:
-    iconv-lite "^0.6.3"
+typed-struct@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/typed-struct/-/typed-struct-2.3.0.tgz#c8b6085e1c321769de62e595f4d9422511ce9c1e"
+  integrity sha512-pPinkWRYs1d9EqBc0aREOoeDOhvuGsAWKgQQA6/ZbPuUheTAdxunXlCzzOZ/ncItpXpIK5PPHLbqj2E9c6c67w==
 
 typedarray-to-buffer@^3.1.5:
   version "3.1.5"

@@ -70,7 +70,7 @@
   "dependencies": {
     "pump": "^3.0.0",
     "tiny-typed-emitter": "^2.0.3",
-    "typed-struct": "^2.2.0"
+    "typed-struct": "^2.3.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
