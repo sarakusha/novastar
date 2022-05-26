@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.6](https://github.com/sarakusha/novastar/compare/v1.0.5...v2.0.0-alpha.6) (2022-05-26)
+
+
+### Features
+
+* added methods to populate the list of known devices ([9d71d33](https://github.com/sarakusha/novastar/commit/9d71d33a7899657b8c7166eb00aa8432e151f2e7))
+* hybrid npm package via package.json exports map ([609aef7](https://github.com/sarakusha/novastar/commit/609aef7a0f9f71d35a8a88a281f299cebb931f33))
+
+
+
+
+
 # [2.0.0-alpha.5](https://github.com/sarakusha/novastar/compare/v1.0.5...v2.0.0-alpha.5) (2022-05-25)
 
 
