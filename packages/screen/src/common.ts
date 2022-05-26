@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import { compress, decompress } from '@blu3r4y/lzma';
+import { compress, decompress } from '@sarakusha/lzma';
 import { ComplexLEDDisplayInfo } from '@novastar/native/ComplexLEDDisplayInfo';
 import { LEDDisplyTypeEnum } from '@novastar/native/LEDDisplyType';
 import { ScanBoardConnectTypeEnum } from '@novastar/native/ScanBoardConnectType';
