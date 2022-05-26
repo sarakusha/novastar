@@ -87,7 +87,7 @@
     "@novastar/serial": "2.0.0-alpha.6",
     "@sarakusha/lzma": "^2.3.3",
     "adm-zip": "^0.5.9",
-    "chalk": "4",
+    "chalk": "5",
     "fast-xml-parser": "^4.0.0-beta.8",
     "fp-ts": "^2.11.5",
     "io-ts": "^2.2.16",
