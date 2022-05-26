@@ -9,6 +9,6 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules/**", "bak/**", "build/**", "coverage/**", "src/**/*.test.ts", "src/test-ts.ts"],
+  "exclude": ["node_modules/**", "bak/**", "build/**", "coverage/**"],
   "compileOnSave": false,
 }

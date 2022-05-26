@@ -1,7 +1,7 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import { compress, decompress } from '@blu3r4y/lzma';
+import { compress, decompress } from '@sarakusha/lzma';
 import { X2jOptionsOptional, XMLParser } from 'fast-xml-parser';
 
 import { pack, toHex, unpack } from './common';
