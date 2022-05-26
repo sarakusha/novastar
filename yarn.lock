@@ -1860,9 +1860,9 @@
     "@octokit/openapi-types" "^11.2.0"
 
 "@sarakusha/lzma@^2.3.3":
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/@sarakusha/lzma/-/lzma-2.3.3.tgz#eb69b2389cfde11d28b0f7eca9d11cefd3302945"
-  integrity sha512-DNma77cHyV+iJZyCw1mUwh+4tST9EnJilDrMf+jRVvW9WP2rT/Jb+uzNusinoEJLifvx66XCNsx1YtRkrzDY9g==
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/@sarakusha/lzma/-/lzma-2.3.4.tgz#d9a69f6e673c2fad3e40534df3073d78a81bbc52"
+  integrity sha512-PmNtDXumgnraKvfCz5wPXyKua4UHxgobg1L/aWTa/VKMPL7qPmSvAj/lsEh8G7pBngX/SsBlgC1nlb28ar5BUQ==
 
 "@serialport/binding-mock@10.2.2":
   version "10.2.2"
