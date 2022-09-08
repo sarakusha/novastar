@@ -3796,13 +3796,14 @@ eslint-plugin-eslint-comments@^3.2.0:
     ignore "^5.0.5"
 
 eslint-plugin-functional@^4.0.2:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-functional/-/eslint-plugin-functional-4.2.1.tgz#c486f15695a31f916847c89f0f85a09c8ee423c6"
-  integrity sha512-j16ozgXrr0UdPBirdbgDZgRBPr9Prj3j1xoisE435wzRDMWQlSHHJ41LCzNrlfGDb7OFAyXVcVatVwALz2jckw==
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-functional/-/eslint-plugin-functional-4.3.0.tgz#8a5599531e014f1159e8a01ab6aaf78e297f7fe8"
+  integrity sha512-zXiVnGcMQveW9+1GeARaeDhIQE8AtDgUgjiPqDSfthztlxERF6LsQ9UbIrpJCpdr7F8jPhjEBNoW45gjRFTgeg==
   dependencies:
     "@typescript-eslint/utils" "^5.10.2"
     deepmerge-ts "^4.0.3"
     escape-string-regexp "^4.0.0"
+    semver "^7.3.7"
 
 eslint-plugin-import@^2.22.0:
   version "2.26.0"
