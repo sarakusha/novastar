@@ -4885,9 +4885,9 @@ internal-slot@^1.0.3:
     side-channel "^1.0.4"
 
 io-ts-types@^0.5.16:
-  version "0.5.16"
-  resolved "https://registry.yarnpkg.com/io-ts-types/-/io-ts-types-0.5.16.tgz#e9eed75371e217c97050cc507915e8eedc250946"
-  integrity sha512-h9noYVfY9rlbmKI902SJdnV/06jgiT2chxG6lYDxaYNp88HscPi+SBCtmcU+m0E7WT5QSwt7sIMj93+qu0FEwQ==
+  version "0.5.18"
+  resolved "https://registry.yarnpkg.com/io-ts-types/-/io-ts-types-0.5.18.tgz#017458aaf1c721d99ff059145b87971c661ccd11"
+  integrity sha512-iU+P8BC6VMzc2pOjA3hxKyzf040XlWN+VSbJcTcirYq2vDEZ7t7uah/QLKpmhEvIAk/y1G1veC5upTk/1kHfwg==
 
 io-ts@^2.2.16:
   version "2.2.16"
