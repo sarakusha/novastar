@@ -2,7 +2,7 @@
 import { Duplex } from 'stream';
 
 import {
-  Connection,
+  // Connection,
   decodeUIntLE,
   delay,
   DeviceType,
@@ -11,6 +11,7 @@ import {
   Request,
   series,
 } from '@novastar/codec';
+import Connection from '@novastar/codec/Connection';
 import AddressMapping from '@novastar/native/AddressMapping';
 import { BaudRateTypeEnum } from '@novastar/native/BaudRateType';
 import type { GraphicsDVIPortInfo } from '@novastar/native/GraphicsDVIPortInfo';
@@ -26,9 +27,9 @@ import { TestModeEnum } from '@novastar/native/TestMode';
 import { VirtualModeTypeEnum } from '@novastar/native/VirtualModeType';
 import { makeStruct, UInt16 } from '@novastar/native/common';
 import debugFactory from 'debug';
-import { isLeft } from 'fp-ts/lib/Either';
+import { isLeft } from 'fp-ts/Either';
 import * as t from 'io-ts';
-import { PathReporter } from 'io-ts/lib/PathReporter';
+import { PathReporter } from 'io-ts/PathReporter';
 import range from 'lodash/range';
 
 import { isValidScanBdProp, isValidStandardLedModuleProp } from './CommonCalculator';
@@ -418,6 +419,17 @@ export default class ScreenConfigurator {
     }
   }
 
+  async SendRemoveDeadPixels(): Promise<boolean | null> {
+    const req = new Request([2]);
+    req.address = 0x0100_009e;
+    req.deviceType = DeviceType.ReceivingCard;
+    req.destination = AllSenders;
+    req.port = AllPorts;
+    req.rcvIndex = AllScanBoards;
+    const res = await this.session.connection.trySend(req);
+    return res && res.ack === ErrorType.Succeeded;
+  }
+
   async ReadHasDVISignalIn(device = 0): Promise<boolean | null> {
     const res = await this.session.tryReadIsHasDVI(device);
     return res && res.ack === 0 && res.data[0] !== 0;
@@ -509,7 +521,7 @@ export default class ScreenConfigurator {
   ): (...args: A[]) => Promise<R> {
     return (...args) =>
       new Promise((resolve, reject) => {
-        this.#ready = this.#ready.finally(() => func.apply(this, args).then(resolve, reject));
+        this.#ready = this.#ready.finally().then(() => func.apply(this, args).then(resolve, reject));
       });
   }
 
