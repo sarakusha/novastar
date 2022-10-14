@@ -8,93 +8,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="443d3551-ad9b-42c4-b7f3-b1b85b7929fa" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/post-gen/hybrid.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/post-gen/test.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/post-gen/tsconfig.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../net/src/net.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../screen/src/HWStatus.test.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../screen/src/HWStatus.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../screen/src/getCabinetPosition.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../scripts/hybrid.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../.eslintrc-prod.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../.eslintrc-prod.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/common/EnumFromString.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/lib/Connection.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/Connection.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/lib/ConnectionClosedError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/ConnectionClosedError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/lib/NovastarDecoder.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/NovastarDecoder.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/lib/NovastarDecoder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/NovastarDecoder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/lib/NovastarEncoder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/NovastarEncoder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/lib/Packet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/Packet.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/lib/Request.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/Request.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/lib/ResponseError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/ResponseError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/lib/Session.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/Session.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/lib/TimeoutError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/TimeoutError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/lib/helper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/helper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../codec/src/lib/packet.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/packet.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../codec/src/Connection.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../codec/src/Connection.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.gen.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.gen.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/common/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-gen/pack.ts" beforeDir="false" afterPath="$PROJECT_DIR$/post-gen/pack.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-gen/splitter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/post-gen/splitter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/common/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/common/integers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/common/integers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../net/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../net/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../net/src/net.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../net/src/net.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../screen/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/ChipInherentProperties.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ChipInherentProperties.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/CommonCalculator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/CommonCalculator.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../screen/src/ComplexScreen.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ComplexScreen.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/CustomTransform.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/CustomTransform.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../screen/src/DVIInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/DVIInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/DeviceInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/DeviceInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/GetDeviceTypeLanguage.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/GetDeviceTypeLanguage.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/GetHWDriverFunction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/GetHWDriverFunction.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/GetScreenPortAddrInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/GetScreenPortAddrInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/GetScreenSenderAddrInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/GetScreenSenderAddrInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/HWAccessorCalculator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/HWAccessorCalculator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/ModulationInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ModulationInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/PortInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/PortInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/RedundancyInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/RedundancyInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/RegistorConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/RegistorConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/ScanBoardCapabilty.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ScanBoardCapabilty.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/ScanboardData.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ScanboardData.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/ScanboardData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ScanboardData.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/ScannerBinData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ScannerBinData.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/ScannerCapabilityICN2053.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ScannerCapabilityICN2053.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/ScannerCapabilitySUM2030.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ScannerCapabilitySUM2030.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/Screen.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/Screen.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/ScreenAdjustInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ScreenAdjustInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/ScreenConfigInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ScreenConfigInfo.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../screen/src/ScreenConfigurator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ScreenConfigurator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/ScreenInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/ScreenInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/Session.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/Session.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../screen/src/SimpleSingleScreen.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/SimpleSingleScreen.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../screen/src/StandardScreen.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/StandardScreen.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/api.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/common.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/common.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/config.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/config.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../screen/src/configs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/configs.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/convertLEDDisplayInfoToScreenDataInSoftSpace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/convertLEDDisplayInfoToScreenDataInSoftSpace.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/convertScreenDataInSoftSpaceToLEDDisplayInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/convertScreenDataInSoftSpaceToLEDDisplayInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/enumerator.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/enumerator.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/enumerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/enumerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/findKnownAddresses.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/findKnownAddresses.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/fullScreenSelect.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/fullScreenSelect.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/getScreenLocation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/getScreenLocation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/packAndSortCabinets.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/packAndSortCabinets.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/rcTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/rcTest.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/splitScreensByDevice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/splitScreensByDevice.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/src/tsc.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/src/tsc.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screen/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/../screen/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../serial/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../serial/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../serial/src/serial.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../serial/src/serial.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../../yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -328,6 +257,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7f1bc1178a9d491b9793d7a56df47bde8c00/4e/a0ee0bf1/WndPackageBase.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/83573b6af7f84dccbab20857075355866c00/03/3e01c00e/LCTServerNetProxy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/83573b6af7f84dccbab20857075355866c00/d4/58dc7269/LCTServerNetProxy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8503c1c4f33546fd87fa3ba7364102811400/22/adba4883/DeadPixels.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/89854cad2b74458e810745895e5e53911c400/73/f594d89c/ChipAXS6018RGBVExtendProperty.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/89d41be11fbf4d7ea075f11bd4f8b8b72a00/16/220c4bbf/ILCTServerBaseProxy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8a65193c374f433d93d45b7591a3509d8e00/7b/da226bc3/LCTServerMessageProxy.cs" root0="SKIP_HIGHLIGHTING" />
@@ -370,7 +300,9 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a6cb6007d5854504b029250099984a5914800/48/a437c73d/UC_CNS7253Extend.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a790b8f6b14a42bdabcb85cd9822df3f5e400/81/9d4db37e/ClearViewInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a790b8f6b14a42bdabcb85cd9822df3f5e400/e9/12d5177e/TGProtocolParser.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/07/ff079821/ChipICN2053RegistorConfig.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/0c/048c9015/PointDetectParameter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/1c/99584db6/ChipRegistorConfigBase.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/23/756237ad/CutMapInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/25/ef04d20f/SimpleLEDDisplayInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/27/2546aa14/ChipRegistorConfigFactory.cs" root0="SKIP_HIGHLIGHTING" />
@@ -390,6 +322,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/8e/2a7a546b/ChipBaseExtendPropey.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/9b/3565a8ff/MaxValue.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/9c/fc2f7479/ScreenInfoRelativeAddress.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/ab/91e52bb0/ChipRegistorConfigFactory.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/cb/7202496d/ChipInfoBase.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/ce/1a471577/SpecialPackTimeOut.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a81dc1952fda4adfbf3f0928f8081ddbfce00/db/0aea313f/ScannerMonitorData.cs" root0="SKIP_HIGHLIGHTING" />
@@ -438,6 +371,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d100e49585b7436f9a643bd666f46cbc3dac00/2e/8a652c0e/BackUpFileSaver.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d100e49585b7436f9a643bd666f46cbc3dac00/4b/e0f12d87/Form_LEDScreenConfig.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d100e49585b7436f9a643bd666f46cbc3dac00/5e/4f75c2b4/Form_BackupRestore.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d100e49585b7436f9a643bd666f46cbc3dac00/64/780ad809/UC_ICN2053Extend.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d37544e865a4421499c276eef68b0ab7a0400/06/24bf1f61/FormMain.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d37544e865a4421499c276eef68b0ab7a0400/46/9ce20a8e/SoftSpaceTest.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d37544e865a4421499c276eef68b0ab7a0400/da/8b276892/FrmSysConfigMode.cs" root0="SKIP_HIGHLIGHTING" />
@@ -528,6 +462,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/metadata/a81dc1952fda4adfbf3f0928f8081ddbfce00/bd/8b6e0224/Nova.LCT.GigabitSystem.DataClass.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/metadata/b53dc782ebea4015bd2decc632a4739d73000/d5/2a374663/Nova.LCT.GigabitSystem.LEDConfigAccessor.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/metadata/d100e49585b7436f9a643bd666f46cbc3dac00/bb/0444aeec/Nova.LCT.GigabitSystem.LEDScreenConfig.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/metadata/d100e49585b7436f9a643bd666f46cbc3dac00/df/51420819/Nova.LCT.GigabitSystem.LEDScreenConfig.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/metadata/e55cf424d8364f5995af242615e4e04cda00/d5/7dc50e60/Nova.LCT.GigabitSystem.ScreenControl.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/metadata/e60270454232424bb4f8f097118bfc8a27000/eb/ae254aab/Nova.LCT.GigabitSystem.ChipLS9903.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/metadata/e8f8b384324f46c0a72a87694594a3601d200/15/65f8b8cb/Nova.LCT.GigabitSystem.ChipMBI5034B.cs" root0="SKIP_HIGHLIGHTING" />
@@ -669,6 +604,8 @@
       <workItem from="1645703445884" duration="6611000" />
       <workItem from="1650865720567" duration="2297000" />
       <workItem from="1650888542574" duration="11573000" />
+      <workItem from="1653635008885" duration="843000" />
+      <workItem from="1653636315375" duration="2892000" />
     </task>
     <servers />
   </component>
@@ -712,10 +649,10 @@
           <line>410</line>
           <properties documentPath="$PROJECT_DIR$/src/Program.cs" initialLine="403" containingFunctionPresentation="method 'GenType'">
             <startOffsets>
-              <option value="17165" />
+              <option value="17171" />
             </startOffsets>
             <endOffsets>
-              <option value="17180" />
+              <option value="17186" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="7" />

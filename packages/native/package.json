@@ -20,17 +20,17 @@
   "types": "build/module/generated/index.d.ts",
   "module": "build/module/generated/index.js",
   "exports": {
-    "./": {
-      "require": "./build/main/generated/",
-      "default": "./build/module/generated/"
+    "./*": {
+      "require": "./build/main/generated/*.js",
+      "default": "./build/module/generated/*.js"
     },
     "./common": {
       "require": "./build/main/lib/common/index.js",
       "default": "./build/module/lib/common/index.js"
     },
-    "./api/": {
-      "require": "./build/main/generated/api/",
-      "default": "./build/module/generated/api/"
+    "./api/*": {
+      "require": "./build/main/generated/api/*.js",
+      "default": "./build/module/generated/api/*.js"
     },
     "./unions": {
       "require": "./build/main/generated/unions/index.js",
@@ -64,7 +64,7 @@
     "clean": "rimraf {bin,build,decompiled,generated,obj}",
     "decompile": "run-script-os",
     "decompile:nix": "mkdirp decompiled && glob-run ilspycmd ./dll/\\*\\*/\\*.dll -o decompiled/",
-    "decompile:windows": "mkdirp decompiled && glob-run ilspycmd ./dll/**/*.dll -o decompiled/",
+    "decompile:win": "mkdirp decompiled && glob-run ilspycmd ./dll/**/*.dll -o decompiled/",
     "gen:build": "dotnet build",
     "gen:generate": "dotnet run bin/Debug/net5.0/gen.dll ./decompiled ./generated ./lib/common",
     "gen:split": "ts-node post-gen/splitter.ts",
