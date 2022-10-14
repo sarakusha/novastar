@@ -59,7 +59,7 @@ export const unpack = (props: Buffer | string, length: number, buffer: Buffer): 
   const propsBuf = Buffer.isBuffer(props) ? props : Buffer.from(props, 'binary');
   if (propsBuf.length !== 5) throw new TypeError('Invalid props length');
   const lengthBuf = Buffer.alloc(8);
-  if (length === -1) lengthBuf.writeBigInt64LE(-1n);
+  if (length === -1) lengthBuf.fill(0xff);
   else lengthBuf.writeUInt32LE(length);
   const data = Buffer.concat([propsBuf, lengthBuf, buffer]);
   return new Promise<string>((resolve, reject) => {
