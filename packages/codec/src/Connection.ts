@@ -32,9 +32,9 @@ const debug = debugFactory('novastar:connection');
 
 type Result<SkipErrors extends boolean = false> = SkipErrors extends false ? Packet : Packet | null;
 
-type Response<Broadcast extends boolean, SkipErrors extends boolean = false> = Promise<
-  Broadcast extends false ? Result<SkipErrors> : void
->;
+type Response<Broadcast extends boolean, SkipErrors extends boolean = false> = Promise<Broadcast extends false
+  ? Result<SkipErrors>
+  : void>;
 
 /**
  * Wrapper for I/O stream using {@link Request} for out and {@link Packet} to in
@@ -54,9 +54,9 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
 
   protected queue: WaitingRequest[] = [];
 
-  private encoder = new NovastarEncoder();
+  private encoder: NovastarEncoder | undefined;
 
-  private decoder = new NovastarDecoder();
+  private decoder: NovastarDecoder | undefined;
 
   private connected = false;
 
@@ -85,10 +85,12 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
    */
   public open(): void {
     if (this.connected) return;
+    this.decoder = new NovastarDecoder();
+    this.encoder = new NovastarEncoder();
     this.decoder.on('data', this.listener);
     pump(this.encoder, this.stream, this.decoder, (err) => {
-      err && debug(`Error while pump: ${err.stack}`);
-      this.close()
+      err && debug(`Error while pump: ${err.message}`);
+      this.close();
     });
     this.connected = true;
     debug('open');
@@ -101,9 +103,13 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
   public close(): void {
     if (!this.connected) return;
     this.connected = false;
-    this.decoder.off('data', this.listener);
+    this.decoder?.off('data', this.listener);
     this.stream.unpipe(this.decoder);
-    this.encoder.unpipe(this.stream);
+    this.encoder?.unpipe(this.stream);
+    this.decoder?.destroy();
+    this.decoder = undefined;
+    this.encoder?.destroy();
+    this.encoder = undefined;
     debug('close');
     this.emit('close');
   }
@@ -122,9 +128,9 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
 
   public send(req: Request<boolean>): Promise<Packet | void> {
     return new Promise<Packet | void>((resolve, reject) => {
-      this.ready = this.ready.finally(() => {
+      this.ready = this.ready.finally().then(() => {
         const chunks = Request.makeChunks(req, this.getMaxLength(req));
-        series(chunks, chunk => this.sendImpl(chunk))
+        return series(chunks, chunk => this.sendImpl(chunk))
           .then(results => {
             const responses = results.filter(notEmpty);
             if (responses.length === 0) return resolve();
@@ -157,29 +163,34 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
    */
   public trySend(req: Request): Promise<Packet | null> {
     return new Promise<Packet | null>((resolve, reject) => {
-      this.ready = this.ready.finally(() => this.sendImpl(req, true).then(resolve, reject));
+      this.ready = this.ready.finally().then(() => this.sendImpl(req, true).then(resolve, reject));
     });
   }
 
   protected sendImpl<Broadcast extends boolean, SkipErrors extends boolean = false>(
     req: Request<Broadcast>,
-    skipError?: SkipErrors
+    skipError?: SkipErrors,
   ): Response<Broadcast, SkipErrors>;
 
   protected async sendImpl(
     req: Request<boolean>,
-    skipErrors?: boolean
+    skipErrors?: boolean,
   ): Promise<Packet | null | void> {
-    if (!this.connected) throw new ConnectionClosedError();
+    const {
+      connected,
+      encoder,
+    } = this;
+    if (!connected || !encoder) throw new ConnectionClosedError();
     const maxLength = this.getMaxLength(req);
     if (req.length > maxLength)
       throw new TypeError(
-        `The request size is too large. Use "send" instead of "trySend", maxLength: ${maxLength}`
+        `The request size is too large. Use "send" instead of "trySend", maxLength: ${maxLength}`,
       );
-    if (!this.encoder.write(req))
-      await new Promise(resolve => {
-        this.encoder.once('drain', resolve);
+    if (!encoder.write(req)) {
+      await new Promise<void>(resolve => {
+        encoder.once('drain', resolve);
       });
+    }
     if (isNotBroadcast(req)) {
       const res = await this.wait(req, skipErrors);
       if (!skipErrors && res && res.ack !== ErrorType.Succeeded) {
@@ -194,7 +205,7 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
 
   protected wait<SkipErrors extends boolean = false>(
     req: Request,
-    skipErrors?: SkipErrors
+    skipErrors?: SkipErrors,
   ): Promise<Result<SkipErrors>>;
 
   protected wait(req: Request, skipErrors?: boolean): Promise<Packet | null> {
