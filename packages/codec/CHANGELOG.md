@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.7](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) (2022-10-14)
+
+
+### Bug Fixes
+
+* overlapped requests ([5b7d803](https://github.com/sarakusha/novastar/commit/5b7d8033a600179acec21f23367e7e669d5d269f))
+
+
+
+
+
 # [2.0.0-alpha.6](https://github.com/sarakusha/novastar/compare/v1.0.5...v2.0.0-alpha.6) (2022-05-26)
 
 

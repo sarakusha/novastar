@@ -1,6 +1,6 @@
 {
   "name": "@novastar/native",
-  "version": "2.0.0-alpha.6",
+  "version": "2.0.0-alpha.7",
   "description": "Structures and APIs in typescript automatically generated from decompiled NovaStar .NET libraries",
   "keywords": [
     "NovaStar",
@@ -86,7 +86,7 @@
     "requirements": "^1.4.1"
   },
   "dependencies": {
-    "@novastar/codec": "2.0.0-alpha.6",
+    "@novastar/codec": "2.0.0-alpha.7",
     "fp-ts": "^2.11.5",
     "io-ts": "^2.2.16",
     "io-ts-types": "^0.5.16",

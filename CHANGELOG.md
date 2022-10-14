@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.7](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) (2022-10-14)
+
+
+### Bug Fixes
+
+* overlapped requests ([5b7d803](https://github.com/sarakusha/novastar/commit/5b7d8033a600179acec21f23367e7e669d5d269f))
+
+
+### Features
+
+* added function to remove dead pixels ([886701c](https://github.com/sarakusha/novastar/commit/886701cf19ad32da338e1e4d077a7b0835ead257))
+* added the ability to search by address or subnet ([f799a41](https://github.com/sarakusha/novastar/commit/f799a412b1cfddc7cba555f9e10c8d8be99a4c95))
+* replacing buffer with uint8array ([693ff3f](https://github.com/sarakusha/novastar/commit/693ff3f0b2f981a904aa1d7d960924e6bdddb42d))
+
+
+
+
+
 # [2.0.0-alpha.6](https://github.com/sarakusha/novastar/compare/v1.0.5...v2.0.0-alpha.6) (2022-05-26)
 
 
