@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Buffer } from 'buffer';
+// import { Buffer } from 'buffer';
 
-import { Chain, isLeft } from 'fp-ts/lib/Either';
+import { Chain, isLeft } from 'fp-ts/Either';
 import * as t from 'io-ts';
 import {
   BigIntFromString,
@@ -11,7 +11,7 @@ import {
   fromRefinement,
   NumberFromString,
 } from 'io-ts-types';
-import { PathReporter } from 'io-ts/lib/PathReporter';
+import { PathReporter } from 'io-ts/PathReporter';
 
 const stringConverter =
   <C extends t.Mixed, V extends t.Type<any, string>>(converter: V) =>
@@ -162,17 +162,17 @@ export function withDefault<C extends t.Mixed>(
   return fromNullable(codec, value);
 }
 
-export class BufferFromBase64 extends t.Type<Buffer, string> {
+export class BufferFromBase64 extends t.Type<Uint8Array, string> {
   constructor(name: string, length?: number, strict = false) {
     super(
       name,
-      (u): u is Buffer => Buffer.isBuffer(u) && (!length || u.length === length),
+      (u): u is Uint8Array => u instanceof Uint8Array && (!length || u.length === length),
       (i, c) => {
         if (
           typeof i === 'string' &&
           /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(i)
         ) {
-          const buffer = Buffer.from(i, 'base64');
+          const buffer = Uint8Array.from(atob(i), c => c.charCodeAt(0)) // Buffer.from(i, 'base64');
           if (
             !length ||
             (buffer.length === length && strict) ||
@@ -184,7 +184,7 @@ export class BufferFromBase64 extends t.Type<Buffer, string> {
         }
         return t.failure(i, c, 'Invalid base64');
       },
-      b => b.toString('base64')
+      b => btoa(String.fromCharCode.apply(null, [...b])),
     );
   }
 }
