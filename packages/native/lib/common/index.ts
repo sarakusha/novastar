@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types,no-underscore-dangle */
-import { chain, isLeft } from 'fp-ts/lib/Either';
-import { pipe } from 'fp-ts/lib/function';
+import { chain, isLeft } from 'fp-ts/Either';
+import { pipe } from 'fp-ts/function';
 import * as t from 'io-ts';
-import { PathReporter } from 'io-ts/lib/PathReporter';
+import { PathReporter } from 'io-ts/PathReporter';
 
 export * from './integers';
 export * from './types';
@@ -33,20 +33,6 @@ export const PointFromString = new t.Type<Point, `${bigint}, ${bigint}`>(
   },
   a => `${BigInt(a.x)}, ${BigInt(a.y)}`
 );
-
-export const EnumFromString = <T>(enumObj: T, enumName = 'enum') =>
-  new t.Type<T[keyof T], keyof T>(
-    enumName,
-    (u): u is T[keyof T] => typeof u === 'number' && Object.values(enumObj).includes(u),
-    (u, c) =>
-      typeof u === 'number' && Object.values(enumObj).includes(u)
-        ? t.success(u as unknown as T[keyof T])
-        : pipe(
-            t.keyof(enumObj as Record<string, unknown>).validate(u, c),
-            chain(s => t.success(enumObj[s as keyof T]))
-          ),
-    a => enumObj[a as unknown as keyof T] as unknown as keyof T
-  );
 
 const toArray = <T>(value: T | T[]): T[] => (Array.isArray(value) ? value : [value]);
 
