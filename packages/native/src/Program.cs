@@ -213,7 +213,7 @@ namespace gen
             var name = node.Identifier.ValueText;
             var lines = new List<(string line, string comment)>
             {
-                ("import * as common from '../lib/common';\n", null),
+                ("import EnumFromString from '../lib/common/EnumFromString';\n", null),
                 ("/** @category Enums */", null),
                 ($"export enum {name}Enum {{", null)
             };
@@ -244,7 +244,7 @@ namespace gen
             lines.Add(("}\n", null));
             lines.AddRange(GetLocationComment(outDir,
                 node.GetLocation().GetLineSpan(), "@category Codecs", $"@desc Codec for {{@link {name}Enum}}"));
-            lines.Add(($"export const {name} = {Common("EnumFromString")}({name}Enum, '{name}');\n", null));
+            lines.Add(($"export const {name} = EnumFromString({name}Enum, '{name}');\n", null));
             // lines.Add(($"export type {name} = typeof {name}Enum;\n", null));
             using StreamWriter file = new(Path.Join(outDir, $"{name}.ts"));
             // WriteLine($"GenEnum {name}");
