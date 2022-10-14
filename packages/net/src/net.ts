@@ -33,7 +33,7 @@ export interface NetBindingEvents {
   disconnect(address: string): void;
 }
 
-const interfaceSearch = (address: string): Promise<string[]> =>
+const interfaceSearch = (address: string, dest = '255.255.255.255'): Promise<string[]> =>
   new Promise<string[]>(resolve => {
     const socket = dgram.createSocket('udp4');
     let completed = false;
@@ -45,22 +45,22 @@ const interfaceSearch = (address: string): Promise<string[]> =>
       if (!completed) {
         completed = true;
         resolve(list);
-        debug(`stop: ${address}`);
+        // debug(`stop: ${address}`);
       }
     };
     socket.on('error', complete);
     socket.on('message', (msg, rinfo) => {
       if (msg.toString().startsWith(RES) && !completed && !list.includes(rinfo.address)) {
         list.push(rinfo.address);
-        debug(`found: ${rinfo.address}`);
+        // debug(`found: ${rinfo.address}`);
       }
     });
     socket.bind(UDP_PORT, address, () => {
       socket.setBroadcast(true);
       socket.addMembership(MULTICAST_ADDRESS, address);
       timer = setTimeout(complete, UDP_TIMEOUT);
-      socket.send(REQ, UDP_PORT, '255.255.255.255', err => err && complete());
-      debug(`start: ${address}`);
+      socket.send(REQ, UDP_PORT, dest, err => err && complete());
+      // debug(`start: ${address}`);
     });
   });
 
@@ -68,16 +68,16 @@ const interfaceSearch = (address: string): Promise<string[]> =>
  * Finding network devices
  * @returns {Promise<string[]>} - addresses of found devices
  */
-export const findNetDevices = async (): Promise<string[]> => {
+export const findNetDevices = async (dest?: string): Promise<string[]> => {
   const interfaces = Object.values<NetworkInterfaceInfo[] | undefined>(os.networkInterfaces())
     .filter(notEmpty)
     .reduce<NetworkInterfaceInfo[]>((res, values) => [...res, ...values], [])
     .filter(nic => !nic.internal && nic.family === 'IPv4')
     .map(({ address }) => address);
-  const results = await Promise.all(interfaces.map(interfaceSearch));
+  const results = await Promise.all(interfaces.map(address => interfaceSearch(address, dest)));
   return results.reduce<string[]>(
     (acc, list) => [...acc, ...list.filter(host => !acc.includes(host))],
-    []
+    [],
   );
 };
 
@@ -89,7 +89,7 @@ export type NetSession = Session<Socket> & API;
 const parseAddress = (address: string): [host: string, port: number] => {
   const [host, port = TCP_PORT] = address.split(':', 2);
   return [host, +port];
-}
+};
 
 /**
  * @internal For documentation purposes only. Use singleton instance exported as default
@@ -114,29 +114,35 @@ export class NetBinding extends TypedEmitter<NetBindingEvents> {
     if (this.sessions[fullAddress]) return this.sessions[fullAddress];
     const socket = createConnection(port, host);
     const connection = new Connection(socket, false, TCP_TIMEOUT);
-    // connection.once('close', () => this.close(fullAddress));
     socket.on('connect', () => {
       connection.open();
     });
     connection.on('open', () => {
       this.emit('open', fullAddress);
       debug(`connection ${fullAddress} opened`);
-    })
+    });
     socket.setKeepAlive(true, KEEP_ALIVE_DELAY);
     const session = new Session(connection);
     this.#sessions[fullAddress] = session;
-    let reconnecting = false;
+    let reconnectRequired = true;
+    socket.on('error', err => {
+      const { code } = err as NodeJS.ErrnoException;
+      if (code && ['ECONNREFUSED', 'ECONNRESET'].includes(code))
+        reconnectRequired = false;
+    });
     socket.on('close', async hadError => {
-      if (hadError && !reconnecting) {
-        reconnecting = true;
+      connection.close();
+      if (hadError && reconnectRequired) {
+        debug('try reconnect');
+        reconnectRequired = false;
         this.emit('disconnect', fullAddress);
         await delay(1000);
         socket.connect(port, host, () => {
-          reconnecting = false;
+          reconnectRequired = true;
         });
       } else {
         delete this.#sessions[fullAddress];
-        this.close(fullAddress)
+        this.close(fullAddress);
         this.emit('close', fullAddress);
       }
     });
