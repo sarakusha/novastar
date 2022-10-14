@@ -21,7 +21,7 @@ const getCabinetPosition = (
   screen: LEDDisplayInfo,
   sender: number,
   port: number,
-  card: number
+  card: number,
 ): CabinetPosition | null => {
   if (isSimpleScreen(screen)) {
     if (screen.SenderIndex !== sender) return null;

@@ -2,8 +2,8 @@ import { LEDDisplyTypeEnum } from '@novastar/native/LEDDisplyType';
 import { StandardLEDDisplayInfo } from '@novastar/native/StandardLEDDisplayInfo';
 import { VirtualModeTypeEnum } from '@novastar/native/VirtualModeType';
 import debugFactory from 'debug';
-import { isLeft } from 'fp-ts/lib/Either';
-import { PathReporter } from 'io-ts/lib/PathReporter';
+import { isLeft } from 'fp-ts/Either';
+import { PathReporter } from 'io-ts/PathReporter';
 import Struct, { ExtractType, typed } from 'typed-struct';
 
 import { RegionInfo } from './RegionInfo';
