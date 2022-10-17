@@ -4230,9 +4230,9 @@ form-data@~2.3.2:
     mime-types "^2.1.12"
 
 fp-ts@^2.11.5:
-  version "2.12.1"
-  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.12.1.tgz#e389488bfd1507af06bd5965e97367edcd4fabad"
-  integrity sha512-oxvgqUYR6O9VkKXrxkJ0NOyU0FrE705MeqgBUMEPWyTu6Pwn768cJbHChw2XOBlgFLKfIHxjr2OOBFpv2mUGZw==
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.13.0.tgz#68825c2f1251c3fe6ff41a98eaa69599a3b2758a"
+  integrity sha512-3pkkmRDdA3CBQPDfr7vhNomiHOu7eQZDmGeFsD19gTKpUNy0eqvO3yN1LsSCenkDAXlqJSIDd6wtM7qqrR++UQ==
 
 fs-extra@8.1.0, fs-extra@^8.1.0:
   version "8.1.0"
