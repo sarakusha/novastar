@@ -56,17 +56,34 @@ export default function getScreenLocation(screen: LEDDisplayInfo): Location {
   const xLast = last(xx)!;
   const yLast = last(yy)!;
 
-  const left = Math.min(0, xx[0].X);
-  const top = Math.min(0, yy[0].Y);
+  const left = Math.max(0, xx[0].X);
+  const top = Math.max(0, yy[0].Y);
   const right = Math.max(0, xLast.X + xLast.Width);
   const bottom = Math.max(0, yLast.Y + yLast.Height);
-  const firstColumn = xx[0].ColIndexInScreen ?? 0;
-  const lastColumn = xLast.ColIndexInScreen ?? 0;
-  const firstRow = xx[0].RowIndexInScreen ?? 0;
-  const lastRow = xLast.RowIndexInScreen ?? 0;
-  const [cols, rows] = isStandardScreen(screen)
+  const [uniqX, uniqY] = xy.reduce((
+    [xSet, ySet],
+    {
+      X,
+      Y,
+    }) => {
+    xSet.add(X);
+    ySet.add(Y);
+    return [xSet, ySet];
+  }, [new Set<number>(), new Set<number>()]);
+  const firstColumn = xx[0].ColIndexInScreen;
+  const lastColumn = xLast.ColIndexInScreen;
+  const firstRow = xx[0].RowIndexInScreen;
+  const lastRow = xLast.RowIndexInScreen;
+  const [cols, rows] = isStandardScreen(screen) && screen.ScanBoardCols && screen.ScanBoardRows
     ? [screen.ScanBoardCols, screen.ScanBoardRows]
-    : [Math.max(lastColumn - firstColumn, 0), Math.max(lastRow - firstRow, 0)];
+    : [
+      lastColumn != null && firstColumn != null
+        ? Math.max(lastColumn - firstColumn + 1, 0)
+        : uniqX.size,
+      lastRow != null && firstRow != null
+        ? Math.max(lastRow - firstRow + 1, 0)
+        : uniqY.size,
+    ];
 
   return {
     leftTop: {

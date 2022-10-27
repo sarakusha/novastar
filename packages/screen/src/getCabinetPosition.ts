@@ -6,6 +6,7 @@ import {
   isTopConnection,
   LEDDisplayInfo,
 } from './common';
+import { notEmptyXY } from './getScreenLocation';
 
 export type CabinetPosition = {
   column: number;
@@ -56,18 +57,36 @@ const getCabinetPosition = (
       top: row * screen.PixelRowsInScanBd,
     };
   }
-  const list = isStandardScreen(screen) ? screen.ScannerRegionList : screen.ScanBoardRegionInfoList;
+  const list = isStandardScreen(screen)
+    ? screen.ScannerRegionList.filter(notEmptyXY)
+    : screen.ScanBoardRegionInfoList.filter(notEmptyXY);
   const cabinet = list.find(
-    ({ SenderIndex, PortIndex, ConnectIndex }) =>
-      SenderIndex === sender && PortIndex === port && ConnectIndex === card
+    ({
+      SenderIndex,
+      PortIndex,
+      ConnectIndex,
+    }) =>
+      SenderIndex === sender && PortIndex === port && ConnectIndex === card,
   );
   if (!cabinet) return null;
+  const [uniqX, uniqY] = list.reduce((
+    [xSet, ySet],
+    {
+      X,
+      Y,
+    }) => {
+    xSet.add(X);
+    ySet.add(Y);
+    return [xSet, ySet];
+  }, [new Set<number>(), new Set<number>()]);
+  const sortedX = [...uniqX.values()].sort();
+  const sortedY = [...uniqY.values()].sort();
   return {
     sender,
     port,
     card,
-    row: cabinet.RowIndexInScreen ?? 0,
-    column: cabinet.ColIndexInScreen ?? 0,
+    row: cabinet.RowIndexInScreen ?? sortedY.findIndex(y => y === cabinet.Y),
+    column: cabinet.ColIndexInScreen ?? sortedX.findIndex(x => x === cabinet.X),
     left: cabinet.X ?? 0,
     top: cabinet.Y ?? 0,
   };
