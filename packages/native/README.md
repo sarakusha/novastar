@@ -82,6 +82,14 @@ and we can only guess about its purpose based on its name.
 Unfortunately, many names may contain syntax and semantic errors (original names are preserved).
 Refer to the decompiled code if in doubt.
 
+## Important note
+
+This repository only contains C# scripts, some wrapping for the generated API, and
+the original binary libraries. All useful content is automatically generated from the decompiled
+code of binary libraries. You will either have to do it yourself according to the supplied
+instructions, or use a [@novastar/native](https://www.npmjs.com/package/@novastar/native) package.
+A description of the generated API is also available [here](https://sarakusha.github.io/novastar/modules/_novastar_native.html).
+
 ## Development
 
 Install dependencies
