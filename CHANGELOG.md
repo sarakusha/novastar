@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.8](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.7...v2.0.0-alpha.8) (2022-10-28)
+
+
+### Bug Fixes
+
+* calculation of the position of the cabinet and the size of the screen, if they were not set ([3aa6197](https://github.com/sarakusha/novastar/commit/3aa6197716722515e10b42f2e185bd37c9534b98))
+
+
+### Features
+
+* export of public symbols ([da1d07f](https://github.com/sarakusha/novastar/commit/da1d07f5b10a64a6857a09c37b2411fdec1923eb))
+
+
+
+
+
 # [2.0.0-alpha.7](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) (2022-10-14)
 
 
