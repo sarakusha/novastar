@@ -11,8 +11,8 @@ const debug = debugFactory('novastar:net');
 export const UDP_PORT = 3800;
 export const MULTICAST_ADDRESS = '224.224.125.119';
 const UDP_TIMEOUT = 1000;
-const REQ = 'rqProMI:';
-const RES = 'rpProMI:';
+export const REQ = 'rqProMI:';
+export const RES = 'rpProMI:';
 export const TCP_PORT = 5200;
 const TCP_TIMEOUT = 1000;
 const KEEP_ALIVE_DELAY = 30000;
@@ -58,6 +58,7 @@ const interfaceSearch = (address: string, dest = '255.255.255.255'): Promise<str
     socket.bind(UDP_PORT, address, () => {
       socket.setBroadcast(true);
       socket.addMembership(MULTICAST_ADDRESS, address);
+      socket.setMulticastTTL(128);
       timer = setTimeout(complete, UDP_TIMEOUT);
       socket.send(REQ, UDP_PORT, dest, err => err && complete());
       // debug(`start: ${address}`);
