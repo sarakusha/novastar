@@ -11,9 +11,9 @@
       "require": "./build/main/index.js",
       "default": "./build/module/index.js"
     },
-    "./": {
-      "require": "./build/main/",
-      "default": "./build/module/"
+    "./*": {
+      "require": "./build/main/*.js",
+      "default": "./build/module/*.js"
     },
     "./package.json": "./package.json"
   },

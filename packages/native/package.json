@@ -82,6 +82,7 @@
   "devDependencies": {
     "glob-run": "^0.1.7",
     "mkdirp": "^1.0.4",
+    "prettier": "^2.7.1",
     "replace-in-file": "^6.3.2",
     "requirements": "^1.4.1"
   },
@@ -91,8 +92,7 @@
     "io-ts": "^2.2.16",
     "io-ts-types": "^0.5.16",
     "monocle-ts": "^2.3.11",
-    "newtype-ts": "^0.3.4",
-    "prettier": "^2.1.1"
+    "newtype-ts": "^0.3.4"
   },
   "files": [
     "build",
