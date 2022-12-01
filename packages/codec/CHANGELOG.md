@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.9](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.8...v2.0.0-alpha.9) (2022-12-01)
+
+
+### Bug Fixes
+
+* fixed bug in exports parameter ([6501581](https://github.com/sarakusha/novastar/commit/65015819349d6e90f9bb64bfece94f189ff00961)), closes [#611](https://github.com/sarakusha/novastar/issues/611)
+
+
+
+
+
 # [2.0.0-alpha.7](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) (2022-10-14)
 
 
