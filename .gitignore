@@ -5,3 +5,4 @@ package-lock.json
 /build/
 .yalc/
 yalc.lock
+/packages/serial/src/test.ts

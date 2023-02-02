@@ -81,7 +81,6 @@
   },
   "devDependencies": {
     "glob-run": "^0.1.7",
-    "mkdirp": "^1.0.4",
     "prettier": "^2.7.1",
     "replace-in-file": "^6.3.2",
     "requirements": "^1.4.1"
