@@ -1,6 +1,6 @@
 {
   "name": "@novastar/native",
-  "version": "2.0.0-alpha.9",
+  "version": "2.0.0-alpha.10",
   "description": "Structures and APIs in typescript automatically generated from decompiled NovaStar .NET libraries",
   "keywords": [
     "NovaStar",
