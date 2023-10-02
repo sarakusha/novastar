@@ -1,6 +1,6 @@
 {
   "name": "@novastar/screen",
-  "version": "2.0.0-alpha.10",
+  "version": "2.0.0-alpha.11",
   "description": "NovaStar API wrapper",
   "main": "build/main/index.js",
   "typings": "build/module/index.d.ts",
@@ -85,10 +85,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@novastar/codec": "2.0.0-alpha.9",
-    "@novastar/native": "2.0.0-alpha.10",
-    "@novastar/net": "2.0.0-alpha.9",
-    "@novastar/serial": "2.0.0-alpha.10",
+    "@novastar/codec": "2.0.0-alpha.11",
+    "@novastar/native": "2.0.0-alpha.11",
+    "@novastar/net": "2.0.0-alpha.11",
+    "@novastar/serial": "2.0.0-alpha.11",
     "@sarakusha/lzma": "^2.3.3",
     "adm-zip": "^0.5.9",
     "fast-xml-parser": "^4.0.0-beta.8",

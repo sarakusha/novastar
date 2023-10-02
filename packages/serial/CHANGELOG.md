@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.11](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.10...v2.0.0-alpha.11) (2023-10-02)
+
+**Note:** Version bump only for package @novastar/serial
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 # [2.0.0-alpha.10](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.9...v2.0.0-alpha.10) (2023-02-02)
 
 **Note:** Version bump only for package @novastar/serial
