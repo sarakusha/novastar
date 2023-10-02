@@ -40,7 +40,7 @@
   "homepage": "https://sarakusha.github.io/novastar/",
   "scripts": {
     "build": "run-p build:*",
-    "build:main": "tsc -p tsconfig.json",
+    "build:main": "tsc --importHelpers -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
@@ -70,6 +70,7 @@
   "dependencies": {
     "pump": "^3.0.0",
     "tiny-typed-emitter": "^2.0.3",
+    "tslib": "^2.5.0",
     "typed-struct": "^2.3.0"
   },
   "devDependencies": {

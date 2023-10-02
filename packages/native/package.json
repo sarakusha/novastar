@@ -71,7 +71,7 @@
     "gen:pack": "ts-node post-gen/pack.ts",
     "fix:lint": "eslint generated/ lib/common/ --max-warnings 5 --quiet --ext .ts --fix -c .eslintrc.js",
     "build": "run-p build:*",
-    "build:main": "tsc -p tsconfig.json",
+    "build:main": "tsc --importHelpers -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",
     "rebuild": "yarn clean && yarn decompile && yarn gen:build && yarn compile",
     "rebuild:win": "yarn clean && yarn decompile:win && yarn gen:build && yarn compile",
@@ -91,7 +91,8 @@
     "io-ts": "^2.2.16",
     "io-ts-types": "^0.5.16",
     "monocle-ts": "^2.3.11",
-    "newtype-ts": "^0.3.4"
+    "newtype-ts": "^0.3.4",
+    "tslib": "^2.5.0"
   },
   "files": [
     "build",
