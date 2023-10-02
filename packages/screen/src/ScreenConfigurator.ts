@@ -92,8 +92,6 @@ import packAndSortCabinets from './packAndSortCabinets';
 import splitScreensByDevice from './splitScreensByDevice';
 
 const debug = debugFactory('novastar:screen');
-console.log('Hello from ScreenConfigurator');
-debug('Hello from ScreenConfigurator');
 export const AllSenders = 0xff;
 export const AllPorts = 0xff;
 export const AllScanBoards = 0xffff;
@@ -163,10 +161,10 @@ export type ScreenWriter<T> = (value: T, screen?: number) => Promise<Consolidate
 
 const firstCreator =
   <T>(genFactory: ScreenReadAsyncGenerator<T>) =>
-  (screen?: number): Promise<T | null> => {
-    const it = genFactory(screen);
-    return itFirstNotNull(it);
-  };
+    (screen?: number): Promise<T | null> => {
+      const it = genFactory(screen);
+      return itFirstNotNull(it);
+    };
 
 type Codec<I, O = I> = (value: I) => O;
 
@@ -362,19 +360,19 @@ export default class ScreenConfigurator {
           ) ?? {};
         return toRead
           ? range(MinConnectIndex, MinConnectIndex + LoadScannerCount).map(ScanIndex => ({
-              SenderIndex,
-              PortIndex,
-              SlaveSenderIndex,
-              SlavePortIndex,
-              ScanIndex,
-            }))
+            SenderIndex,
+            PortIndex,
+            SlaveSenderIndex,
+            SlavePortIndex,
+            ScanIndex,
+          }))
           : {
-              SenderIndex,
-              PortIndex,
-              SlaveSenderIndex,
-              SlavePortIndex,
-              ScanIndex: 0xffff,
-            };
+            SenderIndex,
+            PortIndex,
+            SlaveSenderIndex,
+            SlavePortIndex,
+            ScanIndex: 0xffff,
+          };
       }
     );
 
