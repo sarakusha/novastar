@@ -80,7 +80,7 @@ export const Packet = new Struct('Packet')
   .UInt8('serno')
   .UInt8('source')
   .UInt8('destination')
-  .UInt8('deviceType', typed<DeviceType>())
+  .UInt8('deviceType')
   .UInt8('port')
   .UInt16LE('rcvIndex')
   .UInt8('io', typed<IO>())
@@ -110,7 +110,7 @@ export const Packet = new Struct('Packet')
  * @property data - data sent on write or empty buffer on read
  * @property crc - cyclic redundancy check
  */
-export interface Packet extends ExtractType<typeof Packet, false> {}
+export interface Packet extends ExtractType<typeof Packet, false> { }
 
 /**
  * [[Packet]] type guard
