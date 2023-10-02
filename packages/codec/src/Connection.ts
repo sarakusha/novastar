@@ -210,9 +210,9 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
 
   protected wait(req: Request, skipErrors?: boolean): Promise<Packet | null> {
     return new Promise<Packet | null>((resolve, reject) => {
-      let timer: NodeJS.Timer;
+      let timer: NodeJS.Timeout;
       const complete = (): void => {
-        global.clearTimeout(timer);
+        clearTimeout(timer);
         this.queue = this.queue.filter(([request]) => req !== request);
       };
       const rejectTimeout = (): void => {
