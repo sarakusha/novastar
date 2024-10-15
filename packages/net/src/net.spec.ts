@@ -3,7 +3,7 @@ import { Buffer } from 'buffer';
 import * as fs from 'fs';
 import os from 'os';
 import path from 'path';
-import net, { findNetDevices, NetSession } from './net';
+import { net, findNetDevices, NetSession } from './net';
 
 afterAll(() => net.release());
 

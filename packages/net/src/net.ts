@@ -40,7 +40,7 @@ const interfaceSearch = (address: string, dest = '255.255.255.255'): Promise<str
     let timer: NodeJS.Timeout | undefined;
     const list: string[] = [];
     const complete = (): void => {
-      timer && clearTimeout(timer);
+      clearTimeout(timer);
       socket.close();
       if (!completed) {
         completed = true;
@@ -93,7 +93,7 @@ const parseAddress = (address: string): [host: string, port: number] => {
 };
 
 /**
- * @internal For documentation purposes only. Use singleton instance exported as default
+ * @internal For documentation purposes only. Use singleton instance exported as `net`
  */
 export class NetBinding extends TypedEmitter<NetBindingEvents> {
   #sessions: Record<string, NetSession> = {};
@@ -179,6 +179,4 @@ export class NetBinding extends TypedEmitter<NetBindingEvents> {
 /**
  * Binding to work with network devices
  */
-const net = new NetBinding();
-
-export default net;
+export const net = new NetBinding();
