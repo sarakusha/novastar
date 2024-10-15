@@ -4,7 +4,7 @@ import { VirtualModeTypeEnum } from '@novastar/native/VirtualModeType';
 import debugFactory from 'debug';
 import { isLeft } from 'fp-ts/Either';
 import { PathReporter } from 'io-ts/PathReporter';
-import Struct, { ExtractType, typed } from 'typed-struct';
+import { ExtractType, Struct, typed } from 'typed-struct';
 
 import { PortInfo } from './PortInfo';
 

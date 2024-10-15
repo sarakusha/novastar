@@ -1,5 +1,5 @@
 import { ScanBoardConnectTypeEnum } from '@novastar/native/ScanBoardConnectType';
-import Struct, { ExtractType, typed } from 'typed-struct';
+import { ExtractType, Struct, typed } from 'typed-struct';
 
 export const PortInfo = new Struct('PortInfo')
   .UInt8('ConnectType', typed<ScanBoardConnectTypeEnum>())

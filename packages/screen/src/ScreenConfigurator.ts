@@ -2,16 +2,15 @@
 import { Duplex } from 'stream';
 
 import {
-  // Connection,
+  Connection,
   decodeUIntLE,
   delay,
   DeviceType,
   ErrorType,
-  Packet,
+  type Packet,
   Request,
   series,
 } from '@novastar/codec';
-import Connection from '@novastar/codec/Connection';
 import AddressMapping from '@novastar/native/AddressMapping';
 import { BaudRateTypeEnum } from '@novastar/native/BaudRateType';
 import type { GraphicsDVIPortInfo } from '@novastar/native/GraphicsDVIPortInfo';
@@ -195,7 +194,7 @@ const first: FirstWrapperCreator = gen =>
 
 const stringConverter = (res: Packet): string => {
   const end = Math.max(0, res.data.indexOf(0));
-  return res.data.slice(0, end).toString();
+  return res.data.toString('utf-8', 0, end);
 };
 
 // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
@@ -669,7 +668,6 @@ export default class ScreenConfigurator {
    * Nova.LCT.GigabitSystem.HWConfigAccessor::PollingScannerParam
    *
    * ScannerPropertyAccessor::StartPollingScannerAccessor
-   * @constructor
    * @protected
    */
   protected async ExecuteCheck(req: Readonly<Request>): Promise<void> {

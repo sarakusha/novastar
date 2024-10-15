@@ -1,6 +1,6 @@
 import { ScreenAdjustParams } from '@novastar/native/ScreenAdjustParams';
 import { makeStruct } from '@novastar/native/common';
-import Struct from 'typed-struct';
+import { Struct } from 'typed-struct';
 
 const ScreenAdjustParam = new Struct('ScreenAdjustParam')
   .UInt8('ScreenXZoomType')

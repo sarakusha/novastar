@@ -4,6 +4,7 @@
 
 import { Chain, isLeft } from 'fp-ts/Either';
 import * as t from 'io-ts';
+import { PathReporter } from 'io-ts/PathReporter';
 import {
   BigIntFromString,
   BooleanFromString,
@@ -11,7 +12,6 @@ import {
   fromRefinement,
   NumberFromString,
 } from 'io-ts-types';
-import { PathReporter } from 'io-ts/PathReporter';
 
 const stringConverter =
   <C extends t.Mixed, V extends t.Type<any, string>>(converter: V) =>
@@ -172,7 +172,7 @@ export class BufferFromBase64 extends t.Type<Uint8Array, string> {
           typeof i === 'string' &&
           /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(i)
         ) {
-          const buffer = Uint8Array.from(atob(i), c => c.charCodeAt(0)) // Buffer.from(i, 'base64');
+          const buffer = Uint8Array.from(atob(i), ch => ch.charCodeAt(0)) // Buffer.from(i, 'base64');
           if (
             !length ||
             (buffer.length === length && strict) ||

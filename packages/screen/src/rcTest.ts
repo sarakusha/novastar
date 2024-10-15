@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { ChipTypeEnum } from '@novastar/native/ChipType';
 import { TestModeEnum } from '@novastar/native/TestMode';
-import serial, { findSendingCards } from '@novastar/serial';
+import { findSendingCards, serial } from '@novastar/serial';
 import chalk from 'chalk';
 
 import './api';

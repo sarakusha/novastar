@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types,no-underscore-dangle */
 import { chain, isLeft } from 'fp-ts/Either';
 import { pipe } from 'fp-ts/function';
 import * as t from 'io-ts';
@@ -95,6 +94,7 @@ export function makeStruct<C extends t.Mixed, I extends Mix<t.TypeOf<C>, t.Outpu
 }
 
 function getProps<T extends t.HasProps>(codec: T): t.Props {
+  // eslint-disable-next-line no-underscore-dangle
   switch (codec._tag) {
     case 'RefinementType':
     case 'ReadonlyType':

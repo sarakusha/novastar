@@ -17,7 +17,6 @@ export function notEmpty<TValue>(value: TValue | null | undefined | void): value
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type Id<T> = {} & { [P in keyof T]: T[P] };
 
 export const crc16 = (data: Buffer, initial: number): number =>

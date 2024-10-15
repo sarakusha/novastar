@@ -1,5 +1,5 @@
 import { ScanBoardConnectTypeEnum } from '@novastar/native/ScanBoardConnectType';
-import Struct, { ExtractType, typed } from 'typed-struct';
+import { ExtractType, Struct, typed } from 'typed-struct';
 
 export const ScreenConfigInfo = new Struct('ScreenConfigInfo')
   .UInt8('Type', typed<1 | 3 | 5>())

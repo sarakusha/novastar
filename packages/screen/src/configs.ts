@@ -5,7 +5,7 @@ import { ScanBoardProperty } from '@novastar/native/ScanBoardProperty';
 import { SystemParameterConfig } from '@novastar/native/SystemParameterConfig';
 import Zip from 'adm-zip';
 import debugFactory from 'debug';
-import { X2jOptionsOptional, XMLParser } from 'fast-xml-parser';
+import { XMLParser, type X2jOptions } from 'fast-xml-parser';
 import { isLeft } from 'fp-ts/Either';
 import * as t from 'io-ts';
 import { PathReporter } from 'io-ts/PathReporter';
@@ -20,7 +20,7 @@ import { crc16 } from './common';
 
 const debug = debugFactory('novastar:config');
 
-const options: X2jOptionsOptional = {
+const options: X2jOptions = {
   ignoreAttributes: false,
   parseTagValue: false,
 };

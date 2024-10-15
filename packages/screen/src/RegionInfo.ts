@@ -1,4 +1,4 @@
-import Struct, { ExtractType } from 'typed-struct';
+import { ExtractType, Struct } from 'typed-struct';
 
 export const RegionInfo = new Struct('RegionInfo')
   .UInt8('SenderIndex')

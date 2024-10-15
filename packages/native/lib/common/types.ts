@@ -1,9 +1,16 @@
 /* Automatically generated */
 import * as t from 'io-ts';
-
 import MaxValue from '../../generated/MaxValue';
-
-import { Bool, BufferFromBase64, Int32, Numeric, UInt16, UInt8, withDefault } from './integers';
+import {
+  Bool,
+  BufferFromBase64,
+  Int32,
+  Int8,
+  Numeric,
+  UInt16,
+  UInt8,
+  withDefault,
+} from './integers';
 
 export const string_empty = withDefault(t.string, '');
 export const Int32_0 = withDefault(Int32, 0);
@@ -44,10 +51,19 @@ export const UInt16_8048 = withDefault(UInt16, 8048);
 export const UInt16_31615 = withDefault(UInt16, 31615);
 export const UInt16_18183 = withDefault(UInt16, 18183);
 export const UInt16_256 = withDefault(UInt16, 256);
+export const Int32_4 = withDefault(Int32, 4);
 export const UInt16_7936 = withDefault(UInt16, 7936);
+export const Int32_5 = withDefault(Int32, 5);
+export const Int32_64 = withDefault(Int32, 64);
+export const Numeric_1 = withDefault(Numeric, 1);
+export const UInt8_8 = withDefault(UInt8, 8);
+export const Int32_128 = withDefault(Int32, 128);
+export const Int32_7 = withDefault(Int32, 7);
 export const Int32_13 = withDefault(Int32, 13);
 export const Int32_32 = withDefault(Int32, 32);
-export const Int32_128 = withDefault(Int32, 128);
+export const Int32_14 = withDefault(Int32, 14);
+export const Int32_256 = withDefault(Int32, 256);
+export const Int32_191 = withDefault(Int32, 191);
 export const Int32_16 = withDefault(Int32, 16);
 export const UInt16_65474 = withDefault(UInt16, 65474);
 export const UInt16_30818 = withDefault(UInt16, 30818);
@@ -56,14 +72,19 @@ export const UInt16_26722 = withDefault(UInt16, 26722);
 export const UInt16_3841 = withDefault(UInt16, 3841);
 export const UInt16_63 = withDefault(UInt16, 63);
 export const Int32_48 = withDefault(Int32, 48);
+export const Int32_47 = withDefault(Int32, 47);
+export const UInt8_10 = withDefault(UInt8, 10);
 export const Int32_10 = withDefault(Int32, 10);
 export const Int32_25 = withDefault(Int32, 25);
 export const Int32_137 = withDefault(Int32, 137);
 export const Int32_140 = withDefault(Int32, 140);
 export const Int32_3300 = withDefault(Int32, 3300);
+export const Int32_8 = withDefault(Int32, 8);
 export const UInt8_4 = withDefault(UInt8, 4);
+export const Int32_11 = withDefault(Int32, 11);
+export const Int32_2 = withDefault(Int32, 2);
 export const UInt8_29 = withDefault(UInt8, 29);
-export const UInt8_8 = withDefault(UInt8, 8);
+export const Int32_77 = withDefault(Int32, 77);
 export const UInt16_185 = withDefault(UInt16, 185);
 export const UInt8_12 = withDefault(UInt8, 12);
 export const UInt16_128 = withDefault(UInt16, 128);
@@ -111,30 +132,41 @@ export const UInt16_62208 = withDefault(UInt16, 62208);
 export const UInt16_62464 = withDefault(UInt16, 62464);
 export const UInt16_62720 = withDefault(UInt16, 62720);
 export const UInt16_8960 = withDefault(UInt16, 8960);
+export const Int32_238 = withDefault(Int32, 238);
+export const Int32_34 = withDefault(Int32, 34);
 export const Int32_12 = withDefault(Int32, 12);
 export const UInt8_16 = withDefault(UInt8, 16);
 export const UInt16_23 = withDefault(UInt16, 23);
+export const Int32_6 = withDefault(Int32, 6);
 export const UInt16_60543 = withDefault(UInt16, 60543);
-export const UInt16_65535 = withDefault(UInt16, 65535);
-export const Int32_14 = withDefault(Int32, 14);
-export const Int32_11 = withDefault(Int32, 11);
 export const Int32_21 = withDefault(Int32, 21);
+export const buffer_2048 = new BufferFromBase64('buffer_2048', 2048);
+export const Numeric_0 = withDefault(Numeric, 0);
+export const Numeric_28 = withDefault(Numeric, 2.8);
+export const Int32_4559 = withDefault(Int32, 4559);
+export const Int32_1000 = withDefault(Int32, 1000);
+export const Int8_0 = withDefault(Int8, 0);
+export const UInt16_65535 = withDefault(UInt16, 65535);
+export const UInt8_64 = withDefault(UInt8, 64);
+export const UInt16_3 = withDefault(UInt16, 3);
+export const UInt16_11267 = withDefault(UInt16, 11267);
+export const UInt16_1023 = withDefault(UInt16, 1023);
+export const UInt16_3072 = withDefault(UInt16, 3072);
+export const UInt16_16899 = withDefault(UInt16, 16899);
 export const UInt16_11 = withDefault(UInt16, 11);
 export const UInt16_64929 = withDefault(UInt16, 64929);
-export const UInt16_1023 = withDefault(UInt16, 1023);
 export const UInt16_16387 = withDefault(UInt16, 16387);
-export const Int32_4 = withDefault(Int32, 4);
 export const Int32_196 = withDefault(Int32, 196);
+export const UInt16_125 = withDefault(UInt16, 125);
 export const UInt16_41728 = withDefault(UInt16, 41728);
 export const UInt16_44932 = withDefault(UInt16, 44932);
-export const Int32_5 = withDefault(Int32, 5);
-export const Int32_6 = withDefault(Int32, 6);
 export const UInt16_65337 = withDefault(UInt16, 65337);
-export const UInt16_3072 = withDefault(UInt16, 3072);
-export const Int32_34 = withDefault(Int32, 34);
+export const Int32_35 = withDefault(Int32, 35);
+export const Int32_42 = withDefault(Int32, 42);
 export const UInt16_29951 = withDefault(UInt16, 29951);
 export const UInt8_56 = withDefault(UInt8, 56);
 export const UInt16_7168 = withDefault(UInt16, 7168);
+export const Int32_49 = withDefault(Int32, 49);
 export const UInt8_255 = withDefault(UInt8, 255);
 export const buffer_96 = new BufferFromBase64('buffer_96', 96);
 export const UInt16_1024 = withDefault(UInt16, 1024);
@@ -144,12 +176,18 @@ export const buffer_MAX_MODULEDATAGROUP = new BufferFromBase64(
   'buffer_MAX_MODULEDATAGROUP',
   MaxValue.MAX_MODULEDATAGROUP
 );
+export const buffer_MAX_SCAN = new BufferFromBase64('buffer_MAX_SCAN', MaxValue.MAX_SCAN);
+export const buffer_MAX_SCAN_NEW = new BufferFromBase64(
+  'buffer_MAX_SCAN_NEW',
+  MaxValue.MAX_SCAN_NEW
+);
+export const buffer_MAX_SCANSPECIAL = new BufferFromBase64(
+  'buffer_MAX_SCANSPECIAL',
+  MaxValue.MAX_SCANSPECIAL
+);
 export const buffer_COLOR_COUNT = new BufferFromBase64('buffer_COLOR_COUNT', MaxValue.COLOR_COUNT);
+export const buffer_256 = new BufferFromBase64('buffer_256', 256);
 export const buffer_2 = new BufferFromBase64('buffer_2', 2);
-export const Int32_8 = withDefault(Int32, 8);
-export const Int32_2 = withDefault(Int32, 2);
-export const Numeric_28 = withDefault(Numeric, 2.8);
-export const Int32_4559 = withDefault(Int32, 4559);
 export const Int32_100 = withDefault(Int32, 100);
 export const Int32_300 = withDefault(Int32, 300);
 export const buffer_GAMMAVALUE_COUNT = new BufferFromBase64(
@@ -160,8 +198,12 @@ export const buffer_MAX_MULTIPLE_CHIP_TABLELEN = new BufferFromBase64(
   'buffer_MAX_MULTIPLE_CHIP_TABLELEN',
   MaxValue.MAX_MULTIPLE_CHIP_TABLELEN
 );
+export const buffer_MAX_SCANNER_DATAGROUP = new BufferFromBase64(
+  'buffer_MAX_SCANNER_DATAGROUP',
+  MaxValue.MAX_SCANNER_DATAGROUP
+);
 export const Int32_255 = withDefault(Int32, 255);
-export const UInt8_10 = withDefault(UInt8, 10);
+export const UInt8_50 = withDefault(UInt8, 50);
 export const UInt16_2048 = withDefault(UInt16, 2048);
 export const UInt8_100 = withDefault(UInt8, 100);
 export const UInt16_32 = withDefault(UInt16, 32);

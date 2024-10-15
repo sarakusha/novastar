@@ -1,4 +1,4 @@
-import Struct, { ExtractType } from 'typed-struct';
+import { ExtractType, Struct } from 'typed-struct';
 
 export const SoftwareSpaceHeaderFlag = 'NSSD';
 export const SoftwareSpaceHeaderVersion = 1001;

@@ -1,7 +1,8 @@
 import { GraphicsDVIPortInfo } from '@novastar/native/GraphicsDVIPortInfo';
 import { isLeft } from 'fp-ts/Either';
 import { PathReporter } from 'io-ts/PathReporter';
-import Struct, { ExtractType } from 'typed-struct';
+import { ExtractType, Struct } from 'typed-struct';
+
 
 import { crc16 } from './common';
 

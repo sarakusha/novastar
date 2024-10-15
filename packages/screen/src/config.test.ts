@@ -2,12 +2,12 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { compress, decompress } from '@sarakusha/lzma';
-import { X2jOptionsOptional, XMLParser } from 'fast-xml-parser';
+import { type X2jOptions, XMLParser } from 'fast-xml-parser';
 
 import { pack, toHex, unpack } from './common';
 import { loadScanBoardConfig, loadScreenConfig, loadSystemConfig } from './configs';
 
-const options: X2jOptionsOptional = {
+const options: X2jOptions = {
   ignoreAttributes: false,
   parseTagValue: false,
 };

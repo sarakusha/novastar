@@ -141,7 +141,7 @@ export const getPrettierOptions = (): Promise<Options | undefined> => {
   });
 };
 
-prettierOpts || getPrettierOptions().then();
+if (!prettierOpts) getPrettierOptions().then();
 
 export const makeValidSourceFile = (filename: string, statements: Statement[]) => {
   const text = printer.printFile(
@@ -169,13 +169,13 @@ export const makeImport = (
   const name = identifier?.length ? ts.factory.createIdentifier(identifier) : undefined;
   const ic = ts.factory.createImportClause(false, name, namedBindings);
   const ms = ts.factory.createStringLiteral(src, true);
-  return ts.factory.createImportDeclaration(undefined, undefined, ic, ms);
+  return ts.factory.createImportDeclaration(undefined, ic, ms);
 };
 
 export const saveSourceFile = (source: SourceFile): void => {
   // console.info(`${source.fileName}...`);
   const src = printer.printFile(source);
-  getPrettierOptions().then(opts => {
-    fs.writeFileSync(source.fileName, prettier.format(src, opts));
+  getPrettierOptions().then(async opts => {
+    fs.writeFileSync(source.fileName, await prettier.format(src, opts));
   });
 };

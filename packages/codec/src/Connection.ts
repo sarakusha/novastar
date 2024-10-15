@@ -89,7 +89,7 @@ export default class Connection<S extends Duplex> extends TypedEmitter<Connectio
     this.encoder = new NovastarEncoder();
     this.decoder.on('data', this.listener);
     pump(this.encoder, this.stream, this.decoder, (err) => {
-      err && debug(`Error while pump: ${err.message}`);
+      if (err) debug(`Error while pump: ${err.message}`);
       this.close();
     });
     this.connected = true;

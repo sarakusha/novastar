@@ -7,7 +7,7 @@ import MaxValueInfo from '@novastar/native/MaxValueInfo';
 import { RotateAngleEnum } from '@novastar/native/RotateAngle';
 import type { ScanBoardProperty } from '@novastar/native/ScanBoardProperty';
 import type { ChipBaseExtendPropey } from '@novastar/native/unions';
-import Struct, { ExtractType, Getter, Setter } from 'typed-struct';
+import { ExtractType, Getter, Setter, Struct } from 'typed-struct';
 
 import { isValidScanBdProp } from './CommonCalculator';
 import { hasProps } from './common';
@@ -567,7 +567,7 @@ export const encodeScanBoardProperty = (scanBdProp: ScanBoardProperty): Buffer =
     LowAshCompensationTwo,
     IsOpenLowAshCompensation,
     PowerOnBrightnessAdjustEn,
-    OpenEMCFun,
+    OpenEMCFunValue,
     EnableEnhanceFirstScan,
     IsOpenSetGainValue,
     FirstScanCompensation,
@@ -690,7 +690,7 @@ export const encodeScanBoardProperty = (scanBdProp: ScanBoardProperty): Buffer =
     LowAshCompensationTwo,
     IsOpenLowAshCompensation,
     PowerOnBrightnessAdjustEn,
-    OpenEMCFun,
+    OpenEMCFunValue,
     EnableEnhanceFirstScan,
     IsOpenSetGainValue,
     FirstScanCompensation,

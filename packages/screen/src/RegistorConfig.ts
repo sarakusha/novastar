@@ -1,5 +1,5 @@
 import { ChipTypeEnum } from '@novastar/native/ChipType';
-import Struct, { ExtractType, typed } from 'typed-struct';
+import { ExtractType, Struct, typed } from 'typed-struct';
 
 export const RegistorConfig = new Struct('RegistorConfig')
   .UInt8('chipType', typed<ChipTypeEnum>())

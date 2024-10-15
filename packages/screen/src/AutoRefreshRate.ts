@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise,no-param-reassign */
-import Struct, { ExtractType } from 'typed-struct';
+import { ExtractType, Struct } from 'typed-struct';
 
 export const AutoRefreshRate = new Struct('AutoRefreshRate')
   .UInt16LE('TotalUnitNum')

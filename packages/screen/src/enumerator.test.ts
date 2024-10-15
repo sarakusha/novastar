@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import net, { findNetDevices } from '@novastar/net';
+import { findNetDevices, net } from '@novastar/net';
 
 import './api';
 import ScreenConfigurator from './ScreenConfigurator';

@@ -1,6 +1,7 @@
 /* eslint-disable no-bitwise */
 import AddressMapping from '@novastar/native/AddressMapping';
-import Struct, { ExtractType } from 'typed-struct';
+import { ExtractType, Struct } from 'typed-struct';
+
 
 const TempInfo = new Struct('TempInfo')
   .Bits8({ IsValid: [0, 1] })
