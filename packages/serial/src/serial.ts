@@ -118,7 +118,7 @@ export const findSendingCards = async (
 };
 
 /**
- * @internal For documentation purposes only. Use singleton instance exported as default
+ * @internal For documentation purposes only. Use singleton instance exported as `serial`
  */
 export class SerialBinding extends TypedEmitter<SerialBindingEvents> {
   private sessions: Record<string, SerialSession> = {};
@@ -188,11 +188,11 @@ export class SerialBinding extends TypedEmitter<SerialBindingEvents> {
 /**
  * Binding to work with serial devices
  */
-const serial = new SerialBinding();
+export const serial = new SerialBinding();
 
 const release = () => serial.release();
 
 process.on('SIGINT', release);
 process.on('SIGTERM', release);
 
-export default serial;
+// export default serial;
