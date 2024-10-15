@@ -15,7 +15,6 @@ const FalseToken = ts.factory.createToken(ts.SyntaxKind.FalseKeyword);
 const makeModuleDeclaration = (name: string, body: ts.ModuleBlock): ts.ModuleDeclaration => {
   const mn = ts.factory.createStringLiteral(name, true);
   return ts.factory.createModuleDeclaration(
-    undefined,
     [ts.factory.createModifier(ts.SyntaxKind.DeclareKeyword)],
     mn,
     body,
@@ -23,7 +22,7 @@ const makeModuleDeclaration = (name: string, body: ts.ModuleBlock): ts.ModuleDec
 };
 
 const makeInterface = (name: string, members: ts.MethodSignature[]): ts.InterfaceDeclaration =>
-  ts.factory.createInterfaceDeclaration(undefined, undefined, name, undefined, undefined, members);
+  ts.factory.createInterfaceDeclaration(undefined, name, undefined, undefined, members);
 
 const makeMethodSignature = (
   name: string,
@@ -33,7 +32,6 @@ const makeMethodSignature = (
   ts.factory.createMethodSignature(undefined, name, undefined, undefined, param, type);
 
 const thisSession = ts.factory.createParameterDeclaration(
-  undefined,
   undefined,
   undefined,
   'this',
@@ -56,6 +54,7 @@ const tryWriteType = ts.factory.createTypeReferenceNode('Promise', [
   ]),
 ]);
 const broadcastTypeParam = ts.factory.createTypeParameterDeclaration(
+  [],
   'Broadcast',
   ts.factory.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword),
 );
@@ -140,7 +139,6 @@ const makeDefaultFunctionDeclaration = (
   const createName = `create${name}`;
   return [
     ts.factory.createFunctionDeclaration(
-      undefined,
       [
         ts.factory.createModifier(ts.SyntaxKind.ExportKeyword),
         ts.factory.createModifier(ts.SyntaxKind.DefaultKeyword),
@@ -381,4 +379,4 @@ const visit = (node: ts.Node): void => {
   }
 };
 
-source && ts.forEachChild(source, visit);
+if (source) ts.forEachChild(source, visit);

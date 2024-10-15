@@ -1,4 +1,4 @@
-import fs, { readdirSync } from 'fs';
+import { readdirSync } from 'fs';
 import path from 'path';
 
 import { notEmpty } from '@novastar/codec';
@@ -12,6 +12,7 @@ import ts, {
   PropertyAssignment,
   Statement,
   SyntaxKind,
+  VariableStatement,
 } from 'typescript';
 
 import {
@@ -28,7 +29,7 @@ import {
 } from './common';
 import makeTransformer, { UnionMap } from './transformer';
 
-const hasExportKeyword = (st: Statement): boolean =>
+const hasExportKeyword = (st: VariableStatement): boolean =>
   Boolean(st.modifiers?.findIndex(mod => mod.kind === SyntaxKind.ExportKeyword) !== -1);
 
 const isWithDefaultInitializer = makeIsWithDefaultInitializer(1);
@@ -72,10 +73,7 @@ const parseUnions = (): UnionMap => {
             declarations: [decl],
           },
         } = stat;
-        const {
-          initializer,
-          name,
-        } = decl;
+        const { initializer, name } = decl;
         if (!initializer || !ts.isIdentifier(name) || !ts.isCallExpression(initializer))
           return undefined;
         const {
@@ -94,7 +92,7 @@ const parseUnions = (): UnionMap => {
           .map(({ escapedText }) => escapedText.toString());
         return [baseTypeName, derivedNames];
       })
-      .filter(notEmpty),
+      .filter(notEmpty)
   );
 };
 
@@ -124,23 +122,30 @@ function countBuffers(initializers: ts.Expression[]): void {
 }
 
 files.forEach(sourcePath => {
-  const source = program.getSourceFile(sourcePath);
-  const sts = source?.statements.filter(isVariableStatement).filter(hasExportKeyword);
+  try {
+    const source = program.getSourceFile(sourcePath);
+    const sts = source?.statements.filter(isVariableStatement).filter(hasExportKeyword);
 
-  sts?.forEach(st => {
-    const {
-      declarationList: {
-        declarations: [declaration],
-      },
-    } = st;
-    const { initializer } = declaration;
-    if (isTypeInitializer(initializer, ['partial', 'type', 'intersection'])) {
-      const props = getProps(initializer);
-      const inits = props.map(prop => (isPropertyAssignment(prop) ? prop.initializer : prop.name));
-      countWithDefaults(inits);
-      countBuffers(inits);
-    }
-  });
+    sts?.forEach(st => {
+      const {
+        declarationList: {
+          declarations: [declaration],
+        },
+      } = st;
+      const { initializer } = declaration;
+      if (isTypeInitializer(initializer, ['partial', 'type', 'intersection'])) {
+        const props = getProps(initializer);
+        const inits = props.map(prop =>
+          isPropertyAssignment(prop) ? prop.initializer : prop.name
+        );
+        countWithDefaults(inits);
+        countBuffers(inits);
+      }
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`erorr while processing ${sourcePath}: ${error}`);
+  }
 });
 
 // const filterCounter = (counter: Record<string, number>, max: number): Record<string, number> =>
@@ -173,15 +178,15 @@ function createExportStatement(key: string, a: ts.Expression, b?: ts.Expression)
     expression = factory.createNewExpression(
       factory.createIdentifier('BufferFromBase64'),
       undefined,
-      [factory.createStringLiteral(key, true), a],
+      [factory.createStringLiteral(key, true), a]
     );
   }
   return factory.createVariableStatement(
     [factory.createModifier(SyntaxKind.ExportKeyword)],
     factory.createVariableDeclarationList(
       [factory.createVariableDeclaration(key, undefined, undefined, expression)],
-      NodeFlags.Const,
-    ),
+      NodeFlags.Const
+    )
   );
 }
 
@@ -196,7 +201,7 @@ const updateWithDefault = (prop: PropertyAssignment): PropertyAssignment => {
       return factory.updatePropertyAssignment(
         prop,
         prop.name,
-        factory.createPropertyAccessExpression(factory.createIdentifier('common'), key),
+        factory.createPropertyAccessExpression(factory.createIdentifier('common'), key)
       );
     }
   }
@@ -214,7 +219,7 @@ const updateBufferInitializer = (prop: PropertyAssignment): PropertyAssignment =
       return factory.updatePropertyAssignment(
         prop,
         prop.name,
-        factory.createPropertyAccessExpression(factory.createIdentifier('common'), key),
+        factory.createPropertyAccessExpression(factory.createIdentifier('common'), key)
       );
     }
   }
@@ -227,8 +232,8 @@ files
   .filter(
     filename =>
       !['AddressMapping.ts', 'unions.ts', 'SingleRefreshRateParam.ts'].includes(
-        path.basename(filename),
-      ),
+        path.basename(filename)
+      )
   )
   .forEach(sourceName => {
     const source = program.getSourceFile(sourceName);
@@ -250,29 +255,29 @@ const stats = Object.values(typesStatements);
 stats.unshift(
   factory.createImportDeclaration(
     undefined,
-    undefined,
     factory.createImportClause(
       false,
       undefined,
-      factory.createNamespaceImport(factory.createIdentifier('t')),
+      factory.createNamespaceImport(factory.createIdentifier('t'))
     ),
-    factory.createStringLiteral('io-ts', true),
+    factory.createStringLiteral('io-ts', true)
   ),
   makeImport('../../generated/MaxValue', 'MaxValue'),
   makeImport(
     './integers',
     undefined,
-    ...['withDefault', 'BufferFromBase64', ...integerImports].sort(),
-  ),
+    ...['withDefault', 'BufferFromBase64', ...integerImports].sort()
+  )
 );
 
-stats.length &&
-ts.addSyntheticLeadingComment(
-  stats[0],
-  ts.SyntaxKind.MultiLineCommentTrivia,
-  ' Automatically generated ',
-  true,
-);
+if (stats.length) {
+  ts.addSyntheticLeadingComment(
+    stats[0],
+    ts.SyntaxKind.MultiLineCommentTrivia,
+    ' Automatically generated ',
+    true
+  );
+}
 
 const typesPath = path.resolve(__dirname, '../lib/common/types.ts');
 const types = makeValidSourceFile(typesPath, stats);

@@ -1,6 +1,12 @@
 import path from 'path';
 
-import ts, { factory, isPropertyAssignment, PropertyAssignment, StringLiteral, Visitor } from 'typescript';
+import ts, {
+  factory,
+  isPropertyAssignment,
+  PropertyAssignment,
+  StringLiteral,
+  Visitor,
+} from 'typescript';
 
 import { getProps, getSuper, isTypeInitializer, makeIsWithDefaultInitializer } from './common';
 
@@ -95,10 +101,15 @@ const makeTransformer =
         },
       ] = namedBindings.elements;
       const derivedNames = unions[typeName.toString()];
-      if (!derivedNames || derivedNames.includes(fileName)) return node;
+      if (
+        !derivedNames ||
+        derivedNames.includes(fileName) ||
+        (typeName.toString() === 'ChipBaseExtendPropey' && fileName !== 'ScanBoardProperty')
+      )
+        return node;
       return factory.updateImportDeclaration(
         node,
-        node.decorators,
+        // node.decorators,
         node.modifiers,
         node.importClause,
         factory.createStringLiteral('./unions'),
@@ -108,14 +119,13 @@ const makeTransformer =
 
     const rootVisitor = (node: ts.Node): ts.Node => {
       if (ts.isVariableStatement(node)) {
-        return ts.visitNode(node, varVisitor as Visitor);
+        return ts.visitNode(node, varVisitor as Visitor)!;
       }
-      if (ts.isImportDeclaration(node))
-        return ts.visitNode(node, importVisitor as Visitor);
+      if (ts.isImportDeclaration(node)) return ts.visitNode(node, importVisitor as Visitor)!;
       return ts.visitEachChild(node, rootVisitor, context);
     };
 
-    return ts.visitNode(source, rootVisitor);
+    return ts.visitNode(source, rootVisitor) as ts.SourceFile;
   };
 
 export default makeTransformer;
