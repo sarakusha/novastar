@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
@@ -91,12 +92,14 @@ namespace gen
                 "int" => Common("Int32"),
                 "uint" => Common("UInt32"),
                 "byte" => Common("UInt8"),
+                "sbyte" => Common("Int8"),
                 "ushort" => Common("UInt16"),
                 "short" => Common("Int16"),
                 "float" => Common("Numeric"),
                 "double" => Common("Numeric"),
                 "ulong" => Common("UInt64"),
                 "bool" => Common("Bool"),
+                "decimal" => "t.string",
                 _ => null,
             };
         }
@@ -211,6 +214,10 @@ namespace gen
             if (!node.Members.Any()) return;
 
             var name = node.Identifier.ValueText;
+            if (name == "ChipType") return;
+            if (name == "OldChipType") {
+                name = "ChipType";
+            }
             var lines = new List<(string line, string comment)>
             {
                 ("import EnumFromString from '../lib/common/EnumFromString';\n", null),
@@ -230,6 +237,15 @@ namespace gen
                         if (value > 9) comment = Hex(value);
                         lines.Add(($"  {memberName} = {value},", comment));
                     }
+                    else if (eqValue.Kind() == SyntaxKind.SimpleMemberAccessExpression)
+                    {
+                        var value = eqValue.ToString() switch {
+                            "byte.MaxValue" => "255",
+                            "ushort.MaxValue" => "65535",
+                            _ => eqValue.ToString(),
+                        };
+                        lines.Add(($"  {memberName} = {value},", comment));
+                    }
                     else
                     {
                         lines.Add(($"  {memberName} {member.EqualsValue},", comment));
@@ -243,7 +259,7 @@ namespace gen
 
             lines.Add(("}\n", null));
             lines.AddRange(GetLocationComment(outDir,
-                node.GetLocation().GetLineSpan(), "@category Codecs", $"@desc Codec for {{@link {name}Enum}}"));
+                node.GetLocation().GetLineSpan(), $"Codec for {{@link {name}Enum}}", "@category Codecs"));
             lines.Add(($"export const {name} = EnumFromString({name}Enum, '{name}');\n", null));
             // lines.Add(($"export type {name} = typeof {name}Enum;\n", null));
             using StreamWriter file = new(Path.Join(outDir, $"{name}.ts"));
@@ -361,7 +377,9 @@ namespace gen
         {
             var privateInits = GetPrivateInitializers(node);
             var fieldsCollector = new FieldsCollector(node);
+            var staticFieldsCollector = new StaticFieldsCollector(node);
             fieldsCollector.Visit(node);
+            staticFieldsCollector.Visit(node);
             // if (fieldsCollector.Fields.Count == 0) return Array.Empty<string>();
 
             var className = node.Identifier.ValueText;
@@ -381,7 +399,7 @@ namespace gen
             lines.Add(($"\nimport * as common from '../lib/common';\n", null));
             lines.AddRange(imports.Select(external =>
                 ((string line, string comment))(
-                    $"import {{ {(baseTypes.Contains(external) && GetBaseTypeT(external, baseClasses) != external ? $"{GetBaseTypeT(external, baseClasses)}, {external}" : (enums.Contains(external) ? $"{external}, {external}Enum" : external))} }} from './{external}';",
+                    $"import {{ {(baseTypes.Contains(external) && GetBaseTypeT(external, baseClasses) != external ? $"{GetBaseTypeT(external, baseClasses)}, {external}" : (enums.Contains(external) ? $"{external}, {external}Enum" : external))} }} from './{external}'; // import",
                     null)));
             if (baseTypes.Length > 0)
                 lines.Add((
@@ -390,8 +408,10 @@ namespace gen
             else
             {
                 lines.AddRange(GetLocationComment(outDir,
-                    node.GetLocation().GetLineSpan(), "@category Codecs",
-                    $"@desc Codec for interface {{@link {className}}}"));
+                    node.GetLocation().GetLineSpan(),
+                    $"Codec for interface {{@link {className}}}",
+                    "@category Codecs"
+                ));
 
                 lines.Add(($"export const {className} = t.partial({{", null));
             }
@@ -414,12 +434,45 @@ namespace gen
                     switch (value.Kind())
                     {
                         case SyntaxKind.ArrayCreationExpression:
-                            var size = ((ArrayCreationExpressionSyntax)value).Type.RankSpecifiers.First().Sizes.First()
-                                .ToString();
+                            var sizeExp = ((ArrayCreationExpressionSyntax)value).Type.RankSpecifiers.First().Sizes.First();
+                            var size = sizeExp.ToString();
+                            var k = 1;
+                            if (sizeExp.Kind() == SyntaxKind.MultiplyExpression) {
+                                var exp = (BinaryExpressionSyntax)sizeExp;
+                                if (exp.Right.Kind() == SyntaxKind.NumericLiteralExpression) {
+                                    k = Int32.Parse(exp.Right.ToString());
+                                    sizeExp = exp.Left;
+                                } else {
+                                    k = Int32.Parse(exp.Left.ToString());
+                                    sizeExp = exp.Right;
+                                }
+                            }
+                            if (sizeExp.Kind() == SyntaxKind.IdentifierName && !size.StartsWith("MaxValue.")) {
+                                var staticName = ((IdentifierNameSyntax)sizeExp).Identifier.ValueText;
+                                // WriteLine($"Static {staticName}");
+                                // WriteLine(string.Join(",", staticFieldsCollector.Fields.Select(f => GetName(f))?.ToList()));
+                                var staticField = staticFieldsCollector.Fields.SingleOrDefault(f => GetName(f) == staticName);
+                                if (staticField != null) {
+                                    size = $"{Int32.Parse(GetInitializer(staticField)?.Value.ToString()) * k}";
+                                }
+                            }
+                            if (size == "Constants.GamaDataLength") {
+                                // TODO: Warning костыль
+                                size = "512";
+                                // var staticName = ((MemberAccessExpressionSyntax)sizeExp).Name.Identifier.ValueText;
+                                // WriteLine($"Static {staticName}");
+                                // WriteLine(string.Join(",", staticFieldsCollector.Fields.Select(f => GetName(f))?.ToList()));
+                                // var staticField = staticFieldsCollector.Fields.SingleOrDefault(f => GetName(f) == staticName);
+                                // if (staticField != null) {
+                                //     size = $"{Int32.Parse(GetInitializer(staticField)?.Value.ToString()) * k}";
+                                // }
+
+                            }
+
                             if (size.StartsWith("MaxValue.")) importMaxValue = true;
                             sb.Append(
                                 typeName == "byte"
-                                    ? $"new {Common("BufferFromBase64")}('{name}', {size}),"
+                                    ? $"new {Common("BufferFromBase64")}('{name}', {size} /* {sizeExp.Kind()} */),"
                                     : $"{Common("XMLArray")}({mixedType}, '{typeName}'),");
 
                             break;
@@ -465,8 +518,13 @@ namespace gen
                                 $"{Common("withDefault")}({mixedType}, {GetDefaultValue(expr.ToString(), typeName)}),");
                             break;
                         default:
-                            sb.Append(
+                        var defValue = GetDefaultValue(value.ToString(), typeName);
+                            if (defValue != "null") {
+                                sb.Append(
                                 $"{Common("withDefault")}({mixedType}, {GetDefaultValue(value.ToString(), typeName)}),");
+                            } else {
+                                sb.Append($"{mixedType},");
+                            }
                             break;
                     }
                 }
@@ -539,8 +597,9 @@ namespace gen
                 lines.Add(($"}})], '{className}Base');\n", null));
                 lines.AddRange(GetLocationComment(outDir,
                     node.GetLocation().GetLineSpan(),
-                    "@category Codecs",
-                    $"@desc Codec for {{@link {className}}}"));
+                    $"Codec for {{@link {className}}}",
+                    "@category Codecs"
+                ));
                 lines.Add((
                     $"export const {className} = t.intersection([\n  {className}Base,\n  t.partial({{ '@_xsi:type': t.literal('{className}')}}),\n], '{className}');\n",
                     null));
@@ -822,7 +881,7 @@ namespace gen
                         case "!=":
                             sign = "!==";
                             break;
-                        case "===":
+                        case "==":
                             sign = "===";
                             break;
                     }
@@ -1390,8 +1449,8 @@ namespace gen
             }
 
             var groups = from err in errs
-                let pos = err.IndexOf(":", StringComparison.Ordinal)
-                group err by err[..(pos == -1 ? err.Length : pos)]
+                let pos = err.IndexOf(':')
+                         group err by err[..(pos == -1 ? err.Length : pos)]
                 into grp
                 select new { err = grp.Key, count = grp.Count() };
             foreach (var grp in groups.OrderByDescending(g => g.count))
@@ -1445,8 +1504,8 @@ namespace gen
 
             if (!Directory.Exists(outDir)) Directory.CreateDirectory(outDir);
             if (!Directory.Exists(apiDir)) Directory.CreateDirectory(apiDir);
-
             var files = Directory.GetFiles(srcDir, "*.cs");
+            // WriteLine($"Source: {srcDir}, {files.Length}");
             if (files.Length == 0)
             {
                 Error.WriteLine("No source files found");
@@ -1460,16 +1519,16 @@ namespace gen
                 var source = File.ReadAllText(file);
                 var tree = CSharpSyntaxTree.ParseText(source, null, file);
                 var root = tree.GetCompilationUnitRoot();
-                var scopes = FindNamespaces(root, "Nova.GigabitController", "Nova.LCT.GigabitSystem.Common",
-                    "Nova.Equipment.Protocol.TGProtocol", "Nova.LCT.GigabitSystem.CommonInfoAccessor",
-                    "Nova.LCT.GigabitSystem.HWConfigAccessorBase", "Nova.LCT.GigabitSystem.ChipDataClass",
-                    "Nova.LCT.GigabitSystem.ChipDataClass.ChipInterface",
-                    "Nova.LCT.GigabitSystem.ChipDataClass.ChipCommonData");
-                foreach (var ns in scopes)
-                {
-                    classesCollector.Visit(ns);
-                    enumsCollector.Visit(ns);
-                }
+                // var scopes = FindNamespaces(root, "Nova.GigabitController", "Nova.LCT.GigabitSystem.Common",
+                //     "Nova.Equipment.Protocol.TGProtocol", "Nova.LCT.GigabitSystem.CommonInfoAccessor",
+                //     "Nova.LCT.GigabitSystem.HWConfigAccessorBase", "Nova.LCT.GigabitSystem.ChipDataClass",
+                //     "Nova.LCT.GigabitSystem.ChipDataClass.ChipInterface",
+                //     "Nova.LCT.GigabitSystem.ChipDataClass.ChipCommonData");
+                // foreach (var ns in scopes)
+                // {
+                    classesCollector.Visit(root);
+                    enumsCollector.Visit(root);
+                // }
 
                 var addressMapping = FindClass(root, "AddressMapping");
                 Dictionary<string, int> addressMappingDictionary = null;
@@ -1541,7 +1600,7 @@ namespace gen
             var baseClasses = classesCollector.SerializableClasses.Select(node => node.Identifier.ValueText)
                 .ToArray();
 
-            var enums = enumsCollector.Enums.Select(item => item.Identifier.ValueText).ToArray();
+            var enums = enumsCollector.Enums.Select(item => item.Identifier.ValueText != "OldChipType" ? item.Identifier.ValueText : "ChipType").ToArray();
             total += classesCollector.SerializableClasses.Sum(node => GenDeepType(node, baseClasses, enums));
 
             var map = new Dictionary<string, ICollection<string>>();
@@ -1586,10 +1645,11 @@ namespace gen
                     $"export type {{{string.Join($",{Environment.NewLine}", unions.SelectMany(pair => pair.Value))}}};");
                 foreach (var (key, value) in unions)
                 {
-                    unionsFile.WriteLine($"export const {key} = t.union([");
-                    unionsFile.WriteLine(string.Join(Environment.NewLine, value.Select(v => $"  {v},")));
-                    unionsFile.WriteLine($"], '{key}');\n");
                     unionsFile.WriteLine($"export type {key} = {string.Join(" | ", value)};");
+                    unionsFile.WriteLine($"export const {key} = t.union([");
+                    unionsFile.WriteLine(string.Join(Environment.NewLine, value.Select((v) => $"  {v},")));
+                    // unionsFile.WriteLine(string.Join(Environment.NewLine, value.Select((v, i) => i < 210 ? $"  {v},": $"// {v},")));
+                    unionsFile.WriteLine($"], '{key}') as t.Type<{key}, {key}, unknown>;\n");
                     unionsFile.WriteLine();
                 }
             }
@@ -1607,6 +1667,7 @@ namespace gen
             // index.Sort();
             foreach (var export in index)
             {
+                if (export == "OldChipType") continue;
                 indexFile.WriteLine(
                     $"export {(export == "Session" ? $"{{ default as {export}}}" : "*")} from './{export}';");
             }

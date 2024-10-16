@@ -29,4 +29,28 @@ namespace gen
             }
         }
     }
+    public class StaticFieldsCollector : CSharpSyntaxWalker
+    {
+        public readonly BaseTypeDeclarationSyntax Parent;
+        public StaticFieldsCollector(BaseTypeDeclarationSyntax parent) => Parent = parent;
+
+        public ICollection<MemberDeclarationSyntax> Fields { get; } = new List<MemberDeclarationSyntax>();
+        // public ICollection<PropertyDeclarationSyntax> Props { get; } = new List<PropertyDeclarationSyntax>();
+
+        public override void VisitFieldDeclaration(FieldDeclarationSyntax node)
+        {
+            if (Program.IsStatic(node.Modifiers))
+            {
+                Fields.Add(node);
+            }
+        }
+
+        // public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
+        // {
+        //     if (node.Parent == Parent && Program.IsPublic(node.Modifiers) && !Program.IsStatic(node.Modifiers) && !Program.IsIgnored(node))
+        //     {
+        //         Fields.Add(node);
+        //     }
+        // }
+    }
 }
