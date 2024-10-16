@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.12](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.11...v2.0.0-alpha.12) (2024-10-16)
+
+### Code Refactoring
+
+- convert default export to named export
+  ([b4008da](https://github.com/sarakusha/novastar/commit/b4008dae1d696c245898e623584fcb7ae7634668))
+
+### BREAKING CHANGES
+
+- Convert default export to named export
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 # [2.0.0-alpha.11](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.10...v2.0.0-alpha.11) (2023-10-02)
 
 **Note:** Version bump only for package @novastar/net

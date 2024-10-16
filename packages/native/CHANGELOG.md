@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.12](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.11...v2.0.0-alpha.12) (2024-10-16)
+
+
+### Features
+
+* added support for the latest version of novalct ([28689a0](https://github.com/sarakusha/novastar/commit/28689a02956032a74b9ce35f439a1d84708a48b9))
+* generated files added ([5689376](https://github.com/sarakusha/novastar/commit/5689376043acb9ce8be78dcc73b69e9048674870))
+* NovaLCT 5.6 ([265d3bb](https://github.com/sarakusha/novastar/commit/265d3bb59ed8eb5dd1c39efbe5d0296e4a781eb6))
+* typescript@5, dotnet@8, node@20 ([84b7c06](https://github.com/sarakusha/novastar/commit/84b7c0632ac5796606a02c9e69167ffde24865d9))
+
+
+
+
+
 # [2.0.0-alpha.11](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.10...v2.0.0-alpha.11) (2023-10-02)
 
 **Note:** Version bump only for package @novastar/native
