@@ -1,4 +1,4 @@
-import Struct from 'typed-struct';
+import { Struct } from 'typed-struct';
 
 import { DeviceType, Packet } from './Packet';
 import Request from './Request';

@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
 // noinspection JSUnusedGlobalSymbols
 
-import Struct, { ExtractType, typed } from 'typed-struct';
+import { ExtractType, Struct, typed } from 'typed-struct';
 
 /**
  * Destination device type
@@ -29,9 +28,10 @@ export enum IO {
 export enum ErrorType {
   Succeeded,
   Timeout,
-  RequestError,
-  AcknowledgeError,
-  InvalidCommand,
+  RequestCRCError,
+  ResponseCRCError,
+  UnknownCommand,
+  Invalid = 255
 }
 
 /*
@@ -70,7 +70,7 @@ export const RESPONSE = 0x55aa;
 export const COMPUTER = 0xfe;
 
 /**
- * @function Constructor for creating and processing binary packages used when communicating with novastar devices
+ * Constructor for creating and processing binary packages used when communicating with novastar devices
  * @see {@link Packet}
  * @see {@link https://sarakusha.github.io/typed-struct/interfaces/StructConstructor.html}
  */
@@ -110,6 +110,7 @@ export const Packet = new Struct('Packet')
  * @property data - data sent on write or empty buffer on read
  * @property crc - cyclic redundancy check
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Packet extends ExtractType<typeof Packet, false> { }
 
 /**

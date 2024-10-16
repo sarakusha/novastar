@@ -35,7 +35,7 @@ export interface Session<S extends Duplex = Duplex> {
 
 /**
  * API extensible via plugins from @novastar/gen.
- * @description Original API contains more than a thousand methods, and you won't need all of
+ * @remarks Original API contains more than a thousand methods, and you won't need all of
  * them, so you just include the methods you need, and they will be embedded into your `Session`
  * instance
  */
@@ -48,6 +48,7 @@ export interface SessionStatic {
 }
 
 class SessionImpl<S extends Duplex> implements Session<S> {
+  // eslint-disable-next-line no-empty-function
   constructor(readonly connection: Connection<S>) {}
 
   get isConnected(): boolean {
@@ -80,6 +81,6 @@ class SessionImpl<S extends Duplex> implements Session<S> {
 }
 
 /**
- * @function Session
+ * Session
  */
 export const Session: SessionStatic = SessionImpl;
