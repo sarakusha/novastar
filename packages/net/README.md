@@ -9,18 +9,19 @@ Go to [API](https://sarakusha.github.io/novastar/modules/_novastar_net.html) doc
 Using npm:
 
 ```bash
-$ npm install --save @novastar/net@next
+npm install --save @novastar/net@next
 ```
+
 or yarn:
 
 ```bash
-$ yarn add @novastar/net@next
+yarn add @novastar/net@next
 ```
 
-## Usage:
+## Usage
 
 ```ts
-import net, { findNetDevices } from '@novastar/net';
+import { findNetDevices, net } from '@novastar/net';
 
 const [address] = await findNetDevices();
 if (address) {

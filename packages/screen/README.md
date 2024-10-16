@@ -21,8 +21,8 @@ $ yarn add @novastar/screen@next
 import ScreenConfigurator from '@novastar/screen';
 // const ScreenConfigurator = require('@novastar/screen').default
 
-import net, { findNetDevices } from '@novastar/net';
-import serial, { findSendingCards } from '@novastar/serial';
+import { findNetDevices, net } from '@novastar/net';
+import { findSendingCards, serial } from '@novastar/serial';
 
 async function main() {
   

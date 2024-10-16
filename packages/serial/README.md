@@ -9,15 +9,16 @@ Go to [API](https://sarakusha.github.io/novastar/modules/_novastar_serial.html) 
 Using npm:
 
 ```bash
-$ npm install --save @novastar/serial@next
+npm install --save @novastar/serial@next
 ```
+
 or yarn:
 
 ```bash
-$ yarn add @novastar/serial@next
+yarn add @novastar/serial@next
 ```
 
-## Usage:
+## Usage
 
 ```ts
 import { Request } from '@novastar/codec';
