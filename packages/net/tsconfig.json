@@ -1,10 +1,11 @@
 {
   "extends": "../../tsconfig-settings.json",
   "compilerOptions": {
-    "outDir": "build/main",
     "rootDir": "src",
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules/**"],
-  "compileOnSave": false
+  "typedocOptions": {
+    "entryPoints": ["src/net.ts"]
+  }
 }

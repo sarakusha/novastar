@@ -16,45 +16,38 @@
     "directory": "packages/native"
   },
   "homepage": "https://sarakusha.github.io/novastar/",
-  "main": "build/main/generated/index.js",
-  "types": "build/module/generated/index.d.ts",
-  "module": "build/module/generated/index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
   "exports": {
     "./*": {
-      "require": "./build/main/generated/*.js",
-      "default": "./build/module/generated/*.js"
-    },
-    "./common": {
-      "require": "./build/main/lib/common/index.js",
-      "default": "./build/module/lib/common/index.js"
+      "require": "./dist/*.js",
+      "import": "./dist/*.mjs"
     },
     "./api/*": {
-      "require": "./build/main/generated/api/*.js",
-      "default": "./build/module/generated/api/*.js"
+      "require": "./dist/api/*.js",
+      "import": "./dist/api/*.mjs"
+    },
+    "./common": {
+      "require": "./dist/common/index.js",
+      "import": "./dist/common/index.mjs"
     },
     "./unions": {
-      "require": "./build/main/generated/unions/index.js",
-      "default": "./build/module/generated/unions/index.js"
+      "require": "./dist/unions/index.js",
+      "import": "./dist/unions/index.mjs"
     },
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
       "api": [
-        "./build/module/generated/api/*",
-        "./build/main/generated/api/*"
+        "./dist/api/*/index.d.ts"
       ],
       "unions": [
-        "./build/module/generated/unions/index.d.ts",
-        "./build/main/generated/unions/index.d.ts"
-      ],
-      "common": [
-        "./build/module/lib/common/index.d.ts",
-        "./build/main/lib/common/index.d.ts"
+        "./dist/unions/index.d.ts"
       ],
       "*": [
-        "./build/module/generated/*",
-        "./build/main/generated/*"
+        "./dist/*.d.ts"
       ]
     }
   },
@@ -66,27 +59,27 @@
     "decompile:nix": "mkdirp decompiled && glob-run ilspycmd ./dll/\\*\\*/\\*.dll -o decompiled/",
     "decompile:win": "mkdirp decompiled && glob-run ilspycmd ./dll/**/*.dll -o decompiled/",
     "gen:build": "dotnet build",
-    "gen:generate": "dotnet run bin/Debug/net5.0/gen.dll ./decompiled ./generated ./lib/common",
+    "gen:generate": "dotnet run bin/Debug/net8.0/gen.dll ./decompiled ./generated ./lib/common",
     "gen:split": "ts-node post-gen/splitter.ts",
     "gen:pack": "ts-node post-gen/pack.ts",
-    "fix:lint": "eslint generated/ lib/common/ --max-warnings 5 --quiet --ext .ts --fix -c .eslintrc.js",
-    "build": "run-p build:*",
-    "build:main": "tsc --importHelpers -p tsconfig.json",
-    "build:module": "tsc -p tsconfig.module.json",
-    "rebuild": "yarn clean && yarn decompile && yarn gen:build && yarn compile",
-    "rebuild:win": "yarn clean && yarn decompile:win && yarn gen:build && yarn compile",
-    "compile": "rimraf generated && yarn gen:generate && yarn gen:split && yarn gen:pack && yarn fix:lint && yarn build",
+    "fix:lint": "eslint --fix generated/ lib/common/ --ext .ts -c .eslintrc.js",
+    "build": "tsup",
+    "rebuild": "pnpm clean && pnpm decompile && pnpm gen:build && pnpm compile",
+    "rebuild:win": "pnpm clean && pnpm decompile:win && pnpm gen:build && pnpm compile",
+    "compile": "rimraf generated && pnpm gen:generate && pnpm gen:split && pnpm gen:pack && pnpm fix:lint && pnpm build",
     "yalc:push": "yalc push",
-    "yalc:update": "yarn build && yalc publish --push"
+    "yalc:update": "pnpm build && yalc publish --push"
   },
   "devDependencies": {
+    "glob": "^11.0.0",
     "glob-run": "^0.1.7",
-    "prettier": "^2.7.1",
+    "prettier": "^3.3.3",
     "replace-in-file": "^6.3.2",
     "requirements": "^1.4.1"
   },
   "dependencies": {
-    "@novastar/codec": "2.0.0-alpha.11",
+    "@novastar/codec": "workspace:^",
+    "eslint-plugin-import": "^2.31.0",
     "fp-ts": "^2.11.5",
     "io-ts": "^2.2.16",
     "io-ts-types": "^0.5.16",
@@ -95,13 +88,13 @@
     "tslib": "^2.5.0"
   },
   "files": [
-    "build",
+    "dist/**/*.{mjs,js,d.ts,map}",
     "!**/*.test.*",
     "!**/*.spec.*",
     "!**/*.tsbuildinfo",
     "CHANGELOG.md",
     "LICENSE",
-    "README.md"
+    "**/README.md"
   ],
   "config": {
     "commitizen": {

@@ -2,26 +2,15 @@
   "name": "@novastar/screen",
   "version": "2.0.0-alpha.11",
   "description": "NovaStar API wrapper",
-  "main": "build/main/index.js",
-  "typings": "build/module/index.d.ts",
-  "module": "build/module/index.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "module": "dist/index.mjs",
   "exports": {
     ".": {
-      "require": "./build/main/index.js",
-      "default": "./build/module/index.js"
-    },
-    "./*": {
-      "require": "./build/main/*.js",
-      "default": "./build/module/*.js"
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
     },
     "./package.json": "./package.json"
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./build/module/*"
-      ]
-    }
   },
   "license": "MIT",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
@@ -38,9 +27,7 @@
     "Nova Mars SDK"
   ],
   "scripts": {
-    "build": "run-p build:*",
-    "build:main": "tsc -p tsconfig.json",
-    "build:module": "tsc -p tsconfig.module.json",
+    "build": "tsup",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
     "fix:lint": "eslint src --ext .ts --fix -c ../../.eslintrc-prod.js",
@@ -55,7 +42,7 @@
     "yalc:update": "yarn build && yalc publish --push"
   },
   "files": [
-    "build",
+    "dist",
     "!**/*.test.*",
     "!**/*.spec.*",
     "!**/*.tsbuildinfo",
@@ -85,10 +72,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@novastar/codec": "2.0.0-alpha.11",
-    "@novastar/native": "2.0.0-alpha.11",
-    "@novastar/net": "2.0.0-alpha.11",
-    "@novastar/serial": "2.0.0-alpha.11",
+    "@novastar/codec": "workspace:^",
+    "@novastar/native": "workspace:^",
+    "@novastar/net": "workspace:^",
+    "@novastar/serial": "workspace:^",
     "@sarakusha/lzma": "^2.3.3",
     "adm-zip": "^0.5.9",
     "fast-xml-parser": "^4.0.0-beta.8",
@@ -96,7 +83,7 @@
     "io-ts": "^2.2.16",
     "lodash": "^4.17.21",
     "typed-struct": "^2.3.0",
-    "uuid": "^9.0.0"
+    "uuid": "^10.0.0"
   },
   "peerDependencies": {
     "debug": "^4.3.3"
@@ -105,7 +92,7 @@
     "@types/adm-zip": "^0.5.0",
     "@types/debug": "^4.1.7",
     "@types/lodash": "^4.14.177",
-    "@types/uuid": "^9.0.0",
+    "@types/uuid": "^10.0.0",
     "chalk": "^5.2.0",
     "run-for-every-file": "^1.1.0"
   },

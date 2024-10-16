@@ -3,12 +3,14 @@
   "compilerOptions": {
     "sourceMap": true,
     "inlineSourceMap": false,
-    "outDir": "build/main",
     "paths": {
       "fp-ts/Either": ["../../no"]
     }
   },
   "include": ["generated/**/*.ts", "lib/common/**/*.ts"],
   "exclude": ["node_modules/**", "decompiled/**", "obj/**", "bin/**", "dll/**", "src/**", "generated/Session.ts"],
-  "compileOnSave": false
+  "typedocOptions": {
+    "entryPointStrategy": "expand",
+    "entryPoints": "generated"
+  }
 }

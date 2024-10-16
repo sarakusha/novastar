@@ -2,13 +2,13 @@
   "name": "@novastar/net",
   "version": "2.0.0-alpha.11",
   "description": "Network binding for @novastar/codec",
-  "main": "build/main/net.js",
-  "types": "build/module/net.d.ts",
-  "module": "build/module/net.js",
+  "main": "dist/net.js",
+  "types": "dist/net.d.ts",
+  "module": "dist/net.mjs",
   "exports": {
     ".": {
-      "require": "./build/main/net.js",
-      "default": "./build/module/net.js"
+      "require": "./dist/net.js",
+      "import": "./dist/net.mjs"
     },
     "./package.json": "./package.json"
   },
@@ -27,9 +27,7 @@
     "Nova Mars SDK"
   ],
   "scripts": {
-    "build": "run-p build:*",
-    "build:main": "tsc -p tsconfig.json",
-    "build:module": "tsc -p tsconfig.module.json",
+    "build": "tsup",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
     "fix:lint": "eslint src --ext .ts --fix -c ../../.eslintrc-prod.js",
@@ -42,7 +40,7 @@
     "yalc:update": "yarn build && yalc publish --push"
   },
   "files": [
-    "build",
+    "dist",
     "!**/*.spec.*",
     "!**/*.tsbuildinfo",
     "CHANGELOG.md",
@@ -63,7 +61,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@novastar/codec": "2.0.0-alpha.11",
+    "@novastar/codec": "workspace:^",
     "tiny-typed-emitter": "^2.1.0"
   },
   "peerDependencies": {

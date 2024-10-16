@@ -6,3 +6,4 @@ package-lock.json
 .yalc/
 yalc.lock
 /packages/serial/src/test.ts
+.DS_Store

@@ -8,7 +8,6 @@ const nodeConfig: Options = {
   dts: true,
   format: ['cjs', 'esm'],
   minify: false,
-  // outDir: 'build',
   target: 'es2021',
   treeshake: true,
   sourcemap: true,

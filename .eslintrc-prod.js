@@ -5,12 +5,13 @@ module.exports = {
   // parserOptions: { project: './tsconfig.json' },
   env: { es6: true },
   ignorePatterns: ['node_modules', 'build', 'coverage', '.eslintrc*.js', '*.spec.ts'],
-  plugins: ['import', 'eslint-comments', 'unused-imports'],
+  plugins: ['eslint-comments', 'unused-imports', 'prettier','import'],
   extends: [
     'airbnb-base',
     'eslint:recommended',
     'plugin:eslint-comments/recommended',
     'plugin:@typescript-eslint/recommended',
+    "plugin:import/recommended",
     'plugin:import/typescript',
     'prettier',
   ],
@@ -30,7 +31,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
     'eslint-comments/no-unused-disable': 'error',
-    'import/order': ['error', { 'newlines-between': 'always', alphabetize: { order: 'asc' } }],
+    // 'import/order': ['error', { 'newlines-between': 'always', alphabetize: { order: 'asc' } }],
     'sort-imports': ['error', { ignoreDeclarationSort: true, ignoreCase: true }],
     // note you must disable the base rule as it can report incorrect errors
     'no-shadow': 'off',

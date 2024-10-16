@@ -4,5 +4,5 @@ _ReSharper.*
 /bin/
 /obj/
 /decompiled/
-/generated/
 /build/
+/dist/

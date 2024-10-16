@@ -125,9 +125,6 @@ importers:
       tiny-typed-emitter:
         specifier: ^2.0.3
         version: 2.1.0
-      tslib:
-        specifier: ^2.5.0
-        version: 2.7.0
       typed-struct:
         specifier: ^2.3.0
         version: 2.5.2(buffer@6.0.3)(debug@4.3.7)(iconv-lite@0.6.3)

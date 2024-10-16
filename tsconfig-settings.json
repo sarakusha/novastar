@@ -37,6 +37,7 @@
 
     "lib": ["ESNext"],
     "types": ["node", "jest"],
+    "noEmit": true
   },
   "exclude": ["node_modules/**"],
   "compileOnSave": false

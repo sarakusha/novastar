@@ -4,13 +4,13 @@
   "description": "Serial binding for @novastar/codec",
   "license": "MIT",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
-  "main": "build/main/serial.js",
-  "types": "build/module/serial.d.ts",
-  "module": "build/module/serial.js",
+  "main": "dist/serial.js",
+  "types": "dist/serial.d.ts",
+  "module": "dist/serial.mjs",
   "exports": {
     ".": {
-      "require": "./build/main/serial.js",
-      "default": "./build/module/serial.js"
+      "require": "./dist/serial.js",
+      "import": "./dist/serial.mjs"
     },
     "./package.json": "./package.json"
   },
@@ -26,7 +26,7 @@
     "directory": "packages/serial"
   },
   "dependencies": {
-    "@novastar/codec": "2.0.0-alpha.11",
+    "@novastar/codec": "workspace:^",
     "@serialport/bindings-cpp": "^12.0.1",
     "conf": "10",
     "serialport": "^12.0.0",
@@ -36,9 +36,7 @@
     "debug": "^4.3.3"
   },
   "scripts": {
-    "build": "run-p build:*",
-    "build:main": "tsc -p tsconfig.json",
-    "build:module": "tsc -p tsconfig.module.json",
+    "build": "tsup",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
     "fix:lint": "eslint src --ext .ts --fix -c ../../.eslintrc-prod.js",
@@ -51,8 +49,7 @@
     "yalc:update": "yarn build && yalc publish --push"
   },
   "files": [
-    "build/main",
-    "build/module",
+    "dist",
     "!**/*.spec.*",
     "!**/*.tsbuildinfo",
     "CHANGELOG.md",
