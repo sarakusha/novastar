@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.12...v2.0.0) (2024-10-16)
+
+**Note:** Version bump only for package @novastar/net
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 # [2.0.0-alpha.12](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.11...v2.0.0-alpha.12) (2024-10-16)
 
 ### Code Refactoring

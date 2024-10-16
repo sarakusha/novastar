@@ -1,6 +1,6 @@
 {
   "name": "@novastar/codec",
-  "version": "2.0.0-alpha.12",
+  "version": "2.0.0",
   "description": "Core API for communication with devices using NovaStar protocol",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
   "main": "dist/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@novastar/screen",
-  "version": "2.0.0-alpha.12",
+  "version": "2.0.0",
   "description": "NovaStar API wrapper",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
