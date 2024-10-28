@@ -1,6 +1,6 @@
 {
   "name": "@novastar/screen",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "NovaStar API wrapper",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -25,8 +25,12 @@
       "*": [
         "./dist/index.d.ts"
       ],
-      "common": ["./dist/common.d.ts"],
-      "getScreenLocation": ["./dist/getScreenLocation.d.ts"]
+      "common": [
+        "./dist/common.d.ts"
+      ],
+      "getScreenLocation": [
+        "./dist/getScreenLocation.d.ts"
+      ]
     }
   },
   "license": "MIT",

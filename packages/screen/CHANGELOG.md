@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/sarakusha/novastar/compare/v2.0.0...v2.1.0) (2024-10-28)
+
+### Features
+
+- export common methods
+  ([fc94abe](https://github.com/sarakusha/novastar/commit/fc94abec30cad41d7a2f36915c78593cd6442ac6))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 # [2.0.0](https://github.com/sarakusha/novastar/compare/v2.0.0-alpha.12...v2.0.0) (2024-10-16)
 
 **Note:** Version bump only for package @novastar/screen
