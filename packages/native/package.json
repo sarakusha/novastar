@@ -29,8 +29,8 @@
       "import": "./dist/api/*.mjs"
     },
     "./common": {
-      "require": "./dist/common/index.js",
-      "import": "./dist/common/index.mjs"
+      "require": "./dist/common.js",
+      "import": "./dist/common.mjs"
     },
     "./unions": {
       "require": "./dist/unions/index.js",
