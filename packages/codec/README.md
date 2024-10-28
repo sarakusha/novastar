@@ -9,19 +9,20 @@ Go to [API](https://sarakusha.github.io/novastar/modules/_novastar_codec.html) d
 Using npm:
 
 ```bash
-$ npm install --save @novastar/codec@next
+npm install --save @novastar/codec@next
 ```
+
 or yarn:
 
 ```bash
-$ yarn add @novastar/codec@next
+yarn add @novastar/codec@next
 ```
 
 ## Usage
 
 1. First, we need to create a connection, for this we need a stream
    (it can be a serial port or TCP socket)
-   
+
 ```ts
 import { connect, Socket } from 'net';
 import SerialPort from 'serialport';
@@ -39,10 +40,12 @@ const port = new SerialPort('COM11', { baudRate: 115200 }, () => {
   connection = new Connection(port);
 })
 ```
+
 It is recommended to use packages [@novastar/serial](https://www.npmjs.com/package/@novastar/serial) and [@novastar/net](https://www.npmjs.com/package/@novastar/net). They will contain helper methods to find connected devices
 
 2. Using this connection you can send requests to devices (Sending cards/Receiving cards/Function cards)
    and receive responses
+
 ```ts
 // Create a request to read a single byte
 const readReq = new Request(1);
@@ -58,9 +61,11 @@ writeReq.deviceType = DeviceType.ReceivingCard;
 writeReq.address = 0x02000001;
 await connection.send(writeReq);
 ```
+
 3. Or you can create a session that implements some API methods.
-   Since the native API contains more than 1000 methods, not all of which you will use, 
+   Since the native API contains more than 1000 methods, not all of which you will use,
    you can include the methods you need. See [@novastar/native](https://www.npmjs.com/package/@novastar/native) for details.
+
 ```ts
 import { Session } from '@novastar/codec';
 import '@novastar/native/build/main/generated/api/ReadGlobalBrightness';
@@ -78,6 +83,7 @@ await session.SetGlobalBrightness(screenIndex, portIndex, receivingCardIndex, br
 ```
 
 4. Close the connection
+
 ```ts
 connection.close() // or session.close()
 ```

@@ -68,6 +68,7 @@ Now you can use the resulting type:
 ```ts
 import { net } from '@novastar/net';
 import { SessionAPI } from './Session';
+import './api';
 
 const session: SessionAPI = net.open('192.168.1.40');
 await session.SetGamma(0, 0, 0, false, 2.6);
