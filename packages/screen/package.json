@@ -10,7 +10,24 @@
       "require": "./dist/index.js",
       "import": "./dist/index.mjs"
     },
+    "./common": {
+      "require": "./dist/common.js",
+      "import": "./dist/common.mjs"
+    },
+    "./getScreenLocation": {
+      "require": "./dist/getScreenLocation.js",
+      "import": "./dist/getScreenLocation.mjs"
+    },
     "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/index.d.ts"
+      ],
+      "common": ["./dist/common.d.ts"],
+      "getScreenLocation": ["./dist/getScreenLocation.d.ts"]
+    }
   },
   "license": "MIT",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
