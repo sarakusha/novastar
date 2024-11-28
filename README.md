@@ -14,7 +14,7 @@ This monorepo consists of the following packages:
 
 ## Wireshark Lua/Dissector ![Logo](https://www.wireshark.org/assets/icons/wireshark-fin.png)
 
-Using Dissector (`./wireshark/novastar.lua`) you can independently examine the novastar exchange protocol using the [Wireshark](https://www.wireshark.org) network protocol analyzer. It will add a new protocol `novastar`, which you can use as a filter and analyze the packet content.
+Using Dissector (`./wireshark/novastar.lua`) you can independently examine the novastar exchange protocol using the [Wireshark](https://www.wireshark.org) network protocol analyzer. It will add a new protocol `novastar`, which you can use as a filter and analyze the packet content. I recommend changing the default profile to classic or "no reassembly" to avoid conflicts with current protocols.
 
 Create an ```init.lua``` file in wireshark plugins folder or add the following line to an existing one:
 
