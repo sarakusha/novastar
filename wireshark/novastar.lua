@@ -99,3 +99,4 @@ end
 
 local tcp_dissector_table = DissectorTable.get("tcp.port")
 tcp_dissector_table:add(5200, NOVASTAR_PROTO)
+tcp_dissector_table:add(5201, NOVASTAR_PROTO)
