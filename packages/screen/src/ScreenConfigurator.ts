@@ -505,9 +505,17 @@ export default class ScreenConfigurator {
         const addresses = this.GetScreenAllPort(screen);
         // debug(`addresses: ${JSON.stringify(addresses)}`);
         const val = encoder(value) as never;
-        const results = await series(addresses, ({ SenderIndex, PortIndex, ScanIndex }) =>
-          this.session[`try${name}`](SenderIndex, PortIndex, ScanIndex, val)
-        );
+        const results = await series(addresses, async ({ SenderIndex, PortIndex, ScanIndex }) => {
+          if (name === 'SetGlobalBrightness') { 
+            try {
+              await this.session[`${name}`](SenderIndex, PortIndex, ScanIndex, true, val);
+            } catch (err) {
+              return null;
+            }
+            return null;
+          }
+          return this.session[`try${name}`](SenderIndex, PortIndex, ScanIndex, val);
+        });
         return consolidateResults(results);
       },
     }[name].bind(this);
