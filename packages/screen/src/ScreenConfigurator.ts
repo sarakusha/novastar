@@ -160,10 +160,10 @@ export type ScreenWriter<T> = (value: T, screen?: number) => Promise<Consolidate
 
 const firstCreator =
   <T>(genFactory: ScreenReadAsyncGenerator<T>) =>
-    (screen?: number): Promise<T | null> => {
-      const it = genFactory(screen);
-      return itFirstNotNull(it);
-    };
+  (screen?: number): Promise<T | null> => {
+    const it = genFactory(screen);
+    return itFirstNotNull(it);
+  };
 
 type Codec<I, O = I> = (value: I) => O;
 
@@ -359,19 +359,19 @@ export default class ScreenConfigurator {
           ) ?? {};
         return toRead
           ? range(MinConnectIndex, MinConnectIndex + LoadScannerCount).map(ScanIndex => ({
-            SenderIndex,
-            PortIndex,
-            SlaveSenderIndex,
-            SlavePortIndex,
-            ScanIndex,
-          }))
+              SenderIndex,
+              PortIndex,
+              SlaveSenderIndex,
+              SlavePortIndex,
+              ScanIndex,
+            }))
           : {
-            SenderIndex,
-            PortIndex,
-            SlaveSenderIndex,
-            SlavePortIndex,
-            ScanIndex: 0xffff,
-          };
+              SenderIndex,
+              PortIndex,
+              SlaveSenderIndex,
+              SlavePortIndex,
+              ScanIndex: 0xffff,
+            };
       }
     );
 
@@ -518,7 +518,9 @@ export default class ScreenConfigurator {
   ): (...args: A[]) => Promise<R> {
     return (...args) =>
       new Promise((resolve, reject) => {
-        this.#ready = this.#ready.finally().then(() => func.apply(this, args).then(resolve, reject));
+        this.#ready = this.#ready
+          .finally()
+          .then(() => func.apply(this, args).then(resolve, reject));
       });
   }
 
