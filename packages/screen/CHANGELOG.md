@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0-alpha.0](https://github.com/sarakusha/novastar/compare/v2.1.0...v2.2.0-alpha.0) (2025-04-28)
+
+### Features
+
+- broadcast SetGlobalBrightness
+  ([21af6f8](https://github.com/sarakusha/novastar/commit/21af6f842cbe93c0919721efe71360673247ecd5))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 # [2.1.0](https://github.com/sarakusha/novastar/compare/v2.0.0...v2.1.0) (2024-10-28)
 
 ### Features

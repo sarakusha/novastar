@@ -1,6 +1,6 @@
 {
   "name": "@novastar/net",
-  "version": "2.1.0",
+  "version": "2.2.0-alpha.0",
   "description": "Network binding for @novastar/codec",
   "main": "dist/net.js",
   "types": "dist/net.d.ts",

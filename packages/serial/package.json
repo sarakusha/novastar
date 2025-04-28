@@ -1,6 +1,6 @@
 {
   "name": "@novastar/serial",
-  "version": "2.1.0",
+  "version": "2.2.0-alpha.0",
   "description": "Serial binding for @novastar/codec",
   "license": "MIT",
   "author": "Andrei Sarakeev <sarakusha@gmail.com>",
