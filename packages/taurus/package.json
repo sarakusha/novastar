@@ -1,6 +1,6 @@
 {
   "name": "@novastar/taurus",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Client for the NovaStar Taurus multimedia player management protocol",
   "main": "dist/index.cjs",
   "types": "dist/index.d.mts",
@@ -21,7 +21,12 @@
     "directory": "packages/taurus"
   },
   "homepage": "https://sarakusha.github.io/novastar/",
-  "keywords": ["novastar", "taurus", "TB60", "digital-signage"],
+  "keywords": [
+    "novastar",
+    "taurus",
+    "TB60",
+    "digital-signage"
+  ],
   "scripts": {
     "build": "tsdown",
     "fix": "run-s fix:*",
@@ -35,15 +40,27 @@
     "yalc:push": "yalc push",
     "yalc:update": "pnpm build && yalc publish --push"
   },
-  "files": ["dist", "!**/*.spec.*", "!**/*.tsbuildinfo", "CHANGELOG.md", "LICENSE", "README.md"],
+  "files": [
+    "dist",
+    "!**/*.spec.*",
+    "!**/*.tsbuildinfo",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
     "collectCoverage": true,
-    "coverageReporters": ["lcov", "html"]
+    "coverageReporters": [
+      "lcov",
+      "html"
+    ]
   },
   "sideEffects": false,
-  "publishConfig": {"access": "public"},
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "typed-struct": "^2.7.3"
   }
