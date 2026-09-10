@@ -44,7 +44,7 @@
     "prerelease:version": "pnpm exec changeset version --prerelease",
     "doc": "run-s doc:html && open-cli build/docs/index.html",
     "doc:open": "open-cli build/docs/index.html",
-    "doc:html": "typedoc --name novastar.js --entryPointStrategy packages --entryPoints packages/codec --entryPoints packages/native --entryPoints packages/net --entryPoints packages/serial --entryPoints packages/screen --categorizeByGroup true --excludeProtected --excludePrivate --out build/docs",
+    "doc:html": "typedoc --name novastar.js --entryPointStrategy packages --entryPoints packages/codec --entryPoints packages/native --entryPoints packages/net --entryPoints packages/serial --entryPoints packages/screen --entryPoints packages/taurus --categorizeByGroup true --excludeProtected --excludePrivate --out build/docs",
     "doc:publish": "gh-pages -m \"[ci skip] Updates\" -t -d build/docs",
     "yalc:push": "pnpm -w -r run yalc:push"
   },
