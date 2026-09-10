@@ -37,8 +37,243 @@ export interface TaurusBrightness {
   orderId: number;
 }
 
+/** Video-source policy used by the Taurus player. */
+export enum TaurusVideoMode {
+  /** Use HDMI while a signal is present and fall back to the internal player. */
+  HdmiPreferred = 0,
+  /** Keep the explicitly selected source. */
+  Manual = 1,
+  /** Select the source using the schedule stored on the player. */
+  Scheduled = 2,
+}
+
+export enum TaurusVideoSource {
+  Internal = 0,
+  Hdmi = 1,
+}
+
+export interface TaurusVideoOffset {
+  x: number;
+  y: number;
+}
+
+export interface TaurusVideoConfiguration {
+  enabled: boolean;
+  scaling: boolean;
+  offset: TaurusVideoOffset;
+  mode: TaurusVideoMode;
+  source: TaurusVideoSource;
+  conditions?: unknown[];
+  orderId: number;
+}
+
+export interface TaurusVideoConfigurationUpdate {
+  scaling?: boolean;
+  offset?: Partial<TaurusVideoOffset>;
+  mode?: TaurusVideoMode;
+  source?: TaurusVideoSource;
+}
+
+export interface TaurusSynchronousModeOptions {
+  /** Allow Taurus to fall back to its internal player when HDMI disappears. */
+  fallbackToInternal?: boolean;
+  scaling?: boolean;
+  offset?: Partial<TaurusVideoOffset>;
+}
+
+export interface TaurusResolution {
+  width: number;
+  height: number;
+  frameRate: number;
+}
+
+export interface TaurusSupportedResolution {
+  width: number;
+  height: number;
+  frameRates: number[];
+}
+
+export interface TaurusHdmiCapabilities {
+  type?: string;
+  algorithmType?: string;
+  minWidth?: number;
+  maxWidth?: number;
+  minHeight?: number;
+  maxHeight?: number;
+  pixelUpperLimit?: number;
+}
+
+export interface TaurusVideoSourceInfo extends TaurusResolution {
+  source: number;
+  name: string;
+  internal: boolean;
+  connected: boolean;
+  supportedFrameRates: number[];
+  supportedResolutions: TaurusSupportedResolution[];
+  supportsCustomResolution: boolean;
+  hdmi?: TaurusHdmiCapabilities;
+}
+
+export interface TaurusVideoSources {
+  currentSource: TaurusVideoSource;
+  sources: TaurusVideoSourceInfo[];
+}
+
+export interface TaurusLedScreenSize {
+  width: number;
+  height: number;
+}
+
+export interface TaurusReceivingCardRegion extends TaurusLedScreenSize {
+  x: number;
+  y: number;
+  xInPort: number;
+  yInPort: number;
+  column?: number;
+  row?: number;
+  port: number;
+  connection: number;
+}
+
+export interface TaurusLedScreen {
+  id: number;
+  source: number;
+  type: number;
+  columns: number;
+  rows: number;
+  offset: TaurusVideoOffset;
+  portNumber: number;
+  portOrder: number[];
+  receivingCards: TaurusReceivingCardRegion[];
+  size: TaurusLedScreenSize;
+}
+
+export interface TaurusLedScreenConfiguration {
+  screens: TaurusLedScreen[];
+}
+
+type TaurusVideoConfigurationResponse = {
+  enable?: unknown;
+  isScale?: unknown;
+  offsetX?: unknown;
+  offsetY?: unknown;
+  videoMode?: unknown;
+  videoSource?: unknown;
+  conditions?: unknown;
+  orderId?: unknown;
+};
+
+type TaurusVideoSourceResponse = {
+  sourceNum?: unknown;
+  name?: unknown;
+  isInternalSource?: unknown;
+  linkStatus?: unknown;
+  width?: unknown;
+  height?: unknown;
+  rate?: unknown;
+  sourceFPS?: unknown;
+  supportResolutions?: unknown;
+  supportCustomResolution?: unknown;
+  hdmiInfo?: unknown;
+};
+
+type TaurusReceivingCardRegionResponse = {
+  width?: unknown;
+  height?: unknown;
+  x?: unknown;
+  y?: unknown;
+  xInPort?: unknown;
+  yInPort?: unknown;
+  colIndex?: unknown;
+  rowIndex?: unknown;
+  portIndex?: unknown;
+  connectIndex?: unknown;
+};
+
+type TaurusLedScreenResponse = {
+  id?: unknown;
+  screenSource?: unknown;
+  screenType?: unknown;
+  xCount?: unknown;
+  yCount?: unknown;
+  xOffset?: unknown;
+  yOffset?: unknown;
+  portNumber?: unknown;
+  orders?: unknown;
+  scanInfos?: unknown;
+};
+
 const numberOrUndefined = (value: unknown): number | undefined =>
   typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+
+const requiredNumber = (value: unknown, field: string): number => {
+  const result = numberOrUndefined(value);
+  if (result === undefined) throw new Error(`Invalid Taurus ${field}`);
+  return result;
+};
+
+const validateInteger = (value: number, field: string): number => {
+  if (!Number.isSafeInteger(value)) throw new RangeError(`${field} must be a safe integer`);
+  return value;
+};
+
+const validatePositiveInteger = (value: number, field: string): number => {
+  validateInteger(value, field);
+  if (value <= 0) throw new RangeError(`${field} must be greater than zero`);
+  return value;
+};
+
+const validateNonNegativeInteger = (value: number, field: string): number => {
+  validateInteger(value, field);
+  if (value < 0) throw new RangeError(`${field} must not be negative`);
+  return value;
+};
+
+const videoMode = (value: unknown): TaurusVideoMode => {
+  if (
+    value !== TaurusVideoMode.HdmiPreferred &&
+    value !== TaurusVideoMode.Manual &&
+    value !== TaurusVideoMode.Scheduled
+  ) {
+    throw new Error('Invalid Taurus video mode');
+  }
+  return value;
+};
+
+const videoSource = (value: unknown): TaurusVideoSource => {
+  if (value !== TaurusVideoSource.Internal && value !== TaurusVideoSource.Hdmi) {
+    throw new Error('Invalid Taurus video source');
+  }
+  return value;
+};
+
+const numberArray = (value: unknown): number[] =>
+  Array.isArray(value)
+    ? value.filter((item): item is number => numberOrUndefined(item) !== undefined)
+    : [];
+
+const hdmiCapabilities = (value: unknown): TaurusHdmiCapabilities | undefined => {
+  if (!value || typeof value !== 'object') return undefined;
+  const source = value as Record<string, unknown>;
+  return {
+    type: typeof source.type === 'string' ? source.type : undefined,
+    algorithmType: typeof source.algorithmType === 'string' ? source.algorithmType : undefined,
+    minWidth: numberOrUndefined(source.minWidth),
+    maxWidth: numberOrUndefined(source.maxWidth),
+    minHeight: numberOrUndefined(source.minHeight),
+    maxHeight: numberOrUndefined(source.maxHeight),
+    pixelUpperLimit: numberOrUndefined(source.pixelUpperLimit),
+  };
+};
+
+const calculateLedScreenSize = (regions: TaurusReceivingCardRegion[]): TaurusLedScreenSize => {
+  if (!regions.length) return { width: 0, height: 0 };
+  const left = Math.min(...regions.map(({ x }) => x));
+  const top = Math.min(...regions.map(({ y }) => y));
+  const right = Math.max(...regions.map(({ x, width }) => x + width));
+  const bottom = Math.max(...regions.map(({ y, height }) => y + height));
+  return { width: right - left, height: bottom - top };
+};
 
 export class TaurusClient {
   private constructor(public readonly connection: TaurusConnection) {}
@@ -127,6 +362,255 @@ export class TaurusClient {
     if (value === undefined || value === -1000)
       throw new Error('Taurus ambient light sensor is unavailable');
     return value;
+  }
+
+  async getVideoConfiguration(): Promise<TaurusVideoConfiguration> {
+    const result = await this.connection.requestJson<TaurusVideoConfigurationResponse>({
+      what: 0x27,
+      type: 1,
+      action: 5,
+    });
+    return {
+      enabled: result.enable === true,
+      scaling: result.isScale === true,
+      offset: {
+        x: requiredNumber(result.offsetX, 'video offset X'),
+        y: requiredNumber(result.offsetY, 'video offset Y'),
+      },
+      mode: videoMode(result.videoMode),
+      source: videoSource(result.videoSource),
+      conditions: Array.isArray(result.conditions) ? result.conditions : undefined,
+      orderId: numberOrUndefined(result.orderId) ?? -1,
+    };
+  }
+
+  /** Updates selected video settings while preserving all other values on the player. */
+  async setVideoConfiguration(update: TaurusVideoConfigurationUpdate): Promise<void> {
+    const current = await this.getVideoConfiguration();
+    const mode = update.mode === undefined ? current.mode : videoMode(update.mode);
+    const source = update.source === undefined ? current.source : videoSource(update.source);
+    const offsetX = validateInteger(update.offset?.x ?? current.offset.x, 'Video offset X');
+    const offsetY = validateInteger(update.offset?.y ?? current.offset.y, 'Video offset Y');
+
+    await this.connection.requestJson<unknown>(
+      { what: 0x27, type: 1, action: 4 },
+      {
+        enable: current.enabled,
+        isScale: update.scaling ?? current.scaling,
+        offsetX,
+        offsetY,
+        videoMode: mode,
+        videoSource: source,
+        conditions: current.conditions,
+        orderId: current.orderId,
+      },
+    );
+  }
+
+  async setVideoOffset(offset: TaurusVideoOffset): Promise<void> {
+    await this.setVideoConfiguration({ offset });
+  }
+
+  async setVideoScaling(enabled: boolean): Promise<void> {
+    await this.setVideoConfiguration({ scaling: enabled });
+  }
+
+  /** Forces HDMI (synchronous playback), optionally retaining automatic internal fallback. */
+  async setSynchronousMode(options: TaurusSynchronousModeOptions = {}): Promise<void> {
+    await this.setVideoConfiguration({
+      mode: options.fallbackToInternal ? TaurusVideoMode.HdmiPreferred : TaurusVideoMode.Manual,
+      source: TaurusVideoSource.Hdmi,
+      scaling: options.scaling,
+      offset: options.offset,
+    });
+  }
+
+  /** Selects the Taurus internal player and disables source scheduling/fallback. */
+  async setAsynchronousMode(): Promise<void> {
+    await this.setVideoConfiguration({
+      mode: TaurusVideoMode.Manual,
+      source: TaurusVideoSource.Internal,
+    });
+  }
+
+  async getCurrentVideoSource(): Promise<TaurusVideoSource> {
+    const result = await this.connection.requestJson<{ state?: unknown; videoSource?: unknown }>(
+      { what: 0x27, type: 5, action: 5 },
+      { orderId: -1 },
+    );
+    return videoSource(result.videoSource ?? result.state);
+  }
+
+  async getVideoSources(): Promise<TaurusVideoSources> {
+    const result = await this.connection.requestJson<{
+      currentSource?: unknown;
+      videoSourceList?: unknown;
+    }>({ what: 0x27, type: 8, action: 5 });
+    const sources = Array.isArray(result.videoSourceList)
+      ? (result.videoSourceList as TaurusVideoSourceResponse[])
+      : [];
+    return {
+      currentSource: videoSource(result.currentSource),
+      sources: sources.map((source) => ({
+        source: requiredNumber(source.sourceNum, 'video source number'),
+        name: typeof source.name === 'string' ? source.name : '',
+        internal: source.isInternalSource === true,
+        connected: source.linkStatus === true,
+        width: requiredNumber(source.width, 'video source width'),
+        height: requiredNumber(source.height, 'video source height'),
+        frameRate: requiredNumber(source.rate, 'video source frame rate'),
+        supportedFrameRates: numberArray(source.sourceFPS),
+        supportedResolutions: Array.isArray(source.supportResolutions)
+          ? source.supportResolutions.map((resolution) => {
+              const item = resolution as Record<string, unknown>;
+              return {
+                width: requiredNumber(item.width, 'supported resolution width'),
+                height: requiredNumber(item.height, 'supported resolution height'),
+                frameRates: numberArray(item.fps),
+              };
+            })
+          : [],
+        supportsCustomResolution: source.supportCustomResolution === true,
+        hdmi: hdmiCapabilities(source.hdmiInfo),
+      })),
+    };
+  }
+
+  /** Reads the resolution advertised by the Taurus HDMI input to the source device. */
+  async getHdmiInputResolution(): Promise<TaurusResolution> {
+    const result = await this.connection.requestJson<{
+      width?: unknown;
+      height?: unknown;
+      fieldRate?: unknown;
+    }>({ what: 0x27, type: 2, action: 5 });
+    return {
+      width: requiredNumber(result.width, 'HDMI input width'),
+      height: requiredNumber(result.height, 'HDMI input height'),
+      frameRate: requiredNumber(result.fieldRate, 'HDMI input frame rate'),
+    };
+  }
+
+  /** Changes the resolution advertised by the Taurus HDMI input to the source device. */
+  async setHdmiInputResolution(resolution: TaurusResolution): Promise<void> {
+    const width = validatePositiveInteger(resolution.width, 'HDMI input width');
+    const height = validatePositiveInteger(resolution.height, 'HDMI input height');
+    const fieldRate = validatePositiveInteger(resolution.frameRate, 'HDMI input frame rate');
+    await this.connection.requestJson<unknown>(
+      { what: 0x27, type: 2, action: 4 },
+      { width, height, fieldRate },
+    );
+  }
+
+  /** Reads the physical LED canvas and receiving-card layout configured on Taurus. */
+  async getLedScreenConfiguration(): Promise<TaurusLedScreenConfiguration> {
+    const result = await this.connection.requestJson<{ screenAttributes?: unknown }>({
+      what: 0x1b,
+      type: 1,
+      action: 5,
+    });
+    const screens = Array.isArray(result.screenAttributes)
+      ? (result.screenAttributes as TaurusLedScreenResponse[])
+      : [];
+    return {
+      screens: screens.map((screen) => {
+        const scanInfos = Array.isArray(screen.scanInfos)
+          ? (screen.scanInfos as TaurusReceivingCardRegionResponse[])
+          : [];
+        const receivingCards = scanInfos.map((region) => ({
+          width: requiredNumber(region.width, 'receiving-card region width'),
+          height: requiredNumber(region.height, 'receiving-card region height'),
+          x: requiredNumber(region.x, 'receiving-card region X'),
+          y: requiredNumber(region.y, 'receiving-card region Y'),
+          xInPort: requiredNumber(region.xInPort, 'receiving-card port X'),
+          yInPort: requiredNumber(region.yInPort, 'receiving-card port Y'),
+          column: numberOrUndefined(region.colIndex),
+          row: numberOrUndefined(region.rowIndex),
+          port: requiredNumber(region.portIndex, 'receiving-card port index'),
+          connection: requiredNumber(region.connectIndex, 'receiving-card connection index'),
+        }));
+        return {
+          id: requiredNumber(screen.id, 'LED screen id'),
+          source: requiredNumber(screen.screenSource, 'LED screen source'),
+          type: requiredNumber(screen.screenType, 'LED screen type'),
+          columns: requiredNumber(screen.xCount, 'LED screen column count'),
+          rows: requiredNumber(screen.yCount, 'LED screen row count'),
+          offset: {
+            x: requiredNumber(screen.xOffset, 'LED screen offset X'),
+            y: requiredNumber(screen.yOffset, 'LED screen offset Y'),
+          },
+          portNumber: requiredNumber(screen.portNumber, 'LED screen port number'),
+          portOrder: numberArray(screen.orders),
+          receivingCards,
+          size: calculateLedScreenSize(receivingCards),
+        };
+      }),
+    };
+  }
+
+  /**
+   * Replaces the complete physical LED screen and receiving-card layout.
+   * Prefer round-tripping a configuration returned by getLedScreenConfiguration().
+   */
+  async setLedScreenConfiguration(configuration: TaurusLedScreenConfiguration): Promise<void> {
+    if (!configuration.screens.length) {
+      throw new RangeError('LED screen configuration must contain at least one screen');
+    }
+    const screenAttributes = configuration.screens.map((screen, screenIndex) => {
+      const prefix = `LED screen ${screenIndex}`;
+      if (!screen.receivingCards.length) {
+        throw new RangeError(`${prefix} must contain at least one receiving-card region`);
+      }
+      return {
+        id: validateNonNegativeInteger(screen.id, `${prefix} id`),
+        screenSource: validateNonNegativeInteger(screen.source, `${prefix} source`),
+        screenType: validateNonNegativeInteger(screen.type, `${prefix} type`),
+        xCount: validatePositiveInteger(screen.columns, `${prefix} column count`),
+        yCount: validatePositiveInteger(screen.rows, `${prefix} row count`),
+        xOffset: validateInteger(screen.offset.x, `${prefix} offset X`),
+        yOffset: validateInteger(screen.offset.y, `${prefix} offset Y`),
+        portNumber: validateNonNegativeInteger(screen.portNumber, `${prefix} port number`),
+        orders: screen.portOrder.map((order, index) =>
+          validateNonNegativeInteger(order, `${prefix} port order ${index}`),
+        ),
+        scanInfos: screen.receivingCards.map((region, regionIndex) => {
+          const regionPrefix = `${prefix} receiving-card region ${regionIndex}`;
+          return {
+            width: validatePositiveInteger(region.width, `${regionPrefix} width`),
+            height: validatePositiveInteger(region.height, `${regionPrefix} height`),
+            x: validateNonNegativeInteger(region.x, `${regionPrefix} X`),
+            y: validateNonNegativeInteger(region.y, `${regionPrefix} Y`),
+            xInPort: validateNonNegativeInteger(region.xInPort, `${regionPrefix} port X`),
+            yInPort: validateNonNegativeInteger(region.yInPort, `${regionPrefix} port Y`),
+            colIndex:
+              region.column === undefined
+                ? undefined
+                : validateNonNegativeInteger(region.column, `${regionPrefix} column`),
+            rowIndex:
+              region.row === undefined
+                ? undefined
+                : validateNonNegativeInteger(region.row, `${regionPrefix} row`),
+            portIndex: validateNonNegativeInteger(region.port, `${regionPrefix} port index`),
+            connectIndex: validateNonNegativeInteger(
+              region.connection,
+              `${regionPrefix} connection index`,
+            ),
+          };
+        }),
+      };
+    });
+
+    await this.connection.requestJson<unknown>(
+      { what: 0x1b, type: 1, action: 4 },
+      { screenAttributes },
+    );
+  }
+
+  /** Returns the physical pixel dimensions of the first configured LED screen. */
+  async getLedScreenSize(): Promise<TaurusLedScreenSize> {
+    const configuration = await this.getLedScreenConfiguration();
+    const screen = configuration.screens[0];
+    if (!screen) throw new Error('Taurus has no configured LED screen');
+    return screen.size;
   }
 
   close(): void {
