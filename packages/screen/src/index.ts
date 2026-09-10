@@ -33,3 +33,6 @@ export { getScreenLocation } from './getScreenLocation';
 
 export { default as getCabinetPosition } from './getCabinetPosition';
 export type { CabinetPosition } from './getCabinetPosition';
+
+export { inspectNcpConfig, loadNcpConfigInfo } from './NcpConfig';
+export type { NcpConfigInfo } from './NcpConfig';

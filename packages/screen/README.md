@@ -15,6 +15,26 @@ or yarn:
 ```bash
 $ yarn add @novastar/screen@next
 ```
+
+## NovaLCT configuration files
+
+`@novastar/screen` can inspect NovaLCT cabinet (`.ncp`) packages without
+decrypting or modifying their payload. Use `loadNcpConfigInfo` with a file path
+or `inspectNcpConfig` when the file is already available as a `Buffer`:
+
+```ts
+import { inspectNcpConfig, loadNcpConfigInfo } from '@novastar/screen';
+
+const ncp = loadNcpConfigInfo('cabinet.ncp');
+
+// Inspect a file that has already been uploaded to the application.
+const uploadedNcp = inspectNcpConfig(ncpBuffer);
+```
+
+NCP payloads are encrypted by NovaLCT, so inspection validates only the outer
+container and leaves the payload untouched. These functions do not write to
+connected hardware.
+
 ## Usage:
 
 ```ts
@@ -25,16 +45,15 @@ import { findNetDevices, net } from '@novastar/net';
 import { findSendingCards, serial } from '@novastar/serial';
 
 async function main() {
-  
   // net
   const [address] = await findNetDevices();
   if (!address) return;
   const session = net.open(address);
-  
+
   // serial
   const [port] = await findSendingCards();
   const session = await serial.open(port.path);
-  
+
   const ctrl = new ScreenConfigurator(session);
   await ctrl.reload();
   // Get input DVI signal status
@@ -47,5 +66,4 @@ async function main() {
   // Write the specified brightness value to all receiving cards.
   await ctrl.WriteBrightness(80);
 }
-
 ```
