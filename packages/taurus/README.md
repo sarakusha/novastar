@@ -58,6 +58,14 @@ await client.applyReceivingCardConfiguration([
 ]);
 console.log(await client.getReceivingCardConfigProgress());
 
+// Firmware ZIPs embedded in an NCP can be uploaded through the same FTP service.
+console.log(await client.getReceivingCardVersion({ port: 0, receivingCard: 0 }));
+await client.applyReceivingCardFirmware(
+  '/mnt/sdcard/gmib/Data_A10s.zip',
+  [{ port: 0, receivingCard: 0 }],
+  { onProgress: console.log },
+);
+
 // Return to the internal Taurus player (asynchronous playback).
 await client.setAsynchronousMode();
 
@@ -86,6 +94,13 @@ is not required. FTP paths are relative to the Taurus `/mnt` directory: for exam
 `.bin` or `.rcfgx` file plus its MD5. Targets are explicit and zero-based (`port` and
 `receivingCard`). The call starts an asynchronous operation; poll
 `getReceivingCardConfigProgress()` until it reports `Completed` or `Failed`.
+
+`getReceivingCardVersion()` and `getReceivingCardVersions()` return the detailed receiving-card
+model ID together with the live FPGA and MCU versions reported by monitoring. Firmware targets are
+explicit and zero-based. `applyReceivingCardFirmware()` performs the long-running ScreenService
+request and polls `getReceivingCardFirmwareProgress()` concurrently, reporting the current card,
+file and overall percentage. These operations use only the authenticated management connection and
+FTP; ADB is not required.
 
 The device password is never discovered or stored by the library. Pass it explicitly at login.
 TLS certificate validation defaults to off because Taurus devices use a self-signed certificate;

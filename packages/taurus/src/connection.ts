@@ -47,7 +47,11 @@ export class TaurusConnection {
     return this.#closed;
   }
 
-  request(command: TaurusCommand, body?: string | Buffer): Promise<TaurusPacket> {
+  request(
+    command: TaurusCommand,
+    body?: string | Buffer,
+    timeout = this.timeout,
+  ): Promise<TaurusPacket> {
     if (this.#closed) return Promise.reject(new Error('Taurus connection is closed'));
     const sequence = (this.#sequence += 1) >>> 0;
     const packet = encodeTaurusRequest(sequence, command, body);
@@ -56,7 +60,7 @@ export class TaurusConnection {
       const timer = setTimeout(() => {
         this.#pending.delete(sequence);
         reject(new Error(`Taurus request ${sequence} timed out`));
-      }, this.timeout);
+      }, timeout);
       this.#pending.set(sequence, { resolve, reject, timer });
       this.stream.write(packet, (error) => {
         if (!error) return;
@@ -67,10 +71,11 @@ export class TaurusConnection {
     });
   }
 
-  async requestJson<T>(command: TaurusCommand, body?: unknown): Promise<T> {
+  async requestJson<T>(command: TaurusCommand, body?: unknown, timeout?: number): Promise<T> {
     const response = await this.request(
       command,
       body === undefined ? undefined : JSON.stringify(body),
+      timeout,
     );
     const responseBody = response.body.toString('utf8');
     if (response.res.status !== 0) throw new TaurusResponseError(response.res.status, responseBody);

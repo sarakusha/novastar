@@ -1,6 +1,6 @@
 import { TaurusClient, TaurusVideoMode, TaurusVideoSource } from './client';
 
-// cspell:ignore sdcard
+// cspell:ignore gmib sdcard
 
 const createClient = (...responses: unknown[]) => {
   const requestJson = jest.fn();
@@ -270,5 +270,88 @@ describe('TaurusClient video source', () => {
       executing: { port: 1, receivingCard: 3 },
     });
     expect(requestJson).toHaveBeenCalledWith({ what: 0x2e, type: 6, action: 5 });
+  });
+
+  test('reads receiving-card model and live FPGA/MCU versions', async () => {
+    const topology = { receiveCardRegionInfo: [{ portIndex: 0, connectIndex: 1 }] };
+    const { client, requestJson } = createClient(
+      {
+        receiveCardList: [{ portIndex: 0, connectedIndex: 1, modelId: 18434 }],
+      },
+      topology,
+      {
+        screenMonitorData: [
+          {
+            receiveCardMonitorInfo: {
+              portIndex: 0,
+              connectIndex: 1,
+              fpgaHardwareVersionInfo: '1.3.16.114',
+              mcuHardwareVersionInfo: '1.3.16.114',
+            },
+          },
+        ],
+      },
+    );
+
+    await expect(client.getReceivingCardVersion({ port: 0, receivingCard: 1 })).resolves.toEqual({
+      port: 0,
+      receivingCard: 1,
+      modelId: 18434,
+      fpgaVersion: '1.3.16.114',
+      mcuVersion: '1.3.16.114',
+    });
+    expect(requestJson).toHaveBeenNthCalledWith(
+      1,
+      { what: 0x2e, type: 7, action: 5 },
+      { receiveCardList: [{ portIndex: 0, connectedIndex: 1 }] },
+    );
+    expect(requestJson).toHaveBeenNthCalledWith(2, { what: 0x21, type: 7, action: 5 });
+    expect(requestJson).toHaveBeenNthCalledWith(3, { what: 0x21, type: 8, action: 5 }, topology);
+  });
+
+  test('normalizes receiving-card firmware progress', async () => {
+    const { client, requestJson } = createClient({
+      totalLists: 2,
+      listIndex: 1,
+      portIndex: 0,
+      connectedIndex: 3,
+      totalFiles: 5,
+      fileIndex: 2,
+      fileLabel: 'FPGA',
+      fileProcess: 40,
+    });
+
+    await expect(client.getReceivingCardFirmwareProgress()).resolves.toEqual({
+      totalTargets: 2,
+      targetIndex: 1,
+      port: 0,
+      receivingCard: 3,
+      totalFiles: 5,
+      fileIndex: 2,
+      fileLabel: 'FPGA',
+      fileProgress: 40,
+      overallProgress: 74,
+    });
+    expect(requestJson).toHaveBeenCalledWith({ what: 0x2e, type: 3, action: 5 });
+  });
+
+  test('applies receiving-card firmware to explicit zero-based addresses', async () => {
+    const { client, requestJson } = createClient(undefined);
+
+    await client.applyReceivingCardFirmware('/mnt/sdcard/gmib/fw.zip', [
+      { port: 0, receivingCard: 1 },
+      { port: 1, receivingCard: 0 },
+    ]);
+
+    expect(requestJson).toHaveBeenCalledWith(
+      { what: 0x2e, type: 1, action: 8 },
+      {
+        updateList: [
+          { filePath: '/mnt/sdcard/gmib/fw.zip', portIndex: 0, connectedIndex: 1 },
+          { filePath: '/mnt/sdcard/gmib/fw.zip', portIndex: 1, connectedIndex: 0 },
+        ],
+      },
+      420_000,
+    );
   });
 });

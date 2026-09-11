@@ -180,6 +180,34 @@ export interface TaurusReceivingCardConfigProgress {
   };
 }
 
+export interface TaurusReceivingCardAddress {
+  port: number;
+  receivingCard: number;
+}
+
+export interface TaurusReceivingCardVersion extends TaurusReceivingCardAddress {
+  modelId?: number;
+  fpgaVersion?: string;
+  mcuVersion?: string;
+  error?: string;
+}
+
+export interface TaurusReceivingCardFirmwareProgress extends TaurusReceivingCardAddress {
+  totalTargets: number;
+  targetIndex: number;
+  totalFiles: number;
+  fileIndex: number;
+  fileLabel: string;
+  fileProgress: number;
+  overallProgress: number;
+}
+
+export interface TaurusReceivingCardFirmwareOptions {
+  onProgress?: (progress: TaurusReceivingCardFirmwareProgress) => void;
+  pollInterval?: number;
+  timeout?: number;
+}
+
 type TaurusVideoConfigurationResponse = {
   enable?: unknown;
   isScale?: unknown;
@@ -231,6 +259,30 @@ type TaurusLedScreenResponse = {
   scanInfos?: unknown;
 };
 
+type TaurusReceivingCardVersionResponse = {
+  portIndex?: unknown;
+  connectedIndex?: unknown;
+  modelId?: unknown;
+};
+
+type TaurusReceivingCardMonitorResponse = {
+  portIndex?: unknown;
+  connectIndex?: unknown;
+  fpgaHardwareVersionInfo?: unknown;
+  mcuHardwareVersionInfo?: unknown;
+};
+
+type TaurusReceivingCardFirmwareProgressResponse = {
+  totalLists?: unknown;
+  listIndex?: unknown;
+  portIndex?: unknown;
+  connectedIndex?: unknown;
+  totalFiles?: unknown;
+  fileIndex?: unknown;
+  fileLabel?: unknown;
+  fileProcess?: unknown;
+};
+
 const numberOrUndefined = (value: unknown): number | undefined =>
   typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 
@@ -256,6 +308,17 @@ const validateNonNegativeInteger = (value: number, field: string): number => {
   if (value < 0) throw new RangeError(`${field} must not be negative`);
   return value;
 };
+
+const errorMessage = (error: unknown): string =>
+  error instanceof Error ? error.message : String(error);
+
+const clampPercent = (value: number): number => Math.min(100, Math.max(0, value));
+
+const wait = (milliseconds: number): Promise<void> =>
+  new Promise((resolve) => {
+    const timer = setTimeout(resolve, milliseconds);
+    timer.unref();
+  });
 
 const videoMode = (value: unknown): TaurusVideoMode => {
   if (
@@ -729,6 +792,174 @@ export class TaurusClient {
           }
         : undefined,
     };
+  }
+
+  /** Reads model identity and live FPGA/MCU versions for explicit zero-based card addresses. */
+  async getReceivingCardVersions(
+    targets: TaurusReceivingCardAddress[],
+  ): Promise<TaurusReceivingCardVersion[]> {
+    const versions: TaurusReceivingCardVersion[] = [];
+    for (const [index, target] of targets.entries()) {
+      const port = validateNonNegativeInteger(target.port, `Receiving-card target ${index} port`);
+      const receivingCard = validateNonNegativeInteger(
+        target.receivingCard,
+        `Receiving-card target ${index} receiving-card index`,
+      );
+      try {
+        const result = await this.connection.requestJson<{ receiveCardList?: unknown }>(
+          { what: 0x2e, type: 7, action: 5 },
+          { receiveCardList: [{ portIndex: port, connectedIndex: receivingCard }] },
+        );
+        const cards = Array.isArray(result.receiveCardList)
+          ? (result.receiveCardList as TaurusReceivingCardVersionResponse[])
+          : [];
+        const card = cards.find(
+          (item) =>
+            numberOrUndefined(item.portIndex) === port &&
+            numberOrUndefined(item.connectedIndex) === receivingCard,
+        );
+        versions.push({
+          port,
+          receivingCard,
+          modelId: card ? numberOrUndefined(card.modelId) : undefined,
+          error: card ? undefined : 'Receiving card did not return its version information',
+        });
+      } catch (error) {
+        versions.push({ port, receivingCard, error: errorMessage(error) });
+      }
+    }
+
+    try {
+      const topology = await this.connection.requestJson<Record<string, unknown>>({
+        what: 0x21,
+        type: 7,
+        action: 5,
+      });
+      const monitor = await this.connection.requestJson<{ screenMonitorData?: unknown }>(
+        { what: 0x21, type: 8, action: 5 },
+        topology,
+      );
+      const data = Array.isArray(monitor.screenMonitorData) ? monitor.screenMonitorData : [];
+      const monitorByAddress = new Map<string, TaurusReceivingCardMonitorResponse>();
+      for (const entry of data) {
+        if (!entry || typeof entry !== 'object') continue;
+        const card = (entry as Record<string, unknown>).receiveCardMonitorInfo;
+        if (!card || typeof card !== 'object') continue;
+        const info = card as TaurusReceivingCardMonitorResponse;
+        monitorByAddress.set(
+          `${numberOrUndefined(info.portIndex)}:${numberOrUndefined(info.connectIndex)}`,
+          info,
+        );
+      }
+      return versions.map((version) => {
+        const monitorInfo = monitorByAddress.get(`${version.port}:${version.receivingCard}`);
+        return {
+          ...version,
+          fpgaVersion:
+            typeof monitorInfo?.fpgaHardwareVersionInfo === 'string'
+              ? monitorInfo.fpgaHardwareVersionInfo
+              : undefined,
+          mcuVersion:
+            typeof monitorInfo?.mcuHardwareVersionInfo === 'string'
+              ? monitorInfo.mcuHardwareVersionInfo
+              : undefined,
+        };
+      });
+    } catch {
+      return versions;
+    }
+  }
+
+  async getReceivingCardVersion(
+    target: TaurusReceivingCardAddress,
+  ): Promise<TaurusReceivingCardVersion> {
+    const [version] = await this.getReceivingCardVersions([target]);
+    if (!version) throw new Error('Receiving-card version was not returned');
+    return version;
+  }
+
+  async getReceivingCardFirmwareProgress(): Promise<
+    TaurusReceivingCardFirmwareProgress | undefined
+  > {
+    const result = await this.connection.requestJson<TaurusReceivingCardFirmwareProgressResponse>({
+      what: 0x2e,
+      type: 3,
+      action: 5,
+    });
+    const totalTargets = numberOrUndefined(result.totalLists) ?? 0;
+    if (!totalTargets) return undefined;
+    const targetIndex = numberOrUndefined(result.listIndex) ?? 0;
+    const totalFiles = numberOrUndefined(result.totalFiles) ?? 0;
+    const fileIndex = numberOrUndefined(result.fileIndex) ?? 0;
+    const fileProgress = clampPercent(numberOrUndefined(result.fileProcess) ?? 0);
+    const targetProgress = totalFiles ? (fileIndex + fileProgress / 100) / totalFiles : 0;
+    return {
+      totalTargets,
+      targetIndex,
+      port: numberOrUndefined(result.portIndex) ?? 0,
+      receivingCard: numberOrUndefined(result.connectedIndex) ?? 0,
+      totalFiles,
+      fileIndex,
+      fileLabel: typeof result.fileLabel === 'string' ? result.fileLabel : '',
+      fileProgress,
+      overallProgress: clampPercent(((targetIndex + targetProgress) / totalTargets) * 100),
+    };
+  }
+
+  /** Applies a device-local firmware ZIP to explicit cards and reports ScreenService progress. */
+  async applyReceivingCardFirmware(
+    filePath: string,
+    targets: TaurusReceivingCardAddress[],
+    options: TaurusReceivingCardFirmwareOptions = {},
+  ): Promise<void> {
+    if (!filePath.toLowerCase().endsWith('.zip')) {
+      throw new RangeError('Receiving-card firmware must use a .zip file');
+    }
+    if (!targets.length) throw new RangeError('At least one receiving-card target is required');
+    const updateList = targets.map((target, index) => ({
+      filePath,
+      portIndex: validateNonNegativeInteger(target.port, `Receiving-card target ${index} port`),
+      connectedIndex: validateNonNegativeInteger(
+        target.receivingCard,
+        `Receiving-card target ${index} receiving-card index`,
+      ),
+    }));
+    const timeout =
+      options.timeout ??
+      Math.max(
+        Number.isFinite(this.connection.timeout) ? this.connection.timeout : 5000,
+        180_000 + targets.length * 120_000,
+      );
+    const pollInterval = options.pollInterval ?? 500;
+    if (!Number.isSafeInteger(pollInterval) || pollInterval <= 0) {
+      throw new RangeError('Firmware progress poll interval must be greater than zero');
+    }
+    let completed = false;
+    let operationError: Error | undefined;
+    const operation = this.connection
+      .requestJson<unknown>({ what: 0x2e, type: 1, action: 8 }, { updateList }, timeout)
+      .then(
+        () => {
+          completed = true;
+        },
+        (error) => {
+          operationError = error instanceof Error ? error : new Error(String(error));
+          completed = true;
+        },
+      );
+    await Promise.resolve();
+    while (!completed) {
+      await wait(pollInterval);
+      if (completed) break;
+      try {
+        const progress = await this.getReceivingCardFirmwareProgress();
+        if (progress) options.onProgress?.(progress);
+      } catch {
+        // A missed progress sample must not abort the firmware operation itself.
+      }
+    }
+    await operation;
+    if (operationError) throw operationError;
   }
 
   close(): void {

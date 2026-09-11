@@ -30,6 +30,7 @@ import { loadNcpConfig, loadNcpConfigInfo, sendNcpCabinetConfig } from '@novasta
 const ncp = loadNcpConfigInfo('cabinet.ncp');
 const decoded = await loadNcpConfig('cabinet.ncp');
 console.log(decoded.cabinets[0].binary); // device-local Taurus ScreenService input
+console.log(decoded.cabinets[0].firmware?.info); // model, package version and MCU/FPGA files
 await sendNcpCabinetConfig(session, decoded.cabinets[0], {
   sender: 0,
   port: 0,
@@ -48,10 +49,11 @@ const topology = loadScreenConfig('screen.scr');
 console.log(topology.screens);
 ```
 
-`sendNcpCabinetConfig` requires an explicit receiving-card address and writes
-only the selected cabinet parameters. It does not flash firmware or multi-mode
-files embedded in an NCP. Verify that `baseInfo.cardModel` and
-`baseInfo.firmwareVersion` are compatible with the target before sending.
+`sendNcpCabinetConfig` requires an explicit receiving-card address and writes only the selected
+cabinet parameters. It does not flash firmware or multi-mode files embedded in an NCP. When
+firmware is present, `decodeNcpConfig` validates its receiving-card model ID and listed files and
+exposes both the original ZIP data and parsed metadata as `cabinet.firmware`. Applying that archive
+to hardware remains the transport client's responsibility.
 
 ## Usage:
 
