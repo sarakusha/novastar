@@ -1,5 +1,18 @@
 # Change Log
 
+## 2.3.0
+
+### Minor Changes
+
+- 1587b87: Expose NovaLCT NCP package inspection for file paths and buffers.
+- c122191: <!-- cspell:ignore RCCB -->
+
+  Expose the original NCP cabinet RCCB binary and add Taurus APIs for authenticated FTP upload,
+  applying a device-local receiving-card configuration, and progress reporting.
+
+- 254d2b6: Decode current encrypted NovaLCT NCP packages and send a selected cabinet configuration to an explicitly addressed receiving card.
+- f57c1cc: Expose the existing NovaLCT SCR decoder and its result type through the public package API.
+
 ## 2.2.2
 
 ### Patch Changes
