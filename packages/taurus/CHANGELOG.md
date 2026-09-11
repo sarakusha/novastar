@@ -1,5 +1,13 @@
 # @novastar/taurus
 
+## 0.3.0
+
+### Minor Changes
+
+- 0953421: Decode and validate receiving-card firmware embedded in NovaLCT NCP packages, and add typed Taurus
+  APIs for reading card versions, applying firmware to explicit targets, and tracking file and overall
+  progress without ADB.
+
 ## 0.2.0
 
 ### Minor Changes
