@@ -37,6 +37,17 @@ await sendNcpCabinetConfig(session, decoded.cabinets[0], {
 });
 ```
 
+NovaLCT screen topology (`.scr`) files can be decoded separately. They describe the screens,
+receiving-card regions, sender ports, connection order and offsets, but do not contain the cabinet
+scan configuration from an NCP:
+
+```ts
+import { loadScreenConfig } from '@novastar/screen';
+
+const topology = loadScreenConfig('screen.scr');
+console.log(topology.screens);
+```
+
 `sendNcpCabinetConfig` requires an explicit receiving-card address and writes
 only the selected cabinet parameters. It does not flash firmware or multi-mode
 files embedded in an NCP. Verify that `baseInfo.cardModel` and

@@ -67,7 +67,7 @@ export const loadScanBoardConfig = (
   return [xml, params];
 };
 
-type ScrConfig = ScreenInfo & {
+export type ScrConfig = ScreenInfo & {
   dviVersion: number;
   dviInfo: GraphicsDVIPortInfo;
 };

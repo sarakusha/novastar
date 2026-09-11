@@ -29,6 +29,9 @@ export { ZoomTypeEnum } from '@novastar/native/ZoomType';
 
 export type { API, SessionAPI } from './Session';
 
+export { decodeScreenConfig, loadScreenConfig } from './configs';
+export type { ScrConfig } from './configs';
+
 export { getScreenLocation } from './getScreenLocation';
 
 export { default as getCabinetPosition } from './getCabinetPosition';
