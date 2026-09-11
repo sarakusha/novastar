@@ -6,12 +6,17 @@ export const ScanBdRecordNoSendParams = new Struct('ScanBdRecordNoSendParams')
   .UInt32LE('address')
   .UInt32LE('length')
   .UInt16LE('delay')
-  .seek(16)
+  .UInt16LE('pollingTime')
+  .UInt16LE('pollingWaitTime')
+  .seek(12)
   .Buffer('data')
   .compile();
 
 export type ScanBdRecordNoSendParams = ExtractType<typeof ScanBdRecordNoSendParams, false>;
 
-export type SendParam = Pick<ScanBdRecordNoSendParams, 'address' | 'data' | 'delay'> & {
+export type SendParam = Pick<
+  ScanBdRecordNoSendParams,
+  'address' | 'data' | 'delay' | 'pollingTime' | 'pollingWaitTime'
+> & {
   name?: string;
 };

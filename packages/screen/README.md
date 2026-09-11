@@ -18,22 +18,26 @@ $ yarn add @novastar/screen@next
 
 ## NovaLCT configuration files
 
-`@novastar/screen` can inspect NovaLCT cabinet (`.ncp`) packages without
-decrypting or modifying their payload. Use `loadNcpConfigInfo` with a file path
-or `inspectNcpConfig` when the file is already available as a `Buffer`:
+`@novastar/screen` can inspect and decode current NovaLCT cabinet (`.ncp`)
+packages. Use `loadNcpConfigInfo` for metadata only, or `loadNcpConfig` to
+extract the available cabinets and their register-write sequences:
 
 ```ts
-import { inspectNcpConfig, loadNcpConfigInfo } from '@novastar/screen';
+import { loadNcpConfig, loadNcpConfigInfo, sendNcpCabinetConfig } from '@novastar/screen';
 
 const ncp = loadNcpConfigInfo('cabinet.ncp');
-
-// Inspect a file that has already been uploaded to the application.
-const uploadedNcp = inspectNcpConfig(ncpBuffer);
+const decoded = await loadNcpConfig('cabinet.ncp');
+await sendNcpCabinetConfig(session, decoded.cabinets[0], {
+  sender: 0,
+  port: 0,
+  receivingCard: 0,
+});
 ```
 
-NCP payloads are encrypted by NovaLCT, so inspection validates only the outer
-container and leaves the payload untouched. These functions do not write to
-connected hardware.
+`sendNcpCabinetConfig` requires an explicit receiving-card address and writes
+only the selected cabinet parameters. It does not flash firmware or multi-mode
+files embedded in an NCP. Verify that `baseInfo.cardModel` and
+`baseInfo.firmwareVersion` are compatible with the target before sending.
 
 ## Usage:
 

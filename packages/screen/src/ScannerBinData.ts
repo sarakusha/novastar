@@ -32,13 +32,21 @@ export const decodeScannerBinData = (buffer: Buffer): SendParam[] => {
       address,
       data: paramData,
       delay,
+      length: paramLength,
+      pollingTime,
+      pollingWaitTime,
       size,
     } = new ScanBdRecordNoSendParams(data.slice(offset));
+    if (size !== ScanBdRecordNoSendParams.baseSize + paramLength || offset + size > dataLength) {
+      throw new Error('Invalid ScannerBinData record');
+    }
     const name = findKnownAddresses(address);
     params.push({
       address,
-      data: Buffer.from(paramData.slice(0, size)),
+      data: Buffer.from(paramData.slice(0, paramLength)),
       delay,
+      pollingTime,
+      pollingWaitTime,
       name,
     });
     offset += size;

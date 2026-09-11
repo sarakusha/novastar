@@ -101,6 +101,7 @@
     "@novastar/net": "^2.2.1",
     "@novastar/serial": "^2.2.1",
     "@sarakusha/lzma": "^2.3.4",
+    "@zip.js/zip.js": "^2.13.1",
     "adm-zip": "^0.5.17",
     "fast-xml-parser": "^5.8.0",
     "fp-ts": "^2.16.11",

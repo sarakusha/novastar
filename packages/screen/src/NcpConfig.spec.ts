@@ -1,6 +1,6 @@
 import Zip from 'adm-zip';
 
-import { inspectNcpConfig } from './NcpConfig';
+import { decodeNcpConfig, inspectNcpConfig } from './NcpConfig';
 
 describe('public NovaLCT configuration API', () => {
   it('inspects an opaque NCP container without decoding its payload', () => {
@@ -16,5 +16,12 @@ describe('public NovaLCT configuration API', () => {
 
   it('rejects invalid NCP data', () => {
     expect(() => inspectNcpConfig(Buffer.from('not an ncp'))).toThrow();
+  });
+
+  it('rejects an NCP container whose payload is not an archive', async () => {
+    const zip = new Zip();
+    zip.addFile('package', Buffer.from('opaque payload'));
+
+    await expect(decodeNcpConfig(zip.toBuffer())).rejects.toThrow();
   });
 });

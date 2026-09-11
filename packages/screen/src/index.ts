@@ -34,5 +34,7 @@ export { getScreenLocation } from './getScreenLocation';
 export { default as getCabinetPosition } from './getCabinetPosition';
 export type { CabinetPosition } from './getCabinetPosition';
 
-export { inspectNcpConfig, loadNcpConfigInfo } from './NcpConfig';
-export type { NcpConfigInfo } from './NcpConfig';
+export { decodeNcpConfig, inspectNcpConfig, loadNcpConfig, loadNcpConfigInfo } from './NcpConfig';
+export type { NcpCabinetBaseInfo, NcpCabinetConfig, NcpConfig, NcpConfigInfo } from './NcpConfig';
+export { sendNcpCabinetConfig } from './NcpSender';
+export type { NcpSendOptions, NcpSendProgress, NcpTarget } from './NcpSender';
