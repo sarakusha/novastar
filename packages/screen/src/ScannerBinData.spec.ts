@@ -1,3 +1,4 @@
+// cspell:ignore RCCB
 import { decodeScannerBinData, ScannerBinData } from './ScannerBinData';
 import { crc16 } from './common';
 

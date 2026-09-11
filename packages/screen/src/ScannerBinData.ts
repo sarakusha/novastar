@@ -1,3 +1,4 @@
+// cspell:ignore RCCB
 import { ExtractType, Struct } from 'typed-struct';
 
 import { ScanBdRecordNoSendParams, SendParam } from './ScanBdRecordNoSendParams';

@@ -89,7 +89,7 @@
     },
     "moduleNameMapper": {
       "^@novastar/native/common$": "@novastar/native/common",
-      "^@novastar/native/((?!build).*)(?<!\\.js)$": "@novastar/native/$1.js"
+      "^@novastar/native/((?!build).*)$": "@novastar/native/$1"
     }
   },
   "publishConfig": {
