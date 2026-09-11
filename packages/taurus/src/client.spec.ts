@@ -21,6 +21,13 @@ const configuration = {
 };
 
 describe('TaurusClient video source', () => {
+  test('reads the FTP password through the authenticated management connection', async () => {
+    const { client, requestJson } = createClient({ password: 'device-file-password' });
+
+    await expect(client.getFtpPassword()).resolves.toBe('device-file-password');
+    expect(requestJson).toHaveBeenCalledWith({ what: 0x12, type: 1, action: 5 });
+  });
+
   test('normalizes the video configuration', async () => {
     const { client } = createClient(configuration);
 

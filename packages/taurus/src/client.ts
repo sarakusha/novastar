@@ -356,6 +356,19 @@ export class TaurusClient {
     return safeResponse;
   }
 
+  /** Returns the per-device password used by the Taurus FTP file-transfer service. */
+  async getFtpPassword(): Promise<string> {
+    const result = await this.connection.requestJson<{ password?: unknown }>({
+      what: 0x12,
+      type: 1,
+      action: 5,
+    });
+    if (typeof result.password !== 'string' || !result.password) {
+      throw new Error('Invalid Taurus FTP password');
+    }
+    return result.password;
+  }
+
   async getBrightness(): Promise<TaurusBrightness> {
     const result = await this.connection.requestJson<Record<string, unknown>>({
       what: 0x18,
