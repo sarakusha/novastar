@@ -1,6 +1,6 @@
 # @novastar/taurus
 
-<!-- cspell:ignore EDID GMIB -->
+<!-- cspell:ignore EDID GMIB RCCB rcfgx sdcard -->
 
 Node.js client for the high-level management protocol used by NovaStar Taurus multimedia players.
 It complements the register protocol on TCP port 5200: this package connects to the player service
@@ -39,6 +39,17 @@ await client.setHdmiInputResolution({ width: 1920, height: 1080, frameRate: 60 }
 console.log(await client.getLedScreenSize());
 console.log(await client.getLedScreenConfiguration()); // offsets and receiving-card regions
 
+// Apply an RCCB extracted from NCP after uploading it to the player.
+await client.applyReceivingCardConfiguration([
+  {
+    filePath: '/mnt/sdcard/cabinet.bin',
+    md5: '0123456789abcdef0123456789abcdef',
+    port: 0,
+    receivingCard: 0,
+  },
+]);
+console.log(await client.getReceivingCardConfigProgress());
+
 // Return to the internal Taurus player (asynchronous playback).
 await client.setAsynchronousMode();
 
@@ -57,6 +68,11 @@ dimensions, or `getLedScreenConfiguration()` when the configured offsets and rec
 are also needed. A complete configuration can be written back with `setLedScreenConfiguration()`.
 This replaces the receiving-card topology, so start from a configuration read from the same player
 and change it only when the complete new layout is known.
+
+`applyReceivingCardConfiguration()` uses the Taurus ScreenService path and accepts a device-local
+`.bin` or `.rcfgx` file plus its MD5. The file must be uploaded separately before the call. Targets
+are explicit and zero-based (`port` and `receivingCard`). The call starts an asynchronous operation;
+poll `getReceivingCardConfigProgress()` until it reports `Completed` or `Failed`.
 
 The device password is never discovered or stored by the library. Pass it explicitly at login.
 TLS certificate validation defaults to off because Taurus devices use a self-signed certificate;

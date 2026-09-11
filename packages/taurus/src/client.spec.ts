@@ -1,5 +1,7 @@
 import { TaurusClient, TaurusVideoMode, TaurusVideoSource } from './client';
 
+// cspell:ignore sdcard
+
 const createClient = (...responses: unknown[]) => {
   const requestJson = jest.fn();
   for (const response of responses) requestJson.mockResolvedValueOnce(response);
@@ -207,5 +209,59 @@ describe('TaurusClient video source', () => {
       'LED screen configuration must contain at least one screen',
     );
     expect(requestJson).not.toHaveBeenCalled();
+  });
+
+  test('applies a device-local receiving-card binary to an explicit target', async () => {
+    const { client, requestJson } = createClient(undefined);
+
+    await client.applyReceivingCardConfiguration([
+      {
+        filePath: '/mnt/sdcard/test.bin',
+        md5: '0123456789ABCDEF0123456789ABCDEF',
+        port: 0,
+        receivingCard: 0,
+      },
+    ]);
+
+    expect(requestJson).toHaveBeenCalledWith(
+      { what: 0x2e, type: 2, action: 4 },
+      {
+        rcParamBackUpList: [
+          {
+            filePath: '/mnt/sdcard/test.bin',
+            md5: '0123456789abcdef0123456789abcdef',
+            portIndex: 0,
+            connectedIndex: 0,
+          },
+        ],
+        requestTimes: 1,
+        resolvePath: '',
+        resolveType: 1,
+        solidityRequired: true,
+      },
+    );
+  });
+
+  test('normalizes receiving-card configuration progress', async () => {
+    const { client, requestJson } = createClient({
+      status: 2,
+      rcCompleted: 1,
+      rcTotal: 2,
+      progress: 50,
+      errorCode: 0,
+      errorMsg: '',
+      rcExecuting: { portIndex: 1, connectedIndex: 3 },
+    });
+
+    await expect(client.getReceivingCardConfigProgress()).resolves.toEqual({
+      status: 2,
+      completed: 1,
+      total: 2,
+      progress: 50,
+      errorCode: 0,
+      errorMessage: '',
+      executing: { port: 1, receivingCard: 3 },
+    });
+    expect(requestJson).toHaveBeenCalledWith({ what: 0x2e, type: 6, action: 5 });
   });
 });

@@ -1,5 +1,7 @@
 # @novastar/screen
 
+<!-- cspell:ignore Configurator RCCB reseiving -->
+
 Go to [API](https://sarakusha.github.io/novastar/modules/_novastar_screen.html) documentation.
 
 ## Installation:
@@ -20,13 +22,14 @@ $ yarn add @novastar/screen@next
 
 `@novastar/screen` can inspect and decode current NovaLCT cabinet (`.ncp`)
 packages. Use `loadNcpConfigInfo` for metadata only, or `loadNcpConfig` to
-extract the available cabinets and their register-write sequences:
+extract the available cabinets, original RCCB binaries and register-write sequences:
 
 ```ts
 import { loadNcpConfig, loadNcpConfigInfo, sendNcpCabinetConfig } from '@novastar/screen';
 
 const ncp = loadNcpConfigInfo('cabinet.ncp');
 const decoded = await loadNcpConfig('cabinet.ncp');
+console.log(decoded.cabinets[0].binary); // device-local Taurus ScreenService input
 await sendNcpCabinetConfig(session, decoded.cabinets[0], {
   sender: 0,
   port: 0,

@@ -6,6 +6,8 @@ import Zip from 'adm-zip';
 import { decodeScannerBinData } from './ScannerBinData';
 import type { SendParam } from './ScanBdRecordNoSendParams';
 
+// cspell:ignore RCCB
+
 const outerPassword = 'N0@|,[)9.$eP';
 const packagePassword = '*^Tm!{>6v8=&';
 
@@ -32,6 +34,8 @@ export interface NcpCabinetConfig {
   revision?: number;
   firmwareFile?: string;
   baseInfo: NcpCabinetBaseInfo;
+  /** Original RCCB binary accepted by Taurus ScreenService. */
+  binary: Buffer;
   /** Register writes extracted from the cabinet RCCB binary. */
   parameters: SendParam[];
 }
@@ -120,6 +124,7 @@ export const decodeNcpConfig = async (buffer: Buffer): Promise<NcpConfig> => {
         revision: typeof cabinet.revision === 'number' ? cabinet.revision : undefined,
         firmwareFile: typeof cabinet.firmwareFile === 'string' ? cabinet.firmwareFile : undefined,
         baseInfo: asObject(cfg.baseInfo, 'Invalid NCP cabinet base info'),
+        binary,
         parameters: decodeScannerBinData(binary),
       };
     }),

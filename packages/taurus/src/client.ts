@@ -3,7 +3,7 @@ import tls, { ConnectionOptions } from 'tls';
 
 import { TaurusConnection } from './connection';
 
-// cspell:ignore logined validition
+// cspell:ignore logined validition RCCB rcfgx sdcard
 
 export const TAURUS_MANAGEMENT_PORT = 16606;
 
@@ -150,6 +150,34 @@ export interface TaurusLedScreen {
 
 export interface TaurusLedScreenConfiguration {
   screens: TaurusLedScreen[];
+}
+
+export interface TaurusReceivingCardConfigTarget {
+  /** Absolute path of an RCCB .bin or .rcfgx file already stored on Taurus. */
+  filePath: string;
+  md5: string;
+  port: number;
+  receivingCard: number;
+}
+
+export enum TaurusReceivingCardConfigStatus {
+  Preparing = 0,
+  Completed = 1,
+  Running = 2,
+  Failed = 3,
+}
+
+export interface TaurusReceivingCardConfigProgress {
+  status: TaurusReceivingCardConfigStatus;
+  completed: number;
+  total: number;
+  progress?: number;
+  errorCode?: number;
+  errorMessage?: string;
+  executing?: {
+    port: number;
+    receivingCard: number;
+  };
 }
 
 type TaurusVideoConfigurationResponse = {
@@ -611,6 +639,83 @@ export class TaurusClient {
     const screen = configuration.screens[0];
     if (!screen) throw new Error('Taurus has no configured LED screen');
     return screen.size;
+  }
+
+  /**
+   * Applies receiving-card configuration files already stored on Taurus.
+   * The operation continues asynchronously; poll getReceivingCardConfigProgress().
+   */
+  async applyReceivingCardConfiguration(
+    targets: TaurusReceivingCardConfigTarget[],
+    persist = true,
+  ): Promise<void> {
+    if (!targets.length) throw new RangeError('At least one receiving-card target is required');
+    const rcParamBackUpList = targets.map((target, index) => {
+      if (!target.filePath.endsWith('.bin') && !target.filePath.endsWith('.rcfgx')) {
+        throw new RangeError(`Receiving-card target ${index} must use a .bin or .rcfgx file`);
+      }
+      if (!/^[a-f\d]{32}$/i.test(target.md5)) {
+        throw new RangeError(`Receiving-card target ${index} must have a valid MD5 digest`);
+      }
+      return {
+        filePath: target.filePath,
+        md5: target.md5.toLowerCase(),
+        portIndex: validateNonNegativeInteger(target.port, `Receiving-card target ${index} port`),
+        connectedIndex: validateNonNegativeInteger(
+          target.receivingCard,
+          `Receiving-card target ${index} receiving-card index`,
+        ),
+      };
+    });
+    await this.connection.requestJson<unknown>(
+      { what: 0x2e, type: 2, action: 4 },
+      {
+        rcParamBackUpList,
+        requestTimes: 1,
+        resolvePath: '',
+        // ScreenService uses recovery type 1 for device-local RCCB files.
+        resolveType: 1,
+        solidityRequired: persist,
+      },
+    );
+  }
+
+  async getReceivingCardConfigProgress(): Promise<TaurusReceivingCardConfigProgress> {
+    const result = await this.connection.requestJson<Record<string, unknown>>({
+      what: 0x2e,
+      type: 6,
+      action: 5,
+    });
+    const status = requiredNumber(result.status, 'receiving-card configuration status');
+    if (
+      status !== TaurusReceivingCardConfigStatus.Preparing &&
+      status !== TaurusReceivingCardConfigStatus.Completed &&
+      status !== TaurusReceivingCardConfigStatus.Running &&
+      status !== TaurusReceivingCardConfigStatus.Failed
+    ) {
+      throw new Error('Invalid Taurus receiving-card configuration status');
+    }
+    const executing =
+      result.rcExecuting && typeof result.rcExecuting === 'object'
+        ? (result.rcExecuting as Record<string, unknown>)
+        : undefined;
+    return {
+      status,
+      completed: numberOrUndefined(result.rcCompleted) ?? 0,
+      total: numberOrUndefined(result.rcTotal) ?? 0,
+      progress: numberOrUndefined(result.progress),
+      errorCode: numberOrUndefined(result.errorCode),
+      errorMessage: typeof result.errorMsg === 'string' ? result.errorMsg : undefined,
+      executing: executing
+        ? {
+            port: requiredNumber(executing.portIndex, 'executing receiving-card port'),
+            receivingCard: requiredNumber(
+              executing.connectedIndex,
+              'executing receiving-card index',
+            ),
+          }
+        : undefined,
+    };
   }
 
   close(): void {
