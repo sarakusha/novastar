@@ -1,5 +1,11 @@
 # @novastar/taurus
 
+## 0.4.0
+
+### Minor Changes
+
+- dc7fb33: Add authenticated module-calibration inspection and loading with receiving-card flash persistence, partial-module validation, progress and readiness polling.
+
 ## 0.3.0
 
 ### Minor Changes
