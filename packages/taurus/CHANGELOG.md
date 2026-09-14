@@ -1,5 +1,11 @@
 # @novastar/taurus
 
+## 0.4.1
+
+### Patch Changes
+
+- Replace the workspace-only codec dependency with its published npm range.
+
 ## 0.4.0
 
 ### Minor Changes

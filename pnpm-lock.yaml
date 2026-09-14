@@ -264,8 +264,8 @@ importers:
   packages/taurus:
     dependencies:
       '@novastar/codec':
-        specifier: workspace:^
-        version: link:../codec
+        specifier: ^2.2.3
+        version: 2.2.3(debug@4.4.3)
       typed-struct:
         specifier: ^2.7.3
         version: 2.7.3(debug@4.4.3)
@@ -5594,7 +5594,7 @@ snapshots:
 
   '@novastar/native@2.2.1(debug@4.4.3)':
     dependencies:
-      '@novastar/codec': 2.2.1(debug@4.4.3)
+      '@novastar/codec': 2.2.3(debug@4.4.3)
       fp-ts: 2.16.11
       io-ts: 2.2.22(fp-ts@2.16.11)
       io-ts-types: 0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11)))
@@ -5608,7 +5608,7 @@ snapshots:
 
   '@novastar/net@2.2.1(debug@4.4.3)':
     dependencies:
-      '@novastar/codec': 2.2.1(debug@4.4.3)
+      '@novastar/codec': 2.2.3(debug@4.4.3)
       debug: 4.4.3
       tiny-typed-emitter: 2.1.0
     transitivePeerDependencies:
@@ -5617,7 +5617,7 @@ snapshots:
 
   '@novastar/serial@2.2.1(debug@4.4.3)':
     dependencies:
-      '@novastar/codec': 2.2.1(debug@4.4.3)
+      '@novastar/codec': 2.2.3(debug@4.4.3)
       '@serialport/bindings-cpp': 13.0.1
       conf: 15.1.0
       debug: 4.4.3
