@@ -109,3 +109,18 @@ set `rejectUnauthorized` and `ca` when the device has a trusted certificate.
 Discovery sends the binary Taurus search request to UDP port 16601. Legacy NovaStar discovery on
 UDP port 3800 only returns an `rpProMI:` marker and does not contain the serial number required for
 login. The register protocol on TCP port 5200 remains available separately through `@novastar/net`.
+
+## Calibration from LED modules
+
+After `login`, use `client.inspectReceivingCardCalibration(targets)` to inspect module flash.
+Use `client.loadReceivingCardCalibration(targets, { allowPartial, onProgress })` to load normal
+coefficients from module flash and persist them in receiving-card SPI flash. Targets use zero-based
+`port` and `receivingCard` indices. The client validates the current topology and card availability,
+checks every target before loading, waits for readiness after each phase, and maintains the
+management session while using a private TCP/5200 connection. No USB or ADB connection is required.
+
+Missing modules block loading unless `allowPartial: true` is explicitly supplied; a card with no
+modules always fails. A partial set does not guarantee calibration of the complete cabinet.
+The operation replaces receiving-card coefficients, never module flash. Apply suitable cabinet
+parameters first. Low-brightness and multilayer tables are not included. Do not interrupt power.
+Avoid concurrent configuration or firmware operations on the same player.

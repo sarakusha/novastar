@@ -62,6 +62,7 @@
     "access": "public"
   },
   "dependencies": {
-    "typed-struct": "^2.7.3"
+    "typed-struct": "^2.7.3",
+    "@novastar/codec": "workspace:^"
   }
 }

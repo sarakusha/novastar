@@ -263,6 +263,9 @@ importers:
 
   packages/taurus:
     dependencies:
+      '@novastar/codec':
+        specifier: workspace:^
+        version: link:../codec
       typed-struct:
         specifier: ^2.7.3
         version: 2.7.3(debug@4.4.3)

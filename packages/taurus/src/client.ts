@@ -1,3 +1,14 @@
+import {
+  inspectCalibrationModules,
+  loadCalibrationFromModules,
+  openCalibrationTransport,
+  validateCalibrationTargets,
+} from './calibration';
+import type {
+  TaurusCalibrationProgress,
+  TaurusCalibrationResult,
+  TaurusCalibrationTarget,
+} from './calibrationTypes';
 import { randomUUID } from 'crypto';
 import tls, { ConnectionOptions } from 'tls';
 
@@ -367,7 +378,91 @@ const calculateLedScreenSize = (regions: TaurusReceivingCardRegion[]): TaurusLed
 };
 
 export class TaurusClient {
-  private constructor(public readonly connection: TaurusConnection) {}
+  private calibrationBusy = false;
+  private authenticated = false;
+  private constructor(
+    public readonly connection: TaurusConnection,
+    private readonly host?: string,
+  ) {}
+
+  /** Checks module flash hardware without replacing calibration coefficients. */
+  async inspectReceivingCardCalibration(
+    targets: TaurusCalibrationTarget[],
+    options: { onProgress?: (progress: TaurusCalibrationProgress) => void } = {},
+  ): Promise<TaurusCalibrationResult> {
+    return this.runReceivingCardCalibration(targets, false, options);
+  }
+
+  /** Loads normal coefficients from LED modules and saves them in receiving-card flash. */
+  async loadReceivingCardCalibration(
+    targets: TaurusCalibrationTarget[],
+    options: {
+      allowPartial?: boolean;
+      onProgress?: (progress: TaurusCalibrationProgress) => void;
+    } = {},
+  ): Promise<TaurusCalibrationResult> {
+    return this.runReceivingCardCalibration(targets, true, options);
+  }
+
+  private async runReceivingCardCalibration(
+    targets: TaurusCalibrationTarget[],
+    apply: boolean,
+    options: {
+      allowPartial?: boolean;
+      onProgress?: (progress: TaurusCalibrationProgress) => void;
+    } = {},
+  ): Promise<TaurusCalibrationResult> {
+    if (!this.authenticated || this.connection.closed || !this.host)
+      throw new Error('Taurus authentication is required');
+    if (this.calibrationBusy) throw new Error('Taurus calibration is already running');
+    this.calibrationBusy = true;
+    let transport: Awaited<ReturnType<typeof openCalibrationTransport>> | undefined;
+    let heartbeat: ReturnType<typeof setInterval> | undefined;
+    try {
+      const topology = await this.getLedScreenConfiguration();
+      const available = topology.screens.flatMap((screen) =>
+        screen.receivingCards.map((card) => ({ port: card.port, receivingCard: card.connection })),
+      );
+      const selected = validateCalibrationTargets(targets, available);
+      const versions = await this.getReceivingCardVersions(selected);
+      if (
+        versions.length !== selected.length ||
+        versions.some((card) => card.error || card.modelId === undefined)
+      )
+        throw new Error('Not all selected receiving cards are available');
+      transport = await openCalibrationTransport(this.host);
+      const activeTransport = transport;
+      // TCP/5200 authorization expires without activity on the management connection.
+      let pingPending = false;
+      heartbeat = setInterval(() => {
+        if (pingPending) return;
+        pingPending = true;
+        void this.getBrightness()
+          .catch(() => activeTransport.close())
+          .finally(() => {
+            pingPending = false;
+          });
+      }, 5000);
+      const report = options.onProgress ?? (() => undefined);
+      if (apply)
+        return await loadCalibrationFromModules(
+          transport,
+          selected,
+          options.allowPartial === true,
+          report,
+        );
+      const cards = [];
+      for (const target of selected) {
+        report({ completed: cards.length, total: selected.length, target, stage: 'checking' });
+        cards.push(await inspectCalibrationModules(transport, target));
+      }
+      return { completed: 0, total: selected.length, cards };
+    } finally {
+      clearInterval(heartbeat);
+      transport?.close();
+      this.calibrationBusy = false;
+    }
+  }
 
   static async connect(options: TaurusConnectOptions): Promise<TaurusClient> {
     const {
@@ -384,7 +479,7 @@ export class TaurusClient {
         socket.once('connect', resolve);
         socket.once('error', reject);
       });
-      return new TaurusClient(new TaurusConnection(socket, timeout));
+      return new TaurusClient(new TaurusConnection(socket, timeout), host);
     }
 
     const socket = tls.connect({
@@ -397,10 +492,11 @@ export class TaurusClient {
       socket.once('secureConnect', resolve);
       socket.once('error', reject);
     });
-    return new TaurusClient(new TaurusConnection(socket, timeout));
+    return new TaurusClient(new TaurusConnection(socket, timeout), host);
   }
 
   async login(options: TaurusLoginOptions): Promise<TaurusLoginResult> {
+    this.authenticated = false;
     const response = await this.connection.requestJson<
       TaurusLoginResult & { token?: string; password?: string }
     >(
@@ -415,6 +511,7 @@ export class TaurusClient {
         clientName: options.clientName ?? 'novastar.js',
       },
     );
+    this.authenticated = response.logined === true;
     const { token: _token, password: _password, ...safeResponse } = response;
     return safeResponse;
   }
