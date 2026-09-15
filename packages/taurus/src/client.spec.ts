@@ -21,6 +21,24 @@ const configuration = {
 };
 
 describe('TaurusClient video source', () => {
+  test('writes persistent brightness only when explicitly requested', async () => {
+    const { client, requestJson } = createClient(undefined, undefined);
+
+    await client.setBrightness(25);
+    await client.setBrightness(40, true);
+
+    expect(requestJson).toHaveBeenNthCalledWith(
+      1,
+      { what: 0x18, type: 1, action: 4 },
+      { ratio: 25, solidity: false, orderId: -1 },
+    );
+    expect(requestJson).toHaveBeenNthCalledWith(
+      2,
+      { what: 0x18, type: 1, action: 4 },
+      { ratio: 40, solidity: true, orderId: -1 },
+    );
+  });
+
   test('reads the FTP password through the authenticated management connection', async () => {
     const { client, requestJson } = createClient({ password: 'device-file-password' });
 

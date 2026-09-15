@@ -20,6 +20,7 @@ await client.login({ sn: player.sn, password: process.env.TAURUS_PASSWORD! });
 console.log(await client.getEnvironmentBrightness());
 console.log(await client.getBrightness());
 await client.setBrightness(50); // volatile by default; does not write flash
+await client.setBrightness(50, true); // persist the level across player restarts
 
 // Force the HDMI input (ViPlex "Manual / HDMI", synchronous playback).
 await client.setSynchronousMode();
