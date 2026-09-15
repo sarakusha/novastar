@@ -97,7 +97,7 @@
   },
   "dependencies": {
     "@novastar/codec": "^2.2.1",
-    "@novastar/native": "workspace:^",
+    "@novastar/native": "^2.5.1",
     "@novastar/net": "^2.2.1",
     "@novastar/serial": "^2.2.1",
     "@sarakusha/lzma": "^2.3.4",
