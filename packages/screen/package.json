@@ -1,6 +1,6 @@
 {
   "name": "@novastar/screen",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "NovaStar API wrapper",
   "main": "dist/index.cjs",
   "types": "dist/index.d.mts",
@@ -97,7 +97,7 @@
   },
   "dependencies": {
     "@novastar/codec": "^2.2.1",
-    "@novastar/native": "^2.2.1",
+    "@novastar/native": "workspace:^",
     "@novastar/net": "^2.2.1",
     "@novastar/serial": "^2.2.1",
     "@sarakusha/lzma": "^2.3.4",

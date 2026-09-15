@@ -185,8 +185,8 @@ importers:
         specifier: ^2.2.1
         version: 2.2.1(debug@4.4.3)
       '@novastar/native':
-        specifier: ^2.2.1
-        version: 2.2.1(debug@4.4.3)
+        specifier: workspace:^
+        version: link:../native
       '@novastar/net':
         specifier: ^2.2.1
         version: 2.2.1(debug@4.4.3)
@@ -1075,9 +1075,6 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       debug: ^4.3.3
-
-  '@novastar/native@2.2.1':
-    resolution: {integrity: sha512-ofiCv2u/a2n7NX9Q8UGIKGjSrxSvarUmSCrs4+7h+GmOqDblx8LQ7kyfr3ExFvC0B6cbMGtI25PfZEnN5GjmgQ==}
 
   '@novastar/net@2.2.1':
     resolution: {integrity: sha512-U+RXNW8aXNMoelZ+JlJAdv63vuhYFJB/DdYvIOE4sbNcfhcSfhD6Ijv3hC1C+1vl7lMWvYLpmS0PDHOBT0qG+g==}
@@ -5583,20 +5580,6 @@ snapshots:
       typed-struct: 2.7.3(debug@4.4.3)
     transitivePeerDependencies:
       - buffer
-      - iconv-lite
-
-  '@novastar/native@2.2.1(debug@4.4.3)':
-    dependencies:
-      '@novastar/codec': 2.2.3(debug@4.4.3)
-      fp-ts: 2.16.11
-      io-ts: 2.2.22(fp-ts@2.16.11)
-      io-ts-types: 0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11)))
-      monocle-ts: 2.3.13(fp-ts@2.16.11)
-      newtype-ts: 0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - buffer
-      - debug
       - iconv-lite
 
   '@novastar/net@2.2.1(debug@4.4.3)':

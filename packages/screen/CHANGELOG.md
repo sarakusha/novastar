@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.5.1
+
+### Patch Changes
+
+- 23dacc5: Keep real physical groups and output mappings synchronized when reordering NCP DATA blocks.
+- Updated dependencies [7329dc4]
+  - @novastar/native@2.5.1
+
 ## 2.5.0
 
 ### Minor Changes
