@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.4.1
+
+### Patch Changes
+
+- 5fc404c: Match NovaLCT NCP write timing, readiness polling, and All Rv Cards addressing.
+
 ## 2.4.0
 
 ### Minor Changes
