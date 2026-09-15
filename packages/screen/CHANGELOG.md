@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.5.2
+
+### Patch Changes
+
+- 450af8e: Publish the receiving-card dependency as a registry-compatible semver range.
+
 ## 2.5.1
 
 ### Patch Changes
