@@ -31,11 +31,22 @@ const ncp = loadNcpConfigInfo('cabinet.ncp');
 const decoded = await loadNcpConfig('cabinet.ncp');
 console.log(decoded.cabinets[0].binary); // device-local Taurus ScreenService input
 console.log(decoded.cabinets[0].firmware?.info); // model, package version and MCU/FPGA files
-await sendNcpCabinetConfig(session, decoded.cabinets[0], {
-  sender: 0,
-  port: 0,
-  receivingCard: 0,
-});
+await sendNcpCabinetConfig(
+  session,
+  decoded.cabinets[0],
+  {
+    sender: 0,
+    port: 0,
+    receivingCard: 0,
+  },
+  {
+    allReceivingCards: true,
+    readinessTargets: [
+      { sender: 0, port: 0, receivingCard: 0 },
+      { sender: 0, port: 1, receivingCard: 0 },
+    ],
+  },
+);
 ```
 
 NovaLCT screen topology (`.scr`) files can be decoded separately. They describe the screens,
@@ -49,8 +60,15 @@ const topology = loadScreenConfig('screen.scr');
 console.log(topology.screens);
 ```
 
-`sendNcpCabinetConfig` requires an explicit receiving-card address and writes only the selected
-cabinet parameters. It does not flash firmware or multi-mode files embedded in an NCP. When
+`sendNcpCabinetConfig` requires an explicit receiving-card address for readiness polling. By default
+it writes only to that address. Set `allReceivingCards` to reproduce NovaLCT's **All Rv Cards** mode:
+parameter writes use the broadcast address, while readiness polling still uses the explicit card.
+Pass `readinessTargets` to verify every known receiving card after commands that require polling.
+The connection should use 512-byte request chunks to match NovaLCT. The sender honors the command
+delays and receiving-card readiness polling encoded in the RCCB; these waits are required for
+configurations that contain large mapping tables.
+
+It does not flash firmware or multi-mode files embedded in an NCP. When
 firmware is present, `decodeNcpConfig` validates its receiving-card model ID and listed files and
 exposes both the original ZIP data and parsed metadata as `cabinet.firmware`. Applying that archive
 to hardware remains the transport client's responsibility.
