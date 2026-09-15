@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.5.0
+
+### Minor Changes
+
+- 232877a: Decode and reorder NCP DATA group routing, and save the result as a new encrypted NCP package.
+
 ## 2.4.2
 
 ### Patch Changes
