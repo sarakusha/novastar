@@ -199,8 +199,7 @@ export const buffer_MAX_MULTIPLE_CHIP_TABLELEN = new BufferFromBase64(
   MaxValue.MAX_MULTIPLE_CHIP_TABLELEN
 );
 export const buffer_MAX_SCANNER_DATAGROUP = new BufferFromBase64(
-  'buffer_MAX_SCANNER_DATAGROUP',
-  MaxValue.MAX_SCANNER_DATAGROUP
+  'buffer_MAX_SCANNER_DATAGROUP'
 );
 export const Int32_255 = withDefault(Int32, 255);
 export const UInt8_50 = withDefault(UInt8, 50);
