@@ -107,8 +107,7 @@
     "fp-ts": "^2.16.11",
     "io-ts": "^2.2.22",
     "lodash": "^4.18.1",
-    "typed-struct": "^2.7.3",
-    "uuid": "^14.0.0"
+    "typed-struct": "^2.7.3"
   },
   "peerDependencies": {
     "debug": "^4.3.3"

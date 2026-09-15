@@ -421,22 +421,21 @@ export const ScanboardData = new Struct('ScanboardData')
 export type ScanboardData = ExtractType<typeof ScanboardData, false>;
 
 const hasEnhancedMode = hasProps('EnhancedMode', 'EnhancedModeSwitch');
-const is2033 = hasProps('UsingBright', 'UsingSUM2033Gamma');
+
+const chipPropertyType = (chipProperty: ChipBaseExtendPropey): unknown =>
+  (chipProperty as unknown as Record<string, unknown>)['@_xsi:type'];
 
 const isChip2053ExtendPropety = (
   chipPropey: ChipBaseExtendPropey,
-): chipPropey is Chip2053ExtendPropety =>
-  (chipPropey as any)['@_xsi:type'] === 'Chip2053ExtendPropety';
+): chipPropey is Chip2053ExtendPropety => chipPropertyType(chipPropey) === 'Chip2053ExtendPropety';
 
 const isChip2163ExtendPropety = (
   chipPropey: ChipBaseExtendPropey,
-): chipPropey is Chip2163ExtendPropety =>
-  (chipPropey as any)['@_xsi:type'] === 'Chip2163ExtendPropety';
+): chipPropey is Chip2163ExtendPropety => chipPropertyType(chipPropey) === 'Chip2163ExtendPropety';
 
 export const encodeScanBoardProperty = (scanBdProp: ScanBoardProperty): Buffer => {
   if (!isValidScanBdProp(scanBdProp)) throw new TypeError('Invalid ScanBoardProperty');
   const scanData = new ScanboardData();
-  Object.freeze(scanData);
   const {
     ChipPropey,
     StandardLedModuleProp: { DriverChipType },
@@ -496,13 +495,10 @@ export const encodeScanBoardProperty = (scanBdProp: ScanBoardProperty): Buffer =
       DataGroupSequence,
       TotalPointInTable,
       LineBias,
-      ScanABCDCode, // *
-      RowsCtrlByDataGroup, // A
       RGBCode,
       SerialColorNum,
       SerialDotsNumPerColor,
       SerialRGBCode,
-      ChannelEnableData, // A
       // DecType
       ChipNumber,
     },
@@ -520,7 +516,6 @@ export const encodeScanBoardProperty = (scanBdProp: ScanBoardProperty): Buffer =
     Height,
     PhysicalDataGroupNum,
     ModCascadeType,
-    PointNumberPerDriver, // *
     IsIrRegular,
     CommonIrCabinetMode,
     LogicalDataGroupNum,
@@ -540,7 +535,6 @@ export const encodeScanBoardProperty = (scanBdProp: ScanBoardProperty): Buffer =
     ScanSequenceAdjustEn,
     GclkNumPerScan,
     LightTimeRatio,
-    ShiftUnitNum, // *
     TotalUnitNum,
     LightTime,
     DclkUnitCycle,
@@ -550,16 +544,12 @@ export const encodeScanBoardProperty = (scanBdProp: ScanBoardProperty): Buffer =
     GCLKPhase,
     GCLKDuty,
     SubFields,
-    SubFieldPart, // A
-    TotalGclkUnitNumPerScan, // *
-    LatDelay, // *
     IsEnableCalibration,
     CorrectionMode,
     IsChromaCorrentionLowGray,
     CoefSourceType,
     OfflineFrame,
     // MaxGammaValue, // *
-    LightTimeNum2, // *
     LineScanTime,
     IsSymmetricalOutputMode,
     IsOpenClearBlankLine,
@@ -598,11 +588,9 @@ export const encodeScanBoardProperty = (scanBdProp: ScanBoardProperty): Buffer =
     AddrExtend,
     TwentyDataGroupEnable,
     GroupSwapEnable,
-    GroupSwapInfo, // A
     IsLowGrayRamEnable,
     GrayDepth, // *
     PreChargeTime,
-    DataGroupOutPutType, // *
     IsStarSwipPoint,
     UnitIcCount,
     MBI515xDeltaT,

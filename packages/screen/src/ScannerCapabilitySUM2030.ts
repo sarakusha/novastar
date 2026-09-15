@@ -87,7 +87,7 @@ export default class ScannerCapabilitySUM2030 implements ScanBoardCapability {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  UpdateParameters(scanBdProp: ScanBoardProperty, vsFreq: number): boolean {
+  UpdateParameters(_scanBdProp: ScanBoardProperty, _vsFreq: number): boolean {
     throw new TypeError('Not implemented');
   }
 }

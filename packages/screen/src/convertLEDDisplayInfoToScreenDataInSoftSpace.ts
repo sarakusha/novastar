@@ -1,10 +1,11 @@
+import { randomUUID } from 'node:crypto';
+
 import { CabinetInDevice } from '@novastar/native/CabinetInDevice';
 import { DviSelectModeEnum } from '@novastar/native/DviSelectMode';
 import { LEDDisplyTypeEnum } from '@novastar/native/LEDDisplyType';
 import { OnePortLoadInfo } from '@novastar/native/OnePortLoadInfo';
 import { ScreenDataInSoftSpace } from '@novastar/native/ScreenDataInSoftSpace';
 import { makeStruct } from '@novastar/native/common';
-import { v4 as uuid } from 'uuid';
 
 import { isComplexScreen, isSimpleScreen, isStandardScreen, LEDDisplayInfo } from './common';
 
@@ -18,7 +19,7 @@ export default function convertLEDDisplayInfoToScreenDataInSoftSpace(
   scr: LEDDisplayInfo,
   index: number,
 ): ScreenDataInSoftSpace {
-  const UUID = uuid();
+  const UUID = randomUUID();
   if (isSimpleScreen(scr)) {
     return makeStruct(ScreenDataInSoftSpace, {
       UUID,

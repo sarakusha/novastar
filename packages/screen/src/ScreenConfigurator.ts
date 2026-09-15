@@ -13,7 +13,6 @@ import {
 } from '@novastar/codec';
 import AddressMapping from '@novastar/native/AddressMapping';
 import { BaudRateTypeEnum } from '@novastar/native/BaudRateType';
-import type { GraphicsDVIPortInfo } from '@novastar/native/GraphicsDVIPortInfo';
 import { LEDDisplyTypeEnum } from '@novastar/native/LEDDisplyType';
 import { PortScanBoardInfo } from '@novastar/native/PortScanBoardInfo';
 import type { ScanBoardProperty } from '@novastar/native/ScanBoardProperty';
@@ -60,7 +59,6 @@ import {
   RedundancyInfo,
 } from './RedundancyInfo';
 import { ScreenConfigInfo } from './ScreenConfigInfo';
-import { DVI1600Info } from './ScreenInfo';
 import Session, { SessionAPI } from './Session';
 import {
   ParamSize,
@@ -288,17 +286,9 @@ export default class ScreenConfigurator {
 
   #screens: LEDDisplayInfo[] = [];
 
-  #dviInfo?: GraphicsDVIPortInfo;
-
-  #dviExtends?: DVI1600Info;
-
   #reduList: Required<SenderRedundancyInfo>[] = [];
 
   #modulations: Required<SenderModulationInfo>[] = [];
-
-  #dviVersion = 0;
-
-  #screenVersion = 0;
 
   constructor(connection: Connection<Duplex>);
 
@@ -328,10 +318,6 @@ export default class ScreenConfigurator {
   reset(): void {
     this.#devices = [];
     this.#screens = [];
-    this.#dviInfo = undefined;
-    this.#dviExtends = undefined;
-    this.#screenVersion = 0;
-    this.#dviVersion = 0;
     this.#reduList = [];
     this.#modulations = [];
   }
@@ -643,7 +629,7 @@ export default class ScreenConfigurator {
   protected async sendParametersToScanBoardGroupImpl(
     scanBdProperty: Readonly<ScanBoardProperty>,
     isSmartMode = false,
-    isSmartNoSend = true,
+    _isSmartNoSend = true,
     senderIndex = 255,
     portIndex = 255,
     scanBdIndex = 0xffff,
@@ -814,11 +800,8 @@ export default class ScreenConfigurator {
       DviScreenConfigInfo.baseSize + dviInfoLength + screenInfoLength + adjustInfoLength,
       SoftwareSpaceBaseAddress.BASE_ADDRESS,
     );
-    const { screens, dviVersion, dviInfo, dviExtends } = decodeScreenConfig(data);
+    const { screens } = decodeScreenConfig(data);
     this.#screens = index === 0 ? screens : this.#screens.concat(screens);
-    this.#dviVersion = dviVersion;
-    this.#dviInfo = dviInfo;
-    this.#dviExtends = dviExtends;
     // if (crc(data, crc(DviScreenConfigInfo.raw(dsci).slice(6), 0)) !== crcInfo)
     //   throw new Error(`Invalid DviScreenConfigInfo crc`);
     // [this.#dviInfo, this.#dviVersion] = parseGraphicsDVIPortInfo(data.slice(0, dviInfoLength));
@@ -857,9 +840,9 @@ export default class ScreenConfigurator {
         const portCount = Math.ceil(total / CabinetsPerPort);
         if (CabinetsPerPort % (isHorizontalConnection(ConnectType) ? ScanBdCols : ScanBdRows) !== 0)
           throw new ConfigurationError('Invalid cabinetsPerPort');
-        let portCols = 0;
-        let portRows = 0;
-        let ports: PortScanBoardInfo[] = [];
+        let portCols: number;
+        let portRows: number;
+        let ports: PortScanBoardInfo[];
         if (isHorizontalConnection(ConnectType)) {
           portCols = 1;
           portRows = portCount;

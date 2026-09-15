@@ -13,7 +13,9 @@ const delay = (ms: number): Promise<void> =>
     setTimeout(resolve, ms);
   });
 
-describe('enumerator', () => {
+const describeHardware = process.env.NOVASTAR_HARDWARE_TESTS === '1' ? describe : describe.skip;
+
+describeHardware('enumerator', () => {
   let session: SessionAPI;
   beforeAll(async () => {
     const [address] = await findNetDevices();

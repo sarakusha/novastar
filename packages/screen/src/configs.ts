@@ -8,7 +8,6 @@ import debugFactory from 'debug';
 import { type X2jOptions, XMLParser } from 'fast-xml-parser';
 import { isLeft } from 'fp-ts/Either';
 import * as t from 'io-ts';
-import { PathReporter } from 'io-ts/PathReporter';
 
 import { decodeGraphicsDVIPortInfo } from './DVIInfo';
 import { DviScreenConfigInfo, DviScreenInfoFlag } from './DviScreenConfigInfo';
@@ -34,7 +33,17 @@ const makeCfgParser =
     const { decode } = t.exact(t.type({ [codec.name]: codec }));
     const res = decode(cfg);
     if (isLeft(res)) {
-      throw new TypeError(PathReporter.report(res)[0]);
+      throw new TypeError(
+        res.left
+          .map(({ context, message }) => {
+            const location = context
+              .map(({ key }) => key)
+              .filter(Boolean)
+              .join('.');
+            return `${location}: ${message ?? 'Invalid value'}`;
+          })
+          .join('\n'),
+      );
     }
     return res.right[codec.name];
   };

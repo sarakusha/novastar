@@ -29,7 +29,7 @@ export default class Screen {
   static crc = (data: Buffer): number =>
     data.reduce((acc, value) => (acc + value) % 0xffff, 0x55aa);
 
-/*   async setPos(left: number, top: number): Promise<void> {
+  /*   async setPos(left: number, top: number): Promise<void> {
     if (left < 0 || left > MAX_USHORT || top < 0 || top > MAX_USHORT)
       throw new TypeError('Invalid position');
     const req = new Request(1);
@@ -51,7 +51,7 @@ export default class Screen {
   /**
    * ScreenInfoAccessor::ReadSenderScreenConfigInfo()
    */
-/*   async readConfig(): Promise<void> {
+  /*   async readConfig(): Promise<void> {
     const data = await this.session.ReadSender_ScreenConfigSpace(0);
     const x = data.readUInt16LE(2);
     const y = data.readUInt16LE(4);
