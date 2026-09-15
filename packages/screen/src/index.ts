@@ -43,6 +43,8 @@ export {
   inspectNcpConfig,
   loadNcpConfig,
   loadNcpConfigInfo,
+  rewriteNcpDataGroupOrder,
+  saveNcpDataGroupOrder,
 } from './NcpConfig';
 export type {
   NcpCabinetBaseInfo,
@@ -53,5 +55,7 @@ export type {
   ReceivingCardFirmwareFile,
   ReceivingCardFirmwareInfo,
 } from './NcpConfig';
+export { getNcpDataGroupMapping, reorderNcpDataGroupBlocks } from './NcpDataGroupMapping';
+export type { NcpDataGroupBlock, NcpDataGroupMapping } from './NcpDataGroupMapping';
 export { sendNcpCabinetConfig } from './NcpSender';
 export type { NcpSendOptions, NcpSendProgress, NcpTarget } from './NcpSender';

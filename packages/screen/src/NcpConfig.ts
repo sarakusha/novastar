@@ -1,11 +1,16 @@
 import fs from 'fs';
+import path from 'path';
 
-import { Uint8ArrayReader, Uint8ArrayWriter, ZipReader } from '@zip.js/zip.js';
+import { Uint8ArrayReader, Uint8ArrayWriter, ZipReader, ZipWriter } from '@zip.js/zip.js';
 import Zip from 'adm-zip';
 import { XMLParser } from 'fast-xml-parser';
 
 import { decodeScannerBinData } from './ScannerBinData';
+import { ScannerBinData } from './ScannerBinData';
+import { ScanBdRecordNoSendParams } from './ScanBdRecordNoSendParams';
 import type { SendParam } from './ScanBdRecordNoSendParams';
+import { crc16 } from './common';
+import { getNcpDataGroupMapping, reorderNcpDataGroupBlocks } from './NcpDataGroupMapping';
 
 // cspell:ignore RCCB
 
@@ -101,6 +106,19 @@ const unzip = async (buffer: Buffer, password?: string): Promise<Map<string, Buf
   } finally {
     await reader.close();
   }
+};
+
+const zip = async (files: ReadonlyMap<string, Buffer>, password?: string): Promise<Buffer> => {
+  const output = new Uint8ArrayWriter();
+  const writer = new ZipWriter(output);
+  for (const [filename, data] of files) {
+    await writer.add(
+      filename,
+      new Uint8ArrayReader(data),
+      password ? { password, encryptionStrength: 3 } : undefined,
+    );
+  }
+  return Buffer.from(await writer.close());
 };
 
 const findFile = (files: Map<string, Buffer>, filename: string): Buffer | undefined => {
@@ -265,8 +283,110 @@ export const decodeNcpConfig = async (buffer: Buffer): Promise<NcpConfig> => {
   };
 };
 
+const rewriteScannerDataGroupOrder = (
+  binary: Buffer,
+  cabinet: NcpCabinetConfig,
+  order: readonly number[],
+): Buffer => {
+  const reordered = reorderNcpDataGroupBlocks(cabinet, order);
+  const mapping = getNcpDataGroupMapping(reordered);
+  if (!mapping) throw new TypeError('NCP cabinet does not contain a DATA group mapping table');
+  const replacement = reordered.parameters.find(({ address }) => address === mapping.address)?.data;
+  if (!replacement) throw new TypeError('NCP DATA group mapping parameter is missing');
+
+  const result = Buffer.from(binary);
+  const dataLength = result.length - ScannerBinData.baseSize;
+  for (let offset = 0; offset < dataLength; ) {
+    const recordOffset = ScannerBinData.baseSize + offset;
+    const record = new ScanBdRecordNoSendParams(result.subarray(recordOffset));
+    if (
+      record.size !== ScanBdRecordNoSendParams.baseSize + record.length ||
+      offset + record.size > dataLength
+    ) {
+      throw new TypeError('Invalid ScannerBinData record');
+    }
+    if (record.address === mapping.address) {
+      if (record.length !== replacement.length) {
+        throw new TypeError('NCP DATA group mapping length changed unexpectedly');
+      }
+      replacement.copy(result, recordOffset + ScanBdRecordNoSendParams.baseSize);
+      result.writeUInt16LE(crc16(result.subarray(ScannerBinData.baseSize), 0x5555), 8);
+      decodeScannerBinData(result);
+      return result;
+    }
+    offset += record.size;
+  }
+  throw new TypeError('NCP DATA group mapping record is missing');
+};
+
+/**
+ * Create a new encrypted NCP package with reordered DATA group blocks in one cabinet. The input
+ * buffer is not changed. All other cabinet, firmware, mode and manifest files are retained.
+ */
+export const rewriteNcpDataGroupOrder = async (
+  buffer: Buffer,
+  cabinetIndex: number,
+  order: readonly number[],
+): Promise<Buffer> => {
+  const decoded = await decodeNcpConfig(buffer);
+  const cabinet = decoded.cabinets[cabinetIndex];
+  if (!cabinet) throw new RangeError(`NCP cabinet does not exist: ${cabinetIndex}`);
+
+  const outer = await unzip(buffer, outerPassword);
+  const payload = outer.get('package');
+  if (!payload) throw new TypeError('Invalid NCP package entry');
+  const packageFiles = await unzip(payload, packagePassword);
+  const manifestData = packageFiles.get('manifest.json');
+  if (!manifestData) throw new TypeError('NCP manifest is missing');
+  const manifest = asObject(JSON.parse(manifestData.toString('utf8')), 'Invalid NCP manifest');
+  const cabinetPackage = asObject(manifest.cabinetPackage, 'Invalid NCP cabinet package');
+  if (!Array.isArray(cabinetPackage.cabinets)) throw new TypeError('Invalid NCP cabinet list');
+  const cabinetDescriptor = asObject(cabinetPackage.cabinets[cabinetIndex], 'Invalid NCP cabinet');
+  if (typeof cabinetDescriptor.cfgName !== 'string') throw new TypeError('Invalid NCP cabinet');
+
+  const cfgArchive = packageFiles.get(cabinetDescriptor.cfgName);
+  if (!cfgArchive) {
+    throw new TypeError(`NCP cabinet file is missing: ${cabinetDescriptor.cfgName}`);
+  }
+  const cfgFiles = await unzip(cfgArchive);
+  const cfgData = cfgFiles.get('config.json');
+  if (!cfgData) throw new TypeError(`NCP cabinet manifest is missing: ${cabinet.name}`);
+  const cfg = asObject(JSON.parse(cfgData.toString('utf8')), 'Invalid NCP cabinet manifest');
+  if (!Array.isArray(cfg.files)) throw new TypeError('Invalid NCP cabinet file list');
+  const binDescriptor = cfg.files
+    .map((item) => asObject(item, 'Invalid NCP cabinet file'))
+    .find(({ fileName }) => typeof fileName === 'string' && fileName.endsWith('.bin'));
+  if (!binDescriptor || typeof binDescriptor.fileName !== 'string') {
+    throw new TypeError(`NCP cabinet binary is missing: ${cabinet.name}`);
+  }
+  const binary = cfgFiles.get(binDescriptor.fileName);
+  if (!binary) throw new TypeError(`NCP cabinet binary is missing: ${cabinet.name}`);
+
+  cfgFiles.set(binDescriptor.fileName, rewriteScannerDataGroupOrder(binary, cabinet, order));
+  packageFiles.set(cabinetDescriptor.cfgName, await zip(cfgFiles));
+  outer.set('package', await zip(packageFiles, packagePassword));
+  return zip(outer, outerPassword);
+};
+
 export const loadNcpConfigInfo = (pathname: string): NcpConfigInfo =>
   inspectNcpConfig(fs.readFileSync(pathname));
 
 export const loadNcpConfig = (pathname: string): Promise<NcpConfig> =>
   decodeNcpConfig(fs.readFileSync(pathname));
+
+export const saveNcpDataGroupOrder = async (
+  sourcePath: string,
+  destinationPath: string,
+  cabinetIndex: number,
+  order: readonly number[],
+): Promise<void> => {
+  if (path.resolve(sourcePath) === path.resolve(destinationPath)) {
+    throw new RangeError('Reordered NCP must be saved to a new file');
+  }
+  const rewritten = await rewriteNcpDataGroupOrder(
+    fs.readFileSync(sourcePath),
+    cabinetIndex,
+    order,
+  );
+  fs.writeFileSync(destinationPath, rewritten);
+};

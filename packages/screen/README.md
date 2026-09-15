@@ -25,15 +25,25 @@ packages. Use `loadNcpConfigInfo` for metadata only, or `loadNcpConfig` to
 extract the available cabinets, original RCCB binaries and register-write sequences:
 
 ```ts
-import { loadNcpConfig, loadNcpConfigInfo, sendNcpCabinetConfig } from '@novastar/screen';
+import {
+  getNcpDataGroupMapping,
+  loadNcpConfig,
+  loadNcpConfigInfo,
+  reorderNcpDataGroupBlocks,
+  saveNcpDataGroupOrder,
+  sendNcpCabinetConfig,
+} from '@novastar/screen';
 
 const ncp = loadNcpConfigInfo('cabinet.ncp');
 const decoded = await loadNcpConfig('cabinet.ncp');
 console.log(decoded.cabinets[0].binary); // device-local Taurus ScreenService input
 console.log(decoded.cabinets[0].firmware?.info); // model, package version and MCU/FPGA files
+console.log(getNcpDataGroupMapping(decoded.cabinets[0])); // physical-to-logical DATA routing
+const reordered = reorderNcpDataGroupBlocks(decoded.cabinets[0], [1, 0]);
+await saveNcpDataGroupOrder('cabinet.ncp', 'cabinet-reordered.ncp', 0, [1, 0]);
 await sendNcpCabinetConfig(
   session,
-  decoded.cabinets[0],
+  reordered,
   {
     sender: 0,
     port: 0,
@@ -48,6 +58,12 @@ await sendNcpCabinetConfig(
   },
 );
 ```
+
+`getNcpDataGroupMapping` reports the assigned physical DATA ranges and their logical groups.
+`reorderNcpDataGroupBlocks` accepts a complete permutation of equal-size consecutive blocks and
+returns a send-ready cabinet copy without changing the decoded NCP or its embedded RCCB binary.
+`saveNcpDataGroupOrder` writes a separately encrypted NCP, updates the selected cabinet RCCB binary
+and its CRC, and retains the other package files. The source NCP is never overwritten by this API.
 
 NovaLCT screen topology (`.scr`) files can be decoded separately. They describe the screens,
 receiving-card regions, sender ports, connection order and offsets, but do not contain the cabinet

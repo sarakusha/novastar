@@ -1,6 +1,85 @@
 import Zip from 'adm-zip';
+import { Uint8ArrayReader, Uint8ArrayWriter, ZipWriter } from '@zip.js/zip.js';
 
-import { decodeNcpConfig, decodeReceivingCardFirmware, inspectNcpConfig } from './NcpConfig';
+import {
+  decodeNcpConfig,
+  decodeReceivingCardFirmware,
+  inspectNcpConfig,
+  rewriteNcpDataGroupOrder,
+} from './NcpConfig';
+import { getNcpDataGroupMapping } from './NcpDataGroupMapping';
+import { crc16 } from './common';
+
+const encryptedZip = async (
+  files: ReadonlyMap<string, Buffer>,
+  password?: string,
+): Promise<Buffer> => {
+  const output = new Uint8ArrayWriter();
+  const writer = new ZipWriter(output);
+  for (const [filename, data] of files) {
+    await writer.add(
+      filename,
+      new Uint8ArrayReader(data),
+      password ? { password, encryptionStrength: 3 } : undefined,
+    );
+  }
+  return Buffer.from(await writer.close());
+};
+
+const scannerBinary = (mapping: readonly number[]): Buffer => {
+  const data = Buffer.from(mapping);
+  const record = Buffer.alloc(32 + data.length);
+  record.writeUInt32LE(record.length, 0);
+  record.writeUInt16LE(1, 4);
+  record.writeUInt32LE(0x2800_0000, 6);
+  record.writeUInt32LE(data.length, 10);
+  data.copy(record, 32);
+  const binary = Buffer.alloc(64 + record.length);
+  binary.write('RCCB', 0, 'ascii');
+  binary.writeUInt32LE(binary.length, 4);
+  binary.writeUInt16LE(1001, 10);
+  record.copy(binary, 64);
+  binary.writeUInt16LE(crc16(record, 0x5555), 8);
+  return binary;
+};
+
+const ncpArchive = async (): Promise<Buffer> => {
+  const cfg = await encryptedZip(
+    new Map([
+      [
+        'config.json',
+        Buffer.from(
+          JSON.stringify({
+            baseInfo: { cardModel: 'A10s Pro' },
+            files: [{ fileName: 'cabinet.bin' }],
+          }),
+        ),
+      ],
+      ['cabinet.bin', scannerBinary([0, 1, 0xff, 2, 3])],
+      ['untouched.txt', Buffer.from('keep me')],
+    ]),
+  );
+  const payload = await encryptedZip(
+    new Map([
+      [
+        'manifest.json',
+        Buffer.from(
+          JSON.stringify({
+            formatVersion: 2,
+            cabinetPackage: {
+              description: { packName: 'fixture' },
+              cabinets: [{ name: 'cabinet', cfgName: 'cabinet.cfg' }],
+            },
+          }),
+        ),
+      ],
+      ['cabinet.cfg', cfg],
+      ['package-untouched.txt', Buffer.from('keep me too')],
+    ]),
+    '*^Tm!{>6v8=&',
+  );
+  return encryptedZip(new Map([['package', payload]]), 'N0@|,[)9.$eP');
+};
 
 const firmwareArchive = (): Buffer => {
   const zip = new Zip();
@@ -71,5 +150,18 @@ describe('public NovaLCT configuration API', () => {
         },
       ],
     });
+  });
+
+  it('rewrites a DATA group order into a new encrypted, decodable NCP', async () => {
+    const source = await ncpArchive();
+    const rewritten = await rewriteNcpDataGroupOrder(source, 0, [1, 0]);
+
+    expect(rewritten).not.toEqual(source);
+    expect(inspectNcpConfig(rewritten).encrypted).toBe(true);
+    const decoded = await decodeNcpConfig(rewritten);
+    expect(getNcpDataGroupMapping(decoded.cabinets[0])?.blocks).toMatchObject([
+      { physicalStart: 0, logicalGroups: [2, 3] },
+      { physicalStart: 3, logicalGroups: [0, 1] },
+    ]);
   });
 });
