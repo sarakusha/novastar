@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.4.2
+
+### Patch Changes
+
+- e52422b: Preserve the public ScreenConfigurator method types in generated declarations.
+
 ## 2.4.1
 
 ### Patch Changes
