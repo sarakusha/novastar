@@ -217,8 +217,9 @@ export default class ScreenConfigurator {
    */
   save: () => Promise<void> = this.queue(this.saveImpl);
 
-  ReadHWStatus = this.createReadGenerator('ReadAllStatus', (res) =>
-    new HWStatus(res.data).toJSON(),
+  ReadHWStatus: ScreenReadAsyncGenerator<ReturnType<HWStatus['toJSON']>> = this.createReadGenerator(
+    'ReadAllStatus',
+    (res) => new HWStatus(res.data).toJSON(),
   );
 
   ReadReceivingCardMCURemarks = this.createReadGenerator(
@@ -235,41 +236,47 @@ export default class ScreenConfigurator {
 
   ReadFirstChipType = firstCreator(this.ReadChipType);
 
-  WriteBrightness = this.createWriter('SetGlobalBrightness', (percent) =>
+  WriteBrightness: ScreenWriter<number> = this.createWriter('SetGlobalBrightness', (percent) =>
     Math.ceil((minimax(0, 100, percent) * 255) / 100),
   );
 
-  ReadBrightness = this.createReadGenerator(
+  ReadBrightness: ScreenReadAsyncGenerator<number> = this.createReadGenerator(
     'ReadGlobalBrightness',
     (res) => Math.round((decodeUIntLE(res) * 10000) / 255) / 100,
   );
 
   ReadFirstBrightness = firstCreator(this.ReadBrightness);
 
-  WriteDisplayMode = this.createWriter('SetSelfTestMode');
+  WriteDisplayMode: ScreenWriter<TestModeEnum> = this.createWriter('SetSelfTestMode');
 
   ReadDisplayMode = this.createReadGenerator('ReadSelfTestMode', decodeUIntLE);
 
   ReadFirstDisplayMode = firstCreator(this.ReadDisplayMode);
 
-  ReadGamma = this.createReadGenerator('ReadGamma', (res) => decodeUIntLE(res) / 10);
+  ReadGamma: ScreenReadAsyncGenerator<number> = this.createReadGenerator(
+    'ReadGamma',
+    (res) => decodeUIntLE(res) / 10,
+  );
 
   ReadFirstGamma = firstCreator(this.ReadGamma);
 
-  ReadRGBVBrightness = this.createReadGenerator('ReadAllBrightnessInfo', (res) => {
-    const [overall, red, green, blue, vRed] = res.data;
-    return {
-      overall,
-      red,
-      green,
-      blue,
-      vRed,
-    } as BrightnessRGBV;
-  });
+  ReadRGBVBrightness: ScreenReadAsyncGenerator<BrightnessRGBV> = this.createReadGenerator(
+    'ReadAllBrightnessInfo',
+    (res) => {
+      const [overall, red, green, blue, vRed] = res.data;
+      return {
+        overall,
+        red,
+        green,
+        blue,
+        vRed,
+      } as BrightnessRGBV;
+    },
+  );
 
   ReadFirstRGBVBrightness = firstCreator(this.ReadRGBVBrightness);
 
-  WriteGamma = this.createWriter('SetGamma', (gamma) => (gamma * 10) & 0xff);
+  WriteGamma: ScreenWriter<number> = this.createWriter('SetGamma', (gamma) => (gamma * 10) & 0xff);
 
   ReadFirstFuncCardLightSensor = firstCreator(this.ReadAllFuncCardLightSensor.bind(this));
 
@@ -512,7 +519,10 @@ export default class ScreenConfigurator {
             try {
               await this.session[`${name}`](SenderIndex, PortIndex, ScanIndex, true, val);
             } catch (err) {
-              console.error(`Failed to set brightness for sender ${SenderIndex} port ${PortIndex}:`, err);
+              console.error(
+                `Failed to set brightness for sender ${SenderIndex} port ${PortIndex}:`,
+                err,
+              );
               return null;
             }
             return null;
