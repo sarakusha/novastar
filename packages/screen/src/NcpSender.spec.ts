@@ -17,7 +17,7 @@ describe('sendNcpCabinetConfig', () => {
       .mockResolvedValueOnce({ ack: ErrorType.Timeout })
       .mockResolvedValueOnce({ ack: ErrorType.Succeeded })
       .mockResolvedValueOnce({ ack: ErrorType.Succeeded });
-    const session = { connection: { send, trySend } } as unknown as SessionAPI;
+    const session = { connection: { send, trySend, maxLength: 512 } } as unknown as SessionAPI;
     const cabinet = {
       parameters: [
         {
@@ -64,5 +64,43 @@ describe('sendNcpCabinetConfig', () => {
     await jest.advanceTimersByTimeAsync(1);
     await sending;
     expect(completed).toBe(true);
+  });
+
+  it('reports progress for each transport chunk', async () => {
+    const send = jest.fn().mockResolvedValue(undefined);
+    const onProgress = jest.fn();
+    const session = {
+      connection: { send, trySend: jest.fn(), maxLength: 512 },
+    } as unknown as SessionAPI;
+    const cabinet = {
+      parameters: [
+        {
+          address: 0x0300_0000,
+          data: Buffer.alloc(1025),
+          delay: 0,
+          pollingTime: 0,
+          pollingWaitTime: 0,
+        },
+      ],
+    } as NcpCabinetConfig;
+
+    await sendNcpCabinetConfig(
+      session,
+      cabinet,
+      { sender: 0, port: 0, receivingCard: 0 },
+      {
+        onProgress,
+      },
+    );
+
+    expect(send).toHaveBeenCalledTimes(3);
+    expect(onProgress.mock.calls.map(([progress]) => progress.completedBytes)).toEqual([
+      512, 1024, 1025,
+    ]);
+    expect(onProgress.mock.lastCall?.[0]).toMatchObject({
+      completed: 1,
+      total: 1,
+      totalBytes: 1025,
+    });
   });
 });

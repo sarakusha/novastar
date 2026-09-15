@@ -12,6 +12,8 @@ export interface NcpTarget {
 export interface NcpSendProgress {
   completed: number;
   total: number;
+  completedBytes: number;
+  totalBytes: number;
   address: number;
   name?: string;
 }
@@ -84,6 +86,8 @@ export const sendNcpCabinetConfig = async (
     assertUInt('receivingCard', readinessTarget.receivingCard, 0xfffe);
   });
   const { parameters } = cabinet;
+  const totalBytes = parameters.reduce((sum, parameter) => sum + parameter.data.length, 0);
+  let completedBytes = 0;
   for (let index = 0; index < parameters.length; index += 1) {
     const parameter = parameters[index];
     const request = new Request(parameter.data, parameter.name ?? 'NCP');
@@ -92,8 +96,21 @@ export const sendNcpCabinetConfig = async (
     request.destination = options.allReceivingCards ? 0xff : target.sender;
     request.port = options.allReceivingCards ? 0xff : target.port;
     request.rcvIndex = options.allReceivingCards ? 0xffff : target.receivingCard;
-    // eslint-disable-next-line no-await-in-loop
-    await session.connection.send(request);
+    const chunks = Request.makeChunks(request, session.connection.maxLength);
+    for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex += 1) {
+      const chunk = chunks[chunkIndex];
+      // eslint-disable-next-line no-await-in-loop
+      await session.connection.send(chunk);
+      completedBytes += chunk.length;
+      options.onProgress?.({
+        completed: index + (chunkIndex === chunks.length - 1 ? 1 : 0),
+        total: parameters.length,
+        completedBytes,
+        totalBytes,
+        address: chunk.address,
+        name: parameter.name,
+      });
+    }
     // NovaLCT waits before polling. Some commands need several seconds before
     // the receiving card starts responding to readiness requests.
     // eslint-disable-next-line no-await-in-loop
@@ -106,11 +123,5 @@ export const sendNcpCabinetConfig = async (
       // eslint-disable-next-line no-await-in-loop
       await delay(getPollingCompletionDelay(parameter.pollingWaitTime));
     }
-    options.onProgress?.({
-      completed: index + 1,
-      total: parameters.length,
-      address: parameter.address,
-      name: parameter.name,
-    });
   }
 };

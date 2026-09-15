@@ -66,7 +66,8 @@ parameter writes use the broadcast address, while readiness polling still uses t
 Pass `readinessTargets` to verify every known receiving card after commands that require polling.
 The connection should use 512-byte request chunks to match NovaLCT. The sender honors the command
 delays and receiving-card readiness polling encoded in the RCCB; these waits are required for
-configurations that contain large mapping tables.
+configurations that contain large mapping tables. Progress callbacks include both parameter and
+byte counts and fire after every transport chunk.
 
 It does not flash firmware or multi-mode files embedded in an NCP. When
 firmware is present, `decodeNcpConfig` validates its receiving-card model ID and listed files and
