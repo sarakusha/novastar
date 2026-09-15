@@ -1,6 +1,9 @@
 import type { NcpCabinetConfig } from './NcpConfig';
-
 const dataGroupMappingAddress = 0x2800_0000;
+const pointTableAddress = 0x0400_0000;
+const scanBoardDataAddress = 0x0200_0000;
+const highLoadOffset = 251;
+const highLoadMask = 0x10;
 const unusedDataGroup = 0xff;
 
 export interface NcpDataGroupBlock {
@@ -71,8 +74,10 @@ const validateOrder = (order: readonly number[], blockCount: number): void => {
 };
 
 /**
- * Return an NCP cabinet copy whose DATA group blocks have been reordered. The original decoded
- * cabinet and its RCCB binary are left unchanged; the returned parameter list is ready to send.
+ * Return an NCP cabinet copy whose physical DATA blocks have been assigned to screen positions in
+ * the requested order. Both the output-to-logical-group assignments and the corresponding physical
+ * columns of the scanner run-line table are moved. The original decoded cabinet and its RCCB binary
+ * are left unchanged; the returned parameter list is ready to send.
  */
 export const reorderNcpDataGroupBlocks = (
   cabinet: NcpCabinetConfig,
@@ -87,14 +92,44 @@ export const reorderNcpDataGroupBlocks = (
     throw new TypeError('NCP DATA group blocks have different sizes and cannot be reordered');
   }
 
+  const pointTable = cabinet.parameters.find(({ address }) => address === pointTableAddress);
+  const scanBoardData = cabinet.parameters.find(({ address }) => address === scanBoardDataAddress);
+  if (!pointTable || !scanBoardData || scanBoardData.data.length <= highLoadOffset) {
+    throw new TypeError('NCP cabinet does not contain a compatible DATA group run-line table');
+  }
+  const entrySize = scanBoardData.data[highLoadOffset] & highLoadMask ? 4 : 2;
+  const rowSize = mapping.capacity * entrySize;
+  if (pointTable.data.length % rowSize !== 0) {
+    throw new TypeError('NCP cabinet does not contain a compatible DATA group run-line table');
+  }
+
   const parameters = cabinet.parameters.map((parameter) => {
-    if (parameter.address !== mapping.address) return parameter;
-    const data = Buffer.from(parameter.data);
-    mapping.blocks.forEach((target, targetIndex) => {
-      const source = mapping.blocks[order[targetIndex]];
-      data.set(source.logicalGroups, target.physicalStart);
-    });
-    return { ...parameter, data };
+    if (parameter.address === dataGroupMappingAddress) {
+      const data = Buffer.from(parameter.data);
+      mapping.blocks.forEach((target, targetIndex) => {
+        const source = mapping.blocks[order[targetIndex]];
+        Buffer.from(source.logicalGroups).copy(data, target.physicalStart);
+      });
+      return { ...parameter, data };
+    }
+    if (parameter.address === pointTableAddress) {
+      const data = Buffer.from(parameter.data);
+      mapping.blocks.forEach((target, targetIndex) => {
+        const source = mapping.blocks[order[targetIndex]];
+        for (let row = 0; row < parameter.data.length; row += rowSize) {
+          const targetOffset = row + target.physicalStart * entrySize;
+          const sourceOffset = row + source.physicalStart * entrySize;
+          parameter.data.copy(
+            data,
+            targetOffset,
+            sourceOffset,
+            sourceOffset + blockLength * entrySize,
+          );
+        }
+      });
+      return { ...parameter, data };
+    }
+    return parameter;
   });
 
   return { ...cabinet, parameters };

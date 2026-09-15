@@ -10,7 +10,7 @@ import { ScannerBinData } from './ScannerBinData';
 import { ScanBdRecordNoSendParams } from './ScanBdRecordNoSendParams';
 import type { SendParam } from './ScanBdRecordNoSendParams';
 import { crc16 } from './common';
-import { getNcpDataGroupMapping, reorderNcpDataGroupBlocks } from './NcpDataGroupMapping';
+import { reorderNcpDataGroupBlocks } from './NcpDataGroupMapping';
 
 // cspell:ignore RCCB
 
@@ -289,13 +289,10 @@ const rewriteScannerDataGroupOrder = (
   order: readonly number[],
 ): Buffer => {
   const reordered = reorderNcpDataGroupBlocks(cabinet, order);
-  const mapping = getNcpDataGroupMapping(reordered);
-  if (!mapping) throw new TypeError('NCP cabinet does not contain a DATA group mapping table');
-  const replacement = reordered.parameters.find(({ address }) => address === mapping.address)?.data;
-  if (!replacement) throw new TypeError('NCP DATA group mapping parameter is missing');
 
   const result = Buffer.from(binary);
   const dataLength = result.length - ScannerBinData.baseSize;
+  let parameterIndex = 0;
   for (let offset = 0; offset < dataLength; ) {
     const recordOffset = ScannerBinData.baseSize + offset;
     const record = new ScanBdRecordNoSendParams(result.subarray(recordOffset));
@@ -305,18 +302,24 @@ const rewriteScannerDataGroupOrder = (
     ) {
       throw new TypeError('Invalid ScannerBinData record');
     }
-    if (record.address === mapping.address) {
-      if (record.length !== replacement.length) {
-        throw new TypeError('NCP DATA group mapping length changed unexpectedly');
-      }
-      replacement.copy(result, recordOffset + ScanBdRecordNoSendParams.baseSize);
-      result.writeUInt16LE(crc16(result.subarray(ScannerBinData.baseSize), 0x5555), 8);
-      decodeScannerBinData(result);
-      return result;
+    const original = cabinet.parameters[parameterIndex];
+    const replacement = reordered.parameters[parameterIndex];
+    if (!original || !replacement || record.address !== original.address) {
+      throw new TypeError('NCP ScannerBinData parameters do not match the decoded cabinet');
     }
+    if (record.length !== replacement.data.length) {
+      throw new TypeError('NCP ScannerBinData parameter length changed unexpectedly');
+    }
+    replacement.data.copy(result, recordOffset + ScanBdRecordNoSendParams.baseSize);
+    parameterIndex += 1;
     offset += record.size;
   }
-  throw new TypeError('NCP DATA group mapping record is missing');
+  if (parameterIndex !== cabinet.parameters.length) {
+    throw new TypeError('NCP ScannerBinData parameter record is missing');
+  }
+  result.writeUInt16LE(crc16(result.subarray(ScannerBinData.baseSize), 0x5555), 8);
+  decodeScannerBinData(result);
+  return result;
 };
 
 /**

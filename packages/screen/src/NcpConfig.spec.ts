@@ -26,20 +26,37 @@ const encryptedZip = async (
   return Buffer.from(await writer.close());
 };
 
-const scannerBinary = (mapping: readonly number[]): Buffer => {
-  const data = Buffer.from(mapping);
+const scannerRecord = (address: number, values: readonly number[]): Buffer => {
+  const data = Buffer.from(values);
   const record = Buffer.alloc(32 + data.length);
   record.writeUInt32LE(record.length, 0);
   record.writeUInt16LE(1, 4);
-  record.writeUInt32LE(0x2800_0000, 6);
+  record.writeUInt32LE(address, 6);
   record.writeUInt32LE(data.length, 10);
   data.copy(record, 32);
-  const binary = Buffer.alloc(64 + record.length);
+  return record;
+};
+
+const pointTable = (values: readonly number[]): Buffer => {
+  const data = Buffer.alloc(values.length * 4);
+  values.forEach((value, index) => data.writeUInt32LE(value, index * 4));
+  return data;
+};
+
+const scannerBinary = (mapping: readonly number[]): Buffer => {
+  const scanBoardData = Buffer.alloc(252);
+  scanBoardData[251] = 0x10;
+  const records = Buffer.concat([
+    scannerRecord(0x0200_0000, scanBoardData),
+    scannerRecord(0x0400_0000, pointTable([10, 11, 12, 13, 14])),
+    scannerRecord(0x2800_0000, mapping),
+  ]);
+  const binary = Buffer.alloc(64 + records.length);
   binary.write('RCCB', 0, 'ascii');
   binary.writeUInt32LE(binary.length, 4);
   binary.writeUInt16LE(1001, 10);
-  record.copy(binary, 64);
-  binary.writeUInt16LE(crc16(record, 0x5555), 8);
+  records.copy(binary, 64);
+  binary.writeUInt16LE(crc16(records, 0x5555), 8);
   return binary;
 };
 
@@ -163,5 +180,8 @@ describe('public NovaLCT configuration API', () => {
       { physicalStart: 0, logicalGroups: [2, 3] },
       { physicalStart: 3, logicalGroups: [0, 1] },
     ]);
+    expect(
+      decoded.cabinets[0].parameters.find(({ address }) => address === 0x0400_0000)?.data,
+    ).toEqual(pointTable([13, 14, 12, 10, 11]));
   });
 });

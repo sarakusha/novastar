@@ -60,8 +60,10 @@ await sendNcpCabinetConfig(
 ```
 
 `getNcpDataGroupMapping` reports the assigned physical DATA ranges and their logical groups.
-`reorderNcpDataGroupBlocks` accepts a complete permutation of equal-size consecutive blocks and
-returns a send-ready cabinet copy without changing the decoded NCP or its embedded RCCB binary.
+`reorderNcpDataGroupBlocks` accepts a complete permutation of equal-size consecutive blocks. Each
+order item selects the physical DATA block assigned to that screen position. It updates the linked
+coordinate columns in the irregular-cabinet point table (`0x04000000`) and returns a send-ready
+cabinet copy without changing the decoded NCP or its embedded RCCB binary.
 `saveNcpDataGroupOrder` writes a separately encrypted NCP, updates the selected cabinet RCCB binary
 and its CRC, and retains the other package files. The source NCP is never overwritten by this API.
 
